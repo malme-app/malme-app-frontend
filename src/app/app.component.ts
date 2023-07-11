@@ -9,11 +9,7 @@ import { Router } from '@angular/router';
 export class AppComponent {
   title = 'structuralengine-platform';
 
-  constructor(
-    private router: Router,
-  ) {
-  }
-
+  constructor(private router: Router) {}
 
   login() {
     console.log('login handler');

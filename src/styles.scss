@@ -37,9 +37,23 @@ $structuralengine-platform-theme: mat.define-light-theme((
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// MyPage Styles
 div.mypage-container {
   min-height: calc(100vh - 50px);
   background-image: url(assets/images/background_black.jpg);
   background-size: cover;
   background-position: center;
+}
+div.mypage-inner {
+  max-width: 1200px;
+  margin: auto;
+  padding: 50px 15px;
+  .logo-structuralengine {
+    width: 200px;
+  }
+  .page-title {
+    color: #ffffff;
+    font-size: 26px;
+  }
 }
