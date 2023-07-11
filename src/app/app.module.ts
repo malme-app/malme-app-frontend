@@ -10,6 +10,10 @@ import { InvoiceComponent } from './mypage/invoice/invoice.component';
 import { InviteComponent } from './mypage/invite/invite.component';
 import { PlanComponent } from './mypage/plan/plan.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import {MatCardModule} from '@angular/material/card';
 
 @NgModule({
   declarations: [
@@ -21,7 +25,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     InviteComponent,
     PlanComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, BrowserAnimationsModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatCardModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
