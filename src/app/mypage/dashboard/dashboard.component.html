@@ -6,5 +6,108 @@
             class="logo-structuralengine"
         />
         <h1 class="page-title">お試しプラン</h1>
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>アプリケーション</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <ul class="application-list">
+                    <li class="application-item">
+                        <div>
+                            <img
+                                src="../../../assets/images/frameweb_dark.png"
+                                alt="FrameWeb"
+                            />
+                        </div>
+                        <p>立体骨組み解析ソフト</p>
+                    </li>
+                    <li class="application-item">
+                        <div>
+                            <img
+                                src="../../../assets/images/webdan-dark.png"
+                                alt="WebDan"
+                            />
+                        </div>
+                        <p>断面照査プログラム</p>
+                    </li>
+                </ul>
+            </mat-card-content>
+        </mat-card>
+        <nav>
+            <ul class="page-list">
+                <li class="page-item">
+                    <mat-card (click)="goTo('/mypage/plan')">
+                        <mat-card-header>
+                            <mat-card-title-group>
+                                <img
+                                    mat-card-image
+                                    src="../../../assets/images/plan.png"
+                                    alt="プラン変更"
+                                />
+                                <mat-card-title>プラン変更</mat-card-title>
+                            </mat-card-title-group>
+                        </mat-card-header>
+                    </mat-card>
+                </li>
+                <li class="page-item">
+                    <mat-card (click)="goTo('/mypage/invoice')">
+                        <mat-card-header>
+                            <mat-card-title-group>
+                                <img
+                                    mat-card-image
+                                    src="../../../assets/images/invoice.png"
+                                    alt="ご請求情報"
+                                />
+                                <mat-card-title>ご請求情報</mat-card-title>
+                            </mat-card-title-group>
+                        </mat-card-header>
+                    </mat-card>
+                </li>
+                <li class="page-item">
+                    <mat-card (click)="goTo('/mypage/profile')">
+                        <mat-card-header>
+                            <mat-card-title-group>
+                                <img
+                                    mat-card-image
+                                    src="../../../assets/images/profile.png"
+                                    alt="会員情報"
+                                />
+                                <mat-card-title>会員情報</mat-card-title>
+                            </mat-card-title-group>
+                        </mat-card-header>
+                    </mat-card>
+                </li>
+                <li class="page-item">
+                    <mat-card (click)="goTo('/mypage/invite')">
+                        <mat-card-header>
+                            <mat-card-title-group>
+                                <img
+                                    mat-card-image
+                                    src="../../../assets/images/invite.png"
+                                    alt="チームに招待する"
+                                />
+                                <mat-card-title
+                                    >チームに招待する</mat-card-title
+                                >
+                            </mat-card-title-group>
+                        </mat-card-header>
+                    </mat-card>
+                </li>
+                <li class="page-item">
+                    <mat-card (click)="goTutorial()">
+                        <mat-card-header>
+                            <mat-card-title-group>
+                                <img
+                                    mat-card-image
+                                    src="../../../assets/images/tutorial.png"
+                                    alt="チュートリアル"
+                                />
+                                <mat-card-title>チュートリアル</mat-card-title>
+                            </mat-card-title-group>
+                        </mat-card-header>
+                    </mat-card>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>

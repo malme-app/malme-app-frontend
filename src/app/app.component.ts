@@ -23,7 +23,7 @@ export class AppComponent {
     console.log('signup handler');
   }
 
-  myPage() {
+  goMypage() {
     this.router.navigate(['/mypage']);
   }
 }
