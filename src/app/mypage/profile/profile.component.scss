@@ -1,0 +1,25 @@
+div.form-container {
+    border: 1px solid #000;
+    margin-top: 16px;
+}
+
+.login-info,
+.account-type,
+.organization-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.mat-mdc-form-field {
+    width: 100%;
+}
+
+@media screen and (max-width: 959.98px) {
+
+    .login-info,
+    .account-type,
+    .organization-info {
+        grid-template-columns: 1fr;
+    }
+}

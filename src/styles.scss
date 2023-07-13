@@ -34,13 +34,91 @@ $structuralengine-platform-theme: mat.define-light-theme((
 @include mat.all-component-themes($structuralengine-platform-theme);
 
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600&display=swap');
 
+/* BEGIN: Helper Classes */
+// Margin, Padding
+$spaceamounts: (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 75, 100); // Adjust this to include the pixel amounts you need.
+$sides: (top, bottom, left, right); // Leave this variable alone
+
+@each $space in $spaceamounts {
+  @each $side in $sides {
+    .m#{str-slice($side, 0, 1)}-#{$space} {
+      margin-#{$side}: #{$space}px !important;
+    }
+    .mx-#{$space} {
+      margin-left: #{$space}px !important;
+      margin-right: #{$space}px !important;
+    }
+    .my-#{$space} {
+      margin-top: #{$space}px !important;
+      margin-bottom: #{$space}px !important;
+    }
+    .ma-#{$space} {
+      margin: #{$space}px !important;
+    }
+    .p#{str-slice($side, 0, 1)}-#{$space} {
+      padding-#{$side}: #{$space}px !important;
+    }
+    .px-#{$space} {
+      padding-left: #{$space}px !important;
+      padding-right: #{$space}px !important;
+    }
+    .py-#{$space} {
+      padding-top: #{$space}px !important;
+      padding-bottom: #{$space}px !important;
+    }
+    .pa-#{$space} {
+      padding: #{$space}px !important;
+    }
+  }
+}
+// Custom helper classes
+.fullwidth {
+  width: 100%;
+}
+.border-1 {
+  border: 1px solid #000000;
+}
+.flex {
+  display: flex;
+}
+.space-between {
+  display: flex;
+  justify-content: space-between;
+}
+.space-around {
+  display: flex;
+  justify-content: space-around;
+}
+.text-right {
+  text-align: right;
+}
+.btn-1 {
+  padding: 0 30px !important;
+}
+.btn-2 {
+  padding: 0 30px !important;
+  flex-direction: row-reverse;
+  .mat-icon {
+    margin-left: 8px !important;
+    margin-right: -4px !important;
+  }
+}
+/* END: Helper Classes */
+
+// Global Styles
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { 
+  margin: 0;
+  font-family: "Noto Sans JP", sans-serif;
+  font-weight: 400;
+}
 
 li {
   list-style-type: none;
 }
+
 // MyPage Styles
 div.mypage-container {
   min-height: calc(100vh - 50px);
