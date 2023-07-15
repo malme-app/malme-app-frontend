@@ -77,6 +77,9 @@ $sides: (top, bottom, left, right); // Leave this variable alone
 .fullwidth {
   width: 100%;
 }
+.fit-content {
+  width: fit-content;
+}
 .border-1 {
   border: 1px solid #000000;
 }

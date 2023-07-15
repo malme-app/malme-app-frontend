@@ -1,0 +1,12 @@
+.mat-mdc-form-field {
+    width: 360px;
+    max-width: 100%;
+}
+@media screen and (max-width: 959.98px) {
+    .table-wrapper {
+        overflow-y: auto;
+    }
+    .mat-mdc-table {
+        min-width: 800px;
+    }
+}
