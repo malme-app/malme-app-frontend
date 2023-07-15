@@ -1,10 +1,74 @@
 <div class="mypage-container">
     <div class="mypage-inner">
-        <img
-            src="../../../assets/images/logo_white.png"
-            alt="StructuralEngine"
-            class="logo-structuralengine"
-        />
+        <img src="../../../assets/images/logo_white.png" alt="StructuralEngine" class="logo-structuralengine" />
         <h1 class="page-title">ご請求情報</h1>
+        <mat-card>
+            <mat-card-content>
+                <div class="plan-info border-1 pa-15 space-between">
+                    <div>
+                        <div class="bold">現在の購入プラン</div>
+                        <div class="mt-10">エンタープライズ - 年額ブプラン</div>
+                    </div>
+                    <div>
+                        <div class="bold">有効期限</div>
+                        <div class="mt-10">2022/4/1 ~ 2024/4/1</div>
+                    </div>
+                    <div>
+                        <div class="bold">お支払い方法</div>
+                        <div class="mt-10">口座振替</div>
+                    </div>
+                    <div>
+                        <div class="bold">次回お支払い日</div>
+                        <div class="mt-10">2024/4/1</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="bold">契約書</div>
+                        <div class="mt-5">
+                            <a href="https://storage.googleapis.com/studio-design-asset-files/projects/G3qbg69EaJ/s-1720x958_v-fms_webp_85670ebb-e513-45c6-ae00-59fd80650439_middle.webp"
+                                target="_blank">
+                                <button mat-mini-fab color="primary">
+                                    <mat-icon>open_in_new</mat-icon>
+                                </button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        <mat-card class="mt-15">
+            <mat-card-content>
+                <div class="border-1 pa-15">
+                    <p class="bold mt-0">
+                        お支払い履歴
+                    </p>
+                    <div class="table-wrapper">
+                        <table mat-table [dataSource]="dataSource">
+                            <ng-container matColumnDef="paymentDay">
+                                <th mat-header-cell *matHeaderCellDef>お支払い日</th>
+                                <td mat-cell *matCellDef="let element"> {{element.paymentDay}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="plan">
+                                <th mat-header-cell *matHeaderCellDef>購入プラン</th>
+                                <td mat-cell *matCellDef="let element"> {{element.plan}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="period">
+                                <th mat-header-cell *matHeaderCellDef>購入期間</th>
+                                <td mat-cell *matCellDef="let element"> {{element.period}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="method">
+                                <th mat-header-cell *matHeaderCellDef>お支払い方法</th>
+                                <td mat-cell *matCellDef="let element"> {{element.method}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="amount">
+                                <th mat-header-cell *matHeaderCellDef>金額</th>
+                                <td mat-cell *matCellDef="let element"> {{element.amount}} </td>
+                            </ng-container>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                        </table>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
     </div>
 </div>

@@ -1,0 +1,27 @@
+@media screen and (max-width: 959.98px) {
+    .plan-info {
+        display: block;
+        &>div {
+            &:not(:first-child) {
+                margin-top: 15px;
+            }
+            div:last-child {
+                margin-top: 5px !important;
+            }
+            &:last-child {
+                text-align: left;
+                display: flex;
+                align-items: center;
+                div:last-child {
+                    margin-left: 15px;
+                }
+            }
+        }
+    }
+    .table-wrapper {
+        overflow-y: auto;
+    }
+    .mat-mdc-table {
+        min-width: 800px;
+    }
+}

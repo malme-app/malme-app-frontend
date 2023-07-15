@@ -38,7 +38,7 @@ $structuralengine-platform-theme: mat.define-light-theme((
 
 /* BEGIN: Helper Classes */
 // Margin, Padding
-$spaceamounts: (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 75, 100); // Adjust this to include the pixel amounts you need.
+$spaceamounts: (0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 75, 100); // Adjust this to include the pixel amounts you need.
 $sides: (top, bottom, left, right); // Leave this variable alone
 
 @each $space in $spaceamounts {
@@ -94,6 +94,9 @@ $sides: (top, bottom, left, right); // Leave this variable alone
 .text-right {
   text-align: right;
 }
+.text-center {
+  text-align: center;
+}
 .btn-1 {
   padding: 0 30px !important;
 }
@@ -104,6 +107,9 @@ $sides: (top, bottom, left, right); // Leave this variable alone
     margin-left: 8px !important;
     margin-right: -4px !important;
   }
+}
+.bold {
+  font-weight: 600;
 }
 /* END: Helper Classes */
 
