@@ -73,16 +73,16 @@
             <mat-card-content>
                 <div class="border-1 pa-15">
                     <form
-                        [formGroup]="accountTypeForm"
-                        (ngSubmit)="onSubmitAccountTypeForm()"
+                        [formGroup]="organizationForm"
+                        (ngSubmit)="onSubmitOrganizationForm()"
                     >
-                        <div class="account-type">
+                        <div class="organization-info">
                             <div>
                                 <mat-form-field>
                                     <mat-label>アカウント種類</mat-label>
                                     <mat-select
                                         required
-                                        formControlName="accountType"
+                                        formControlName="organizationType"
                                     >
                                         <mat-option value="0">個人</mat-option>
                                         <mat-option value="1">法人</mat-option>
@@ -90,48 +90,6 @@
                                         <mat-option value="3">学生</mat-option>
                                     </mat-select>
                                 </mat-form-field>
-                            </div>
-                            <div>
-                                <mat-form-field>
-                                    <mat-label>会員種別</mat-label>
-                                    <mat-select
-                                        required
-                                        formControlName="accountRole"
-                                    >
-                                        <mat-option value="0"
-                                            >管理者</mat-option
-                                        >
-                                        <mat-option value="1"
-                                            >メンバー</mat-option
-                                        >
-                                    </mat-select>
-                                </mat-form-field>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <button
-                                mat-raised-button
-                                color="primary"
-                                type="submit"
-                                [disabled]="!accountTypeForm.valid"
-                                class="btn-1"
-                            >
-                                変&nbsp;更
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </mat-card-content>
-        </mat-card>
-        <mat-card class="mt-15">
-            <mat-card-content>
-                <div class="border-1 pa-15">
-                    <form
-                        [formGroup]="organizationForm"
-                        (ngSubmit)="onSubmitOrganizationForm()"
-                    >
-                        <div class="organization-info">
-                            <div>
                                 <mat-form-field>
                                     <mat-label
                                         >団体名 / 学校名 / 法人名</mat-label
@@ -222,6 +180,20 @@
                             </div>
                             <div>
                                 <mat-form-field>
+                                    <mat-label>会員種別</mat-label>
+                                    <mat-select
+                                        required
+                                        formControlName="userRole"
+                                    >
+                                        <mat-option value="0"
+                                            >管理者</mat-option
+                                        >
+                                        <mat-option value="1"
+                                            >メンバー</mat-option
+                                        >
+                                    </mat-select>
+                                </mat-form-field>
+                                <mat-form-field>
                                     <mat-label>銀行名</mat-label>
                                     <input
                                         matInput
@@ -243,11 +215,11 @@
                                     <input
                                         matInput
                                         type="text"
-                                        formControlName="accountType"
+                                        formControlName="bankAccountType"
                                     />
                                     <mat-error
                                         *ngIf="
-                                            organizationFormControl.accountType.hasError(
+                                            organizationFormControl.bankAccountType.hasError(
                                                 'required'
                                             )
                                         "
@@ -260,11 +232,11 @@
                                     <input
                                         matInput
                                         type="tel"
-                                        formControlName="accountNumber"
+                                        formControlName="bankAccountNumber"
                                     />
                                     <mat-error
                                         *ngIf="
-                                            organizationFormControl.accountNumber.hasError(
+                                            organizationFormControl.bankAccountNumber.hasError(
                                                 'required'
                                             )
                                         "
