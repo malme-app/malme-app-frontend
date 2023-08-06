@@ -13,8 +13,12 @@
                     <div class="login-info">
                         <div>
                             <mat-form-field>
-                                <mat-label>氏名</mat-label>
-                                <input matInput readonly value="山田太郎" />
+                                <mat-label>ユーザー名</mat-label>
+                                <input
+                                    matInput
+                                    readonly
+                                    [value]="userInfo.profile?.username"
+                                />
                             </mat-form-field>
                         </div>
                         <div>
@@ -23,7 +27,27 @@
                                 <input
                                     matInput
                                     readonly
-                                    value="user@example.com"
+                                    [value]="userInfo.profile?.email"
+                                />
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field>
+                                <mat-label>姓</mat-label>
+                                <input
+                                    matInput
+                                    readonly
+                                    [value]="userInfo.profile?.lastName"
+                                />
+                            </mat-form-field>
+                        </div>
+                        <div>
+                            <mat-form-field>
+                                <mat-label>名</mat-label>
+                                <input
+                                    matInput
+                                    readonly
+                                    [value]="userInfo.profile?.firstName"
                                 />
                             </mat-form-field>
                         </div>

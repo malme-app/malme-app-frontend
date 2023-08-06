@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { UserInfoService } from 'src/app/providers/user-info.service';
 
 @Component({
   selector: 'app-profile',
@@ -27,6 +28,8 @@ export class ProfileComponent {
       Validators.required
     ),
   });
+
+  constructor(public userInfo: UserInfoService) {}
 
   get organizationFormControl() {
     return this.organizationForm.controls;
