@@ -6,14 +6,27 @@ import { ProfileComponent } from './mypage/profile/profile.component';
 import { InvoiceComponent } from './mypage/invoice/invoice.component';
 import { PlanComponent } from './mypage/plan/plan.component';
 import { InviteComponent } from './mypage/invite/invite.component';
+import { AuthGuard } from './app.authguard';
 
 const routes: Routes = [
   { path: '', component: TopComponent },
-  { path: 'mypage', component: DashboardComponent },
-  { path: 'mypage/profile', component: ProfileComponent },
-  { path: 'mypage/invoice', component: InvoiceComponent },
-  { path: 'mypage/plan', component: PlanComponent },
-  { path: 'mypage/invite', component: InviteComponent },
+  { path: 'mypage', component: DashboardComponent, canActivate: [AuthGuard] },
+  {
+    path: 'mypage/profile',
+    component: ProfileComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: 'mypage/invoice',
+    component: InvoiceComponent,
+    canActivate: [AuthGuard],
+  },
+  { path: 'mypage/plan', component: PlanComponent, canActivate: [AuthGuard] },
+  {
+    path: 'mypage/invite',
+    component: InviteComponent,
+    canActivate: [AuthGuard],
+  },
 ];
 
 @NgModule({

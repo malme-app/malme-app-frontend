@@ -1,12 +1,12 @@
 <header>
     <img class="logo" src="/assets/images/malme_logo.svg" alt="Malme" />
-    <!-- <div class="btn-wrapper">
+    <div *ngIf="!isLoggedIn" class="btn-wrapper">
         <button class="login-btn" (click)="login()">Login</button>
         <button class="login-btn" (click)="signup()">Signup</button>
-    </div> -->
-    <div class="btn-wrapper">
+    </div>
+    <div *ngIf="isLoggedIn" class="btn-wrapper">
         <button mat-fab extended [matMenuTriggerFor]="menu" class="header-btn">
-            <mat-icon>account_circle</mat-icon>本田さん
+            <mat-icon>account_circle</mat-icon>{{ userProfile?.username }}さん
         </button>
         <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="goMypage()">My page</button>

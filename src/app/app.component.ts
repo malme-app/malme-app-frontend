@@ -1,26 +1,41 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { KeycloakService } from 'keycloak-angular';
+import { KeycloakProfile } from 'keycloak-js';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'structuralengine-platform';
+  isLoggedIn = false;
+  userProfile: KeycloakProfile | null = null;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private readonly keycloak: KeycloakService
+  ) {}
+
+  async ngOnInit() {
+    this.isLoggedIn = await this.keycloak.isLoggedIn();
+
+    if (this.isLoggedIn) {
+      this.userProfile = await this.keycloak.loadUserProfile();
+    }
+  }
 
   login() {
-    console.log('login handler');
+    this.keycloak.login();
   }
 
   logout() {
-    this.router.navigate(['/']);
+    this.keycloak.logout(window.origin);
   }
 
   signup() {
-    console.log('signup handler');
+    this.keycloak.register();
   }
 
   goMypage() {
