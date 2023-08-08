@@ -1,38 +1,95 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { UserInfoService } from 'src/app/providers/user-info.service';
+import { environment } from 'src/environments/environment';
+
+interface Organization {
+  id: number;
+  status: number;
+  name: string;
+  divisionName: string;
+  type: number;
+  zipCode: string;
+  address: string;
+  tel: string;
+  bankName: string;
+  branchName: string;
+  accountType: string;
+  accountNumber: string;
+  licenses: number;
+}
+
+interface SystemProfile {
+  id: number;
+  uid: string;
+  email: string;
+  username: string;
+  firstName: string;
+  lastName: string;
+  status: number;
+  role: string;
+  organization: Organization | null;
+}
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   organizationForm = new FormGroup({
-    organizationType: new FormControl('0', Validators.required),
+    organizationType: new FormControl(0, Validators.required),
     userRole: new FormControl(
-      { value: '0', disabled: true },
+      { value: 'admin', disabled: true },
       Validators.required
     ),
-    organizationName: new FormControl('株式会社XXXXXX', Validators.required),
-    department: new FormControl('開発部', Validators.required),
-    zipcode: new FormControl('000-0000', Validators.required),
-    address: new FormControl('東京都千代田区麹町', Validators.required),
-    tel: new FormControl('50-1742-2028', Validators.required),
-    bankName: new FormControl('三菱UFJ銀行', Validators.required),
-    bankAccountType: new FormControl('普通', Validators.required),
-    bankAccountNumber: new FormControl('1234567', Validators.required),
-    licenseNumber: new FormControl('5', Validators.required),
+    organizationName: new FormControl('', Validators.required),
+    department: new FormControl('', Validators.required),
+    zipcode: new FormControl('', Validators.required),
+    address: new FormControl('', Validators.required),
+    tel: new FormControl('', Validators.required),
+    bankName: new FormControl('', Validators.required),
+    bankAccountType: new FormControl('', Validators.required),
+    bankAccountNumber: new FormControl('', Validators.required),
+    licenseNumber: new FormControl(1, Validators.required),
   });
+  systemProfile: SystemProfile | null = null;
 
-  constructor(public userInfo: UserInfoService) {}
+  constructor(public userInfo: UserInfoService, private http: HttpClient) {}
+
+  ngOnInit() {
+    this.http.get(`${environment.apiBaseUrl}/user`).subscribe((data) => {
+      const systemProfile: SystemProfile = data as SystemProfile;
+      this.systemProfile = systemProfile;
+      this.organizationForm.setValue({
+        organizationType: systemProfile?.organization?.type ?? null,
+        userRole: systemProfile?.role ?? 'admin',
+        organizationName: systemProfile?.organization?.name ?? null,
+        department: systemProfile?.organization?.divisionName ?? null,
+        zipcode: systemProfile?.organization?.zipCode ?? null,
+        address: systemProfile?.organization?.address ?? null,
+        tel: systemProfile?.organization?.tel ?? null,
+        bankName: systemProfile?.organization?.bankName ?? null,
+        bankAccountType: systemProfile?.organization?.accountType ?? null,
+        bankAccountNumber: systemProfile?.organization?.accountNumber ?? null,
+        licenseNumber: systemProfile?.organization?.licenses ?? null,
+      });
+    });
+  }
 
   get organizationFormControl() {
     return this.organizationForm.controls;
   }
 
   onSubmitOrganizationForm() {
-    console.log(this.organizationForm.value);
+    if (!this.systemProfile) {
+      console.log('create user, create organization');
+    } else if (!this.systemProfile.organization) {
+      console.log('create organization');
+    } else {
+      console.log('edit organization');
+    }
   }
 }
