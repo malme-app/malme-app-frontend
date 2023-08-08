@@ -25,6 +25,7 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
 import { HttpClientModule } from '@angular/common/http';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -70,6 +71,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     MatMenuModule,
     MatCardModule,
     MatTableModule,
+    MatSnackBarModule,
   ],
   providers: [
     AuthGuard,

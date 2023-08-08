@@ -74,6 +74,18 @@ $sides: (top, bottom, left, right); // Leave this variable alone
   }
 }
 // Custom helper classes
+.notify-success>div {
+  background-color: #50a74e !important;
+  .mdc-button__label {
+    color: #d3d3c2 !important;
+  }
+}
+.notify-failed>div {
+  background-color: #d83333 !important;
+  .mdc-button__label {
+    color: #d3d3c2 !important;
+  }
+}
 .fullwidth {
   width: 100%;
 }
