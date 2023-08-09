@@ -40,11 +40,14 @@ interface SystemProfile {
   styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
-  hasProfile: boolean = false;
-  hasOrganization: boolean = false;
+  hasProfile = false;
+  hasOrganization = false;
   organizationForm = new FormGroup({
     organizationType: new FormControl(0, Validators.required),
-    userRole: new FormControl({ value: 'admin', disabled: true }, Validators.required),
+    userRole: new FormControl(
+      { value: 'admin', disabled: true },
+      Validators.required
+    ),
     organizationName: new FormControl('', Validators.required),
     department: new FormControl('', Validators.required),
     zipcode: new FormControl('', Validators.required),
@@ -60,16 +63,16 @@ export class ProfileComponent implements OnInit {
   constructor(
     public userInfo: UserInfoService,
     private http: HttpClient,
-    private _snackBar: MatSnackBar,
-  ) { }
+    private _snackBar: MatSnackBar
+  ) {}
 
   ngOnInit() {
     this.http.get(`${environment.apiBaseUrl}/user`).subscribe(
       (data) => {
         const systemProfile: SystemProfile = data as SystemProfile;
         this.hasProfile = !!systemProfile;
-        this.hasOrganization = !!systemProfile.organization;
-        if (systemProfile.organization) {
+        if (systemProfile?.organization) {
+          this.hasOrganization = true;
           this.organizationForm.setValue({
             organizationType: systemProfile?.organization?.type ?? null,
             userRole: systemProfile?.role ?? 'admin',
@@ -81,17 +84,19 @@ export class ProfileComponent implements OnInit {
             bankName: systemProfile?.organization?.bankName ?? null,
             branchName: systemProfile?.organization?.branchName ?? null,
             bankAccountType: systemProfile?.organization?.accountType ?? null,
-            bankAccountNumber: systemProfile?.organization?.accountNumber ?? null,
+            bankAccountNumber:
+              systemProfile?.organization?.accountNumber ?? null,
             licenseNumber: systemProfile?.organization?.licenses ?? null,
           });
         }
       },
-      _error => this._snackBar.open('Failed to fetch data!', 'Close', {
-        horizontalPosition: 'end',
-        verticalPosition: 'top',
-        duration: 5000,
-        panelClass: 'notify-failed'
-      })
+      (_error) =>
+        this._snackBar.open('Failed to fetch data!', 'Close', {
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          duration: 5000,
+          panelClass: 'notify-failed',
+        })
     );
   }
 
@@ -101,29 +106,80 @@ export class ProfileComponent implements OnInit {
 
   onSubmitOrganizationForm() {
     if (!this.hasProfile) {
-      console.log('create user, create organization');
+      this.http
+        .post(
+          `${environment.apiBaseUrl}/organization/user`,
+          this.organizationForm.value
+        )
+        .subscribe({
+          next: (_data) => {
+            this._snackBar.open('Successfully created!', 'Close', {
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              duration: 5000,
+              panelClass: 'notify-success',
+            });
+            this.hasProfile = true;
+            this.hasOrganization = true;
+          },
+          error: (_error) =>
+            this._snackBar.open('Failed to create data!', 'Close', {
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              duration: 5000,
+              panelClass: 'notify-failed',
+            }),
+        });
     } else if (!this.hasOrganization) {
-      console.log('create organization');
-      this.http.post(`${environment.apiBaseUrl}/organization`, this.organizationForm.value).subscribe(
-        _data => {
-          this._snackBar.open('Successfully created!', 'Close', {
-            horizontalPosition: 'end',
-            verticalPosition: 'top',
-            duration: 5000,
-            panelClass: 'notify-success'
-          });
-          this.hasProfile = true;
-          this.hasOrganization = true;
-        },
-        _error => this._snackBar.open('Failed to create data!', 'Close', {
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          duration: 5000,
-          panelClass: 'notify-failed'
-        })
-      );
+      this.http
+        .post(
+          `${environment.apiBaseUrl}/organization`,
+          this.organizationForm.value
+        )
+        .subscribe({
+          next: (_data) => {
+            this._snackBar.open('Successfully created!', 'Close', {
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              duration: 5000,
+              panelClass: 'notify-success',
+            });
+            this.hasProfile = true;
+            this.hasOrganization = true;
+          },
+          error: (_error) =>
+            this._snackBar.open('Failed to create data!', 'Close', {
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              duration: 5000,
+              panelClass: 'notify-failed',
+            }),
+        });
     } else {
-      console.log('edit organization');
+      this.http
+        .put(
+          `${environment.apiBaseUrl}/organization`,
+          this.organizationForm.value
+        )
+        .subscribe({
+          next: (_data) => {
+            this._snackBar.open('Successfully updated!', 'Close', {
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              duration: 5000,
+              panelClass: 'notify-success',
+            });
+            this.hasProfile = true;
+            this.hasOrganization = true;
+          },
+          error: (_error) =>
+            this._snackBar.open('Failed to update data!', 'Close', {
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              duration: 5000,
+              panelClass: 'notify-failed',
+            }),
+        });
     }
   }
 }
