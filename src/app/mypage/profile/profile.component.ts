@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { MSG_CREATE_FAILED, MSG_CREATE_SUCCESS, MSG_UPDATE_FAILED, MSG_UPDATE_SUCCESS } from 'src/app/helper/notificationMessages';
 import { UserInfoService } from 'src/app/providers/user-info.service';
 import { environment } from 'src/environments/environment';
 
@@ -64,7 +64,6 @@ export class ProfileComponent implements OnInit {
   constructor(
     public userInfo: UserInfoService,
     private http: HttpClient,
-    private router: Router,
     private _snackBar: MatSnackBar
   ) {}
 
@@ -92,10 +91,6 @@ export class ProfileComponent implements OnInit {
     });
   }
 
-  goTo(target: string) {
-    this.router.navigate([target]);
-  }
-
   get organizationFormControl() {
     return this.organizationForm.controls;
   }
@@ -109,7 +104,7 @@ export class ProfileComponent implements OnInit {
         )
         .subscribe({
           next: (_data) => {
-            this._snackBar.open('Successfully created!', 'Close', {
+            this._snackBar.open(MSG_CREATE_SUCCESS, 'Close', {
               horizontalPosition: 'end',
               verticalPosition: 'top',
               duration: 5000,
@@ -119,7 +114,7 @@ export class ProfileComponent implements OnInit {
             this.hasOrganization = true;
           },
           error: (_error) =>
-            this._snackBar.open('Failed to create data!', 'Close', {
+            this._snackBar.open(MSG_CREATE_FAILED, 'Close', {
               horizontalPosition: 'end',
               verticalPosition: 'top',
               duration: 5000,
@@ -134,7 +129,7 @@ export class ProfileComponent implements OnInit {
         )
         .subscribe({
           next: (_data) => {
-            this._snackBar.open('Successfully created!', 'Close', {
+            this._snackBar.open(MSG_CREATE_SUCCESS, 'Close', {
               horizontalPosition: 'end',
               verticalPosition: 'top',
               duration: 5000,
@@ -144,7 +139,7 @@ export class ProfileComponent implements OnInit {
             this.hasOrganization = true;
           },
           error: (_error) =>
-            this._snackBar.open('Failed to create data!', 'Close', {
+            this._snackBar.open(MSG_CREATE_FAILED, 'Close', {
               horizontalPosition: 'end',
               verticalPosition: 'top',
               duration: 5000,
@@ -159,7 +154,7 @@ export class ProfileComponent implements OnInit {
         )
         .subscribe({
           next: (_data) => {
-            this._snackBar.open('Successfully updated!', 'Close', {
+            this._snackBar.open(MSG_UPDATE_SUCCESS, 'Close', {
               horizontalPosition: 'end',
               verticalPosition: 'top',
               duration: 5000,
@@ -169,7 +164,7 @@ export class ProfileComponent implements OnInit {
             this.hasOrganization = true;
           },
           error: (_error) =>
-            this._snackBar.open('Failed to update data!', 'Close', {
+            this._snackBar.open(MSG_UPDATE_FAILED, 'Close', {
               horizontalPosition: 'end',
               verticalPosition: 'top',
               duration: 5000,

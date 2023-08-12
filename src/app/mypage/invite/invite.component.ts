@@ -1,6 +1,9 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MSG_CANNOT_INVITE, MSG_INVITE_FAILED, MSG_INVITE_SUCCESS, MSG_SERVER_ERROR } from 'src/app/helper/notificationMessages';
+import { environment } from 'src/environments/environment';
 
 export interface TableRow {
   email: string;
@@ -27,11 +30,10 @@ export class InviteComponent {
     email: new FormControl('', [Validators.required, Validators.email]),
   });
 
-  constructor(private router: Router) {}
-
-  goTo(target: string) {
-    this.router.navigate([target]);
-  }
+  constructor(
+    private http: HttpClient,
+    private _snackBar: MatSnackBar
+  ) { }
 
   get inviteFormControl() {
     return this.inviteForm.controls;
@@ -39,5 +41,53 @@ export class InviteComponent {
 
   onSubmitInviteForm() {
     console.log(this.inviteForm.value);
+
+    this.http
+      .post(
+        `${environment.apiBaseUrl}/user/can-invite`,
+        this.inviteForm.value
+      )
+      .subscribe({
+        next: (data) => {
+          if (data) {
+            this.http
+              .post(
+                `${environment.apiBaseUrl}/invite`,
+                this.inviteForm.value
+              )
+              .subscribe({
+                next: (_data) => {
+                  this._snackBar.open(MSG_INVITE_SUCCESS, 'Close', {
+                    horizontalPosition: 'end',
+                    verticalPosition: 'top',
+                    duration: 5000,
+                    panelClass: 'notify-success',
+                  });
+                },
+                error: (_error) =>
+                  this._snackBar.open(MSG_INVITE_FAILED, 'Close', {
+                    horizontalPosition: 'end',
+                    verticalPosition: 'top',
+                    duration: 5000,
+                    panelClass: 'notify-failed',
+                  }),
+              });
+          } else {
+            this._snackBar.open(MSG_CANNOT_INVITE, 'Close', {
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              duration: 5000,
+              panelClass: 'notify-failed',
+            });
+          }
+        },
+        error: (_error) =>
+          this._snackBar.open(MSG_SERVER_ERROR, 'Close', {
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            duration: 5000,
+            panelClass: 'notify-failed',
+          }),
+      });
   }
 }
