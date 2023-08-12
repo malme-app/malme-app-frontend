@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 export interface TableRow {
   paymentDay: string;
@@ -28,4 +29,10 @@ export class InvoiceComponent {
     method: '口座振替',
     amount: '50,000円',
   });
+
+  constructor(private router: Router) {}
+
+  goTo(target: string) {
+    this.router.navigate([target]);
+  }
 }

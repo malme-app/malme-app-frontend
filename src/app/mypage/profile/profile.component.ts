@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { UserInfoService } from 'src/app/providers/user-info.service';
 import { environment } from 'src/environments/environment';
 
@@ -63,41 +64,36 @@ export class ProfileComponent implements OnInit {
   constructor(
     public userInfo: UserInfoService,
     private http: HttpClient,
+    private router: Router,
     private _snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
-    this.http.get(`${environment.apiBaseUrl}/user`).subscribe(
-      (data) => {
-        const systemProfile: SystemProfile = data as SystemProfile;
-        this.hasProfile = !!systemProfile;
-        if (systemProfile?.organization) {
-          this.hasOrganization = true;
-          this.organizationForm.setValue({
-            organizationType: systemProfile?.organization?.type ?? null,
-            userRole: systemProfile?.role ?? 'admin',
-            organizationName: systemProfile?.organization?.name ?? null,
-            department: systemProfile?.organization?.divisionName ?? null,
-            zipcode: systemProfile?.organization?.zipCode ?? null,
-            address: systemProfile?.organization?.address ?? null,
-            tel: systemProfile?.organization?.tel ?? null,
-            bankName: systemProfile?.organization?.bankName ?? null,
-            branchName: systemProfile?.organization?.branchName ?? null,
-            bankAccountType: systemProfile?.organization?.accountType ?? null,
-            bankAccountNumber:
-              systemProfile?.organization?.accountNumber ?? null,
-            licenseNumber: systemProfile?.organization?.licenses ?? null,
-          });
-        }
-      },
-      (_error) =>
-        this._snackBar.open('Failed to fetch data!', 'Close', {
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          duration: 5000,
-          panelClass: 'notify-failed',
-        })
-    );
+    this.http.get(`${environment.apiBaseUrl}/user`).subscribe((data) => {
+      const systemProfile: SystemProfile = data as SystemProfile;
+      this.hasProfile = !!systemProfile;
+      if (systemProfile?.organization) {
+        this.hasOrganization = true;
+        this.organizationForm.setValue({
+          organizationType: systemProfile?.organization?.type ?? null,
+          userRole: systemProfile?.role ?? 'admin',
+          organizationName: systemProfile?.organization?.name ?? null,
+          department: systemProfile?.organization?.divisionName ?? null,
+          zipcode: systemProfile?.organization?.zipCode ?? null,
+          address: systemProfile?.organization?.address ?? null,
+          tel: systemProfile?.organization?.tel ?? null,
+          bankName: systemProfile?.organization?.bankName ?? null,
+          branchName: systemProfile?.organization?.branchName ?? null,
+          bankAccountType: systemProfile?.organization?.accountType ?? null,
+          bankAccountNumber: systemProfile?.organization?.accountNumber ?? null,
+          licenseNumber: systemProfile?.organization?.licenses ?? null,
+        });
+      }
+    });
+  }
+
+  goTo(target: string) {
+    this.router.navigate([target]);
   }
 
   get organizationFormControl() {

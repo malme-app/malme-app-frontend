@@ -7,9 +7,11 @@ import { InvoiceComponent } from './mypage/invoice/invoice.component';
 import { PlanComponent } from './mypage/plan/plan.component';
 import { InviteComponent } from './mypage/invite/invite.component';
 import { AuthGuard } from './app.authguard';
+import { InvitationComponent } from './invitation/invitation.component';
 
 const routes: Routes = [
   { path: '', component: TopComponent },
+  { path: 'invitation', component: InvitationComponent },
   { path: 'mypage', component: DashboardComponent, canActivate: [AuthGuard] },
   {
     path: 'mypage/profile',

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 export interface TableRow {
   email: string;
@@ -25,6 +26,12 @@ export class InviteComponent {
   inviteForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
   });
+
+  constructor(private router: Router) {}
+
+  goTo(target: string) {
+    this.router.navigate([target]);
+  }
 
   get inviteFormControl() {
     return this.inviteForm.controls;

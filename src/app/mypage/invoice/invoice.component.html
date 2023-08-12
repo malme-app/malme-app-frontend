@@ -5,7 +5,17 @@
             alt="StructuralEngine"
             class="logo-structuralengine"
         />
-        <h1 class="page-title">ご請求情報</h1>
+        <div class="page-header">
+            <h1 class="page-title">ご請求情報</h1>
+            <button
+                mat-icon-button
+                aria-label="ダッシュボード"
+                class="white"
+                (click)="goTo('/mypage')"
+            >
+                <mat-icon>reply</mat-icon>
+            </button>
+        </div>
         <mat-card>
             <mat-card-content>
                 <div class="plan-info border-1 pa-15 space-between">
