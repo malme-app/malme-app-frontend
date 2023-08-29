@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MSG_CANNOT_INVITE, MSG_INVITE_FAILED, MSG_INVITE_SUCCESS, MSG_SERVER_ERROR } from 'src/app/helper/notificationMessages';
+import { MSG_INVITE_FAILED, MSG_INVITE_SUCCESS } from 'src/app/helper/notificationMessages';
 import { environment } from 'src/environments/environment';
 
 export interface TableRow {
