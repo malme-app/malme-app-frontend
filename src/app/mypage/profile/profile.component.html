@@ -96,7 +96,7 @@
                                     <mat-label>アカウント種類</mat-label>
                                     <mat-select
                                         required
-                                        formControlName="organizationType"
+                                        formControlName="type"
                                     >
                                         <mat-option [value]="0"
                                             >個人</mat-option
@@ -119,11 +119,11 @@
                                     <input
                                         matInput
                                         type="text"
-                                        formControlName="organizationName"
+                                        formControlName="name"
                                     />
                                     <mat-error
                                         *ngIf="
-                                            organizationFormControl.organizationName.hasError(
+                                            organizationFormControl.name.hasError(
                                                 'required'
                                             )
                                         "
@@ -207,12 +207,9 @@
                                         required
                                         formControlName="userRole"
                                     >
-                                        <mat-option value="admin"
-                                            >管理者</mat-option
-                                        >
-                                        <mat-option value="member"
-                                            >メンバー</mat-option
-                                        >
+                                        <mat-option value="SuperAdmin">最高管理者</mat-option>
+                                        <mat-option value="Admin">管理者</mat-option>
+                                        <mat-option value="">メンバー</mat-option>
                                     </mat-select>
                                 </mat-form-field>
                                 <mat-form-field>
@@ -237,11 +234,11 @@
                                     <input
                                         matInput
                                         type="text"
-                                        formControlName="branchName"
+                                        formControlName="bankBranchName"
                                     />
                                     <mat-error
                                         *ngIf="
-                                            organizationFormControl.branchName.hasError(
+                                            organizationFormControl.bankBranchName.hasError(
                                                 'required'
                                             )
                                         "
@@ -285,20 +282,12 @@
                                 </mat-form-field>
                                 <mat-form-field>
                                     <mat-label>利用可能ライセンス数</mat-label>
-                                    <mat-select
-                                        required
-                                        formControlName="licenseNumber"
-                                    >
-                                        <mat-option
-                                            *ngFor="
-                                                let item of [].constructor(20);
-                                                let i = index
-                                            "
-                                            [value]="i + 1"
-                                        >
-                                            {{ i + 1 }}
-                                        </mat-option>
-                                    </mat-select>
+                                    <input
+                                        matInput
+                                        type="text"
+                                        readonly
+                                        formControlName="licenses"
+                                    />
                                 </mat-form-field>
                             </div>
                         </div>
