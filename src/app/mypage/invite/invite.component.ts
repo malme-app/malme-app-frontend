@@ -40,49 +40,22 @@ export class InviteComponent {
   }
 
   onSubmitInviteForm() {
-    console.log(this.inviteForm.value);
-
     this.http
       .post(
-        `${environment.apiBaseUrl}/user/can-invite`,
+        `${environment.apiBaseUrl}/invite`,
         this.inviteForm.value
       )
       .subscribe({
-        next: (data) => {
-          if (data) {
-            this.http
-              .post(
-                `${environment.apiBaseUrl}/invite`,
-                this.inviteForm.value
-              )
-              .subscribe({
-                next: (_data) => {
-                  this._snackBar.open(MSG_INVITE_SUCCESS, 'Close', {
-                    horizontalPosition: 'end',
-                    verticalPosition: 'top',
-                    duration: 5000,
-                    panelClass: 'notify-success',
-                  });
-                },
-                error: (_error) =>
-                  this._snackBar.open(MSG_INVITE_FAILED, 'Close', {
-                    horizontalPosition: 'end',
-                    verticalPosition: 'top',
-                    duration: 5000,
-                    panelClass: 'notify-failed',
-                  }),
-              });
-          } else {
-            this._snackBar.open(MSG_CANNOT_INVITE, 'Close', {
-              horizontalPosition: 'end',
-              verticalPosition: 'top',
-              duration: 5000,
-              panelClass: 'notify-failed',
-            });
-          }
+        next: (_data) => {
+          this._snackBar.open(MSG_INVITE_SUCCESS, 'Close', {
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            duration: 5000,
+            panelClass: 'notify-success',
+          });
         },
         error: (_error) =>
-          this._snackBar.open(MSG_SERVER_ERROR, 'Close', {
+          this._snackBar.open(MSG_INVITE_FAILED, 'Close', {
             horizontalPosition: 'end',
             verticalPosition: 'top',
             duration: 5000,
