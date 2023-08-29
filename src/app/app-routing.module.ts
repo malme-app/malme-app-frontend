@@ -11,7 +11,6 @@ import { InvitationComponent } from './invitation/invitation.component';
 
 const routes: Routes = [
   { path: '', component: TopComponent },
-  { path: 'invitation', component: InvitationComponent },
   { path: 'mypage', component: DashboardComponent, canActivate: [AuthGuard] },
   {
     path: 'mypage/profile',
@@ -28,6 +27,10 @@ const routes: Routes = [
     path: 'mypage/invite',
     component: InviteComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: 'invite/accept/:slug',
+    component: InvitationComponent,
   },
 ];
 

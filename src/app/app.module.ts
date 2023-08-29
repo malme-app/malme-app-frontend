@@ -26,6 +26,7 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { InvitationComponent } from './invitation/invitation.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
@@ -74,6 +75,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     MatCardModule,
     MatTableModule,
     MatSnackBarModule,
+    MatProgressSpinnerModule,
   ],
   providers: [
     AuthGuard,
