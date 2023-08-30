@@ -81,7 +81,6 @@ export class InviteComponent implements OnInit {
       .get(`${environment.apiBaseUrl}/user/organization`)
       .subscribe({
         next: (data: any) => {
-          console.log('data: ', data);
           const dataSource: TableRow[] = [];
           data.userList.forEach((element: any) => {
             dataSource.push({
@@ -100,7 +99,6 @@ export class InviteComponent implements OnInit {
             })
           });
           this.dataSource = dataSource;
-          console.log('datasource: ', this.dataSource);
         },
         error: (_error) =>
           this._snackBar.open(MSG_SERVER_ERROR, 'Close', {
