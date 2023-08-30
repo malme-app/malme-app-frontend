@@ -40,7 +40,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.userInfo.syncSystemProfile().add(() => {
-      if (this.userInfo.systemProfile) {
+      if (this.userInfo.systemProfile && this.userInfo.systemProfile.organization) {
         this.hasOrganization = true;
         this.organizationForm.setValue({
           type: this.userInfo.systemProfile?.organization?.type ?? null,
