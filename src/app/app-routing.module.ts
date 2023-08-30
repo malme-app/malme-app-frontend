@@ -21,16 +21,33 @@ const routes: Routes = [
     path: 'mypage/invoice',
     component: InvoiceComponent,
     canActivate: [AuthGuard],
+    data: {
+      role: 'Admin'
+    },
   },
-  { path: 'mypage/plan', component: PlanComponent, canActivate: [AuthGuard] },
+  {
+    path: 'mypage/plan',
+    component: PlanComponent,
+    canActivate: [AuthGuard],
+    data: {
+      role: 'Admin'
+    },
+  },
   {
     path: 'mypage/invite',
     component: InviteComponent,
     canActivate: [AuthGuard],
+    data: {
+      role: 'Admin'
+    },
   },
   {
     path: 'invite/accept/:slug',
     component: InvitationComponent,
+  },
+  {
+    path: '**',
+    component: TopComponent,
   },
 ];
 
@@ -38,4 +55,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
