@@ -1,68 +1,43 @@
 <div class="mypage-container">
     <div class="mypage-inner">
-        <img
-            src="../../../assets/images/logo_white.png"
-            alt="StructuralEngine"
-            class="logo-structuralengine"
-        />
+        <img src="../../../assets/images/logo_white.png" alt="StructuralEngine" class="logo-structuralengine" />
         <div class="page-header">
             <h1 class="page-title">チームに招待する</h1>
-            <button
-                mat-icon-button
-                aria-label="ダッシュボード"
-                class="white"
-                routerLink="/mypage"
-            >
+            <button mat-icon-button aria-label="ダッシュボード" class="white" routerLink="/mypage">
                 <mat-icon>reply</mat-icon>
             </button>
         </div>
         <mat-card>
             <mat-card-content>
                 <div class="border-1 pa-15">
-                    <form
-                        [formGroup]="inviteForm"
-                        (ngSubmit)="onSubmitInviteForm()"
-                    >
+                    <form [formGroup]="inviteForm" (ngSubmit)="onSubmitInviteForm()">
                         <div>
                             <div>
                                 <mat-form-field>
                                     <mat-label>メールアドレス</mat-label>
-                                    <input
-                                        matInput
-                                        type="email"
-                                        formControlName="email"
-                                    />
-                                    <mat-error
-                                        *ngIf="
+                                    <input matInput type="email" formControlName="email" />
+                                    <mat-error *ngIf="
                                             inviteFormControl.email.hasError(
                                                 'required'
                                             )
-                                        "
-                                    >
+                                        ">
                                         このフィールドを入力してください。
                                     </mat-error>
-                                    <mat-error
-                                        *ngIf="
+                                    <mat-error *ngIf="
                                             !inviteFormControl.email.hasError(
                                                 'required'
                                             ) &&
                                             inviteFormControl.email.hasError(
                                                 'email'
                                             )
-                                        "
-                                    >
+                                        ">
                                         メール形式が正しくありません。
                                     </mat-error>
                                 </mat-form-field>
                             </div>
                             <div>
-                                <button
-                                    mat-raised-button
-                                    color="primary"
-                                    type="submit"
-                                    [disabled]="!inviteForm.valid"
-                                    class="btn-1"
-                                >
+                                <button mat-raised-button color="primary" type="submit" [disabled]="!inviteForm.valid"
+                                    class="btn-1">
                                     招待を送る
                                 </button>
                             </div>
@@ -104,17 +79,23 @@
                                     その他
                                 </th>
                                 <td mat-cell *matCellDef="let element">
-                                    {{ element.action }}
+                                    <button *ngIf="element.action=='管理権限を委託する'" button mat-button color="primary"
+                                        (click)="updateRole(element.email)">
+                                        管理権限を委託する
+                                    </button>
+                                    <button
+                                        *ngIf="element.action=='管理権限を削除する' && element.email!=this.userInfo.keycloakProfile?.email"
+                                        button mat-button color="warn" (click)="updateRole(element.email)">
+                                        管理権限を削除する
+                                    </button>
+                                    <button *ngIf="element.action=='再招待する'" button mat-button color="primary"
+                                        (click)="invite(element.email)">
+                                        再招待する<mat-icon>mail</mat-icon>
+                                    </button>
                                 </td>
                             </ng-container>
-                            <tr
-                                mat-header-row
-                                *matHeaderRowDef="displayedColumns"
-                            ></tr>
-                            <tr
-                                mat-row
-                                *matRowDef="let row; columns: displayedColumns"
-                            ></tr>
+                            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
                         </table>
                     </div>
                 </div>
