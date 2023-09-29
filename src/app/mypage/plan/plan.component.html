@@ -1,112 +1,35 @@
 <div class="mypage-container">
     <div class="mypage-inner">
-        <img
-            src="../../../assets/images/logo_white.png"
-            alt="StructuralEngine"
-            class="logo-structuralengine"
-        />
+        <img src="../../../assets/images/logo_white.png" alt="StructuralEngine" class="logo-structuralengine" />
         <div class="page-header">
             <h1 class="page-title">プラン変更</h1>
-            <button
-                mat-button
-                aria-label="ダッシュボード"
-                class="white f-16"
-                routerLink="/mypage"
-            >
+            <button mat-button aria-label="ダッシュボード" class="white f-16" routerLink="/mypage">
                 <b>ダッシュボードへ戻る</b>
                 <mat-icon>reply</mat-icon>
             </button>
         </div>
-        <p class="current-plan">現在の購入プラン：トライアルプラン</p>
+        <p class="current-plan">現在の購入プラン：{{lastSale?lastSale?.plan?.name:'なし'}}</p>
         <div class="plans">
             <div class="plans-inner">
-                <mat-card>
+                <mat-card *ngFor="let plan of plans; index as i">
                     <mat-card-header>
-                        <mat-card-title>プロ版</mat-card-title>
-                        <mat-card-subtitle
-                            >中小企業向け法人プランです。</mat-card-subtitle
-                        >
+                        <mat-card-title>{{plan.name}}</mat-card-title>
+                        <mat-card-subtitle>{{plan.description}}</mat-card-subtitle>
                     </mat-card-header>
                     <mat-card-actions>
-                        <button mat-raised-button color="primary">
+                        <button mat-raised-button color="primary" (click)="applyForPlan(plan.id)">
                             申込む
                         </button>
                     </mat-card-actions>
                     <mat-card-content>
                         <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
+                            <mat-icon>check</mat-icon>{{plan.product.name}}
                         </p>
                         <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
+                            <mat-icon>check</mat-icon>{{plan.option.name}}
                         </p>
                         <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
-                        </p>
-                        <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
-                        </p>
-                        <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
-                        </p>
-                    </mat-card-content>
-                </mat-card>
-                <mat-card>
-                    <mat-card-header>
-                        <mat-card-title>エンタープライズ版</mat-card-title>
-                        <mat-card-subtitle
-                            >大企業向け法人プランです。</mat-card-subtitle
-                        >
-                    </mat-card-header>
-                    <mat-card-actions>
-                        <button mat-raised-button color="primary">
-                            申込む
-                        </button>
-                    </mat-card-actions>
-                    <mat-card-content>
-                        <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
-                        </p>
-                        <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
-                        </p>
-                        <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
-                        </p>
-                        <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
-                        </p>
-                        <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
-                        </p>
-                    </mat-card-content>
-                </mat-card>
-                <mat-card>
-                    <mat-card-header>
-                        <mat-card-title>アカデミックプラン</mat-card-title>
-                        <mat-card-subtitle
-                            >学生や研究期間向けのプランです。</mat-card-subtitle
-                        >
-                    </mat-card-header>
-                    <mat-card-actions>
-                        <button mat-raised-button color="primary">
-                            申込む
-                        </button>
-                    </mat-card-actions>
-                    <mat-card-content>
-                        <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
-                        </p>
-                        <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
-                        </p>
-                        <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
-                        </p>
-                        <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
-                        </p>
-                        <p>
-                            <mat-icon>check</mat-icon>1日あたり1,000,000ポイント
+                            <mat-icon>check</mat-icon>{{plan.price}}
                         </p>
                     </mat-card-content>
                 </mat-card>
