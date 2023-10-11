@@ -3,7 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MSG_CREATE_FAILED, MSG_CREATE_SUCCESS, MSG_UPDATE_FAILED, MSG_UPDATE_SUCCESS } from 'src/app/helper/notificationMessages';
+import {
+  MSG_CREATE_FAILED,
+  MSG_CREATE_SUCCESS,
+  MSG_UPDATE_FAILED,
+  MSG_UPDATE_SUCCESS,
+} from 'src/app/helper/notificationMessages';
 import { UserInfoService } from 'src/app/providers/user-info.service';
 import { environment } from 'src/environments/environment';
 
@@ -14,6 +19,11 @@ import { environment } from 'src/environments/environment';
 })
 export class ProfileComponent implements OnInit {
   hasOrganization = false;
+  accountForm = new FormGroup({
+    email: new FormControl('', Validators.required),
+    firstName: new FormControl('', Validators.required),
+    lastName: new FormControl('', Validators.required),
+  });
   organizationForm = new FormGroup({
     userRole: new FormControl(
       { value: 'SuperAdmin', disabled: true },
@@ -36,32 +46,59 @@ export class ProfileComponent implements OnInit {
     public userInfo: UserInfoService,
     private http: HttpClient,
     private _snackBar: MatSnackBar
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.userInfo.syncSystemProfile().add(() => {
-      if (this.userInfo.systemProfile && this.userInfo.systemProfile.organization) {
+      if (this.userInfo.keycloakProfile) {
+        this.accountForm.setValue({
+          email: this.userInfo.keycloakProfile.email,
+          firstName: this.userInfo.keycloakProfile.firstName,
+          lastName: this.userInfo.keycloakProfile.lastName,
+        });
+      }
+      if (
+        this.userInfo.systemProfile &&
+        this.userInfo.systemProfile.organization
+      ) {
         this.hasOrganization = true;
         this.organizationForm.setValue({
           type: this.userInfo.systemProfile?.organization?.type ?? null,
-          userRole: this.userInfo.systemProfile?.roles.includes('SuperAdmin') ? 'SuperAdmin' : (this.userInfo.systemProfile?.roles.includes('Admin') ? 'Admin' : ''),
+          userRole: this.userInfo.systemProfile?.roles.includes('SuperAdmin')
+            ? 'SuperAdmin'
+            : this.userInfo.systemProfile?.roles.includes('Admin')
+            ? 'Admin'
+            : '',
           name: this.userInfo.systemProfile?.organization?.name ?? null,
-          department: this.userInfo.systemProfile?.organization?.department ?? null,
+          department:
+            this.userInfo.systemProfile?.organization?.department ?? null,
           zipcode: this.userInfo.systemProfile?.organization?.zipcode ?? null,
           address: this.userInfo.systemProfile?.organization?.address ?? null,
           tel: this.userInfo.systemProfile?.organization?.tel ?? null,
           bankName: this.userInfo.systemProfile?.organization?.bankName ?? null,
-          bankBranchName: this.userInfo.systemProfile?.organization?.bankBranchName ?? null,
-          bankAccountType: this.userInfo.systemProfile?.organization?.bankAccountType ?? null,
-          bankAccountNumber: this.userInfo.systemProfile?.organization?.bankAccountNumber ?? null,
+          bankBranchName:
+            this.userInfo.systemProfile?.organization?.bankBranchName ?? null,
+          bankAccountType:
+            this.userInfo.systemProfile?.organization?.bankAccountType ?? null,
+          bankAccountNumber:
+            this.userInfo.systemProfile?.organization?.bankAccountNumber ??
+            null,
           licenses: this.userInfo.systemProfile?.organization?.licenses ?? 0,
         });
       }
     });
   }
 
+  get accountFormControl() {
+    return this.accountForm.controls;
+  }
+
   get organizationFormControl() {
     return this.organizationForm.controls;
+  }
+
+  onSubmitAccountForm() {
+    console.log("submit");
   }
 
   onSubmitOrganizationForm() {
