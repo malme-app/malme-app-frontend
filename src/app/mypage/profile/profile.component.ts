@@ -98,7 +98,37 @@ export class ProfileComponent implements OnInit {
   }
 
   onSubmitAccountForm() {
-    console.log("submit");
+    this.http
+      .put(
+        `${environment.apiBaseUrl}/user`,
+        this.accountForm.value
+      )
+      .subscribe({
+        next: (data) => {
+          if (data == 204) {
+            this._snackBar.open(MSG_UPDATE_SUCCESS, 'Close', {
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              duration: 5000,
+              panelClass: 'notify-success',
+            });
+          } else {
+            this._snackBar.open(MSG_UPDATE_FAILED, 'Close', {
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              duration: 5000,
+              panelClass: 'notify-failed',
+            });
+          }
+        },
+        error: (_error) =>
+          this._snackBar.open(MSG_UPDATE_FAILED, 'Close', {
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            duration: 5000,
+            panelClass: 'notify-failed',
+          }),
+      });
   }
 
   onSubmitOrganizationForm() {
