@@ -43,7 +43,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
       enableBearerInterceptor: true,
       bearerPrefix: 'Bearer',
       bearerExcludedUrls: [],
-    });
+    }).catch(error => window.alert("ログインに失敗しました"));
 }
 
 @NgModule({
