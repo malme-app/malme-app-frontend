@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { KeycloakService } from 'keycloak-angular';
 import { UserInfoService } from './providers/user-info.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,8 @@ export class AppComponent {
   constructor(
     private router: Router,
     private readonly keycloak: KeycloakService,
-    public userInfo: UserInfoService
+    public userInfo: UserInfoService,
+
   ) {}
 
   login() {
@@ -22,7 +24,7 @@ export class AppComponent {
   }
 
   logout() {
-    this.keycloak.logout(window.origin);
+    this.keycloak.logout(environment.myURL);//(window.origin);
   }
 
   signup() {
