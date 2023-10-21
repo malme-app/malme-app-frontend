@@ -1,4 +1,9 @@
-import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MSG_FETCH_FAILED } from 'src/app/helper/notificationMessages';
+import { environment } from 'src/environments/environment';
 
 export interface TableRow {
   paymentDay: string;
@@ -13,7 +18,16 @@ export interface TableRow {
   templateUrl: './invoice.component.html',
   styleUrls: ['./invoice.component.scss'],
 })
-export class InvoiceComponent {
+export class InvoiceComponent implements OnInit {
+  currentPlan: any = {
+    name: '',
+    expirationStart: null,
+    expirationEnd: null,
+    paymentMethod: '',
+    contractTitle: '',
+    contractContent: '',
+    contractUrl: '',
+  };
   displayedColumns: string[] = [
     'paymentDay',
     'plan',
@@ -21,11 +35,67 @@ export class InvoiceComponent {
     'method',
     'amount',
   ];
-  dataSource: TableRow[] = [].constructor(10).fill({
-    paymentDay: '2023/4/1',
-    plan: 'エンタープライズ - 年額プラン',
-    period: '02月分',
-    method: '口座振替',
-    amount: '50,000円',
-  });
+  dataSource: TableRow[] = [];
+
+  constructor(
+    public dialog: MatDialog,
+    private http: HttpClient,
+    private _snackBar: MatSnackBar
+  ) {}
+
+  ngOnInit() {
+    this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.currentPlan = {
+            name: data.plan.name,
+            expirationStart:
+              data.expirationStart && new Date(data.expirationStart),
+            expirationEnd: data.expirationEnd && new Date(data.expirationEnd),
+            paymentMethod: data.paymentMethod?.name,
+            contractTitle: data.contract?.title,
+            contractContent: data.contract?.content,
+            contractUrl: data.contract?.url,
+          };
+        }
+      },
+      error: (_error) =>
+        this._snackBar.open(MSG_FETCH_FAILED, 'Close', {
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          duration: 5000,
+          panelClass: 'notify-failed',
+        }),
+    });
+    this.http.get(`${environment.apiBaseUrl}/sale/list`).subscribe({
+      next: (data: any) => {
+        const paymentHistories: any[] = [];
+        data.forEach((sale: any) => {
+          paymentHistories.push(
+            ...sale.paymentHistories.map((e: any) => {
+              return {
+                payDate: new Date(e.payDate),
+                plan: sale.plan.name,
+                closingDate: new Date(e.closingMonth),
+                paymentMethod: sale.paymentMethod.name,
+                amount: e.price,
+              };
+            })
+          );
+        });
+        this.dataSource = paymentHistories;
+      },
+      error: (_error) =>
+        this._snackBar.open(MSG_FETCH_FAILED, 'Close', {
+          horizontalPosition: 'end',
+          verticalPosition: 'top',
+          duration: 5000,
+          panelClass: 'notify-failed',
+        }),
+    });
+  }
+
+  openDialog(templateRef: any) {
+    const dialogRef = this.dialog.open(templateRef, {});
+  }
 }

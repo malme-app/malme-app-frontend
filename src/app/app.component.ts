@@ -15,8 +15,7 @@ export class AppComponent {
   constructor(
     private router: Router,
     private readonly keycloak: KeycloakService,
-    public userInfo: UserInfoService,
-
+    public userInfo: UserInfoService
   ) {}
 
   login() {
@@ -24,7 +23,7 @@ export class AppComponent {
   }
 
   logout() {
-    this.keycloak.logout(environment.myURL);//(window.origin);
+    this.keycloak.logout(environment.myURL); //(window.origin);
   }
 
   signup() {

@@ -22,7 +22,7 @@ const routes: Routes = [
     component: InvoiceComponent,
     canActivate: [AuthGuard],
     data: {
-      role: 'Admin'
+      role: 'Admin',
     },
   },
   {
@@ -30,7 +30,7 @@ const routes: Routes = [
     component: PlanComponent,
     canActivate: [AuthGuard],
     data: {
-      role: 'Admin'
+      role: 'Admin',
     },
   },
   {
@@ -38,7 +38,7 @@ const routes: Routes = [
     component: InviteComponent,
     canActivate: [AuthGuard],
     data: {
-      role: 'Admin'
+      role: 'Admin',
     },
   },
   {
@@ -55,4 +55,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

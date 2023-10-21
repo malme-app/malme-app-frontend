@@ -9,23 +9,22 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./invitation.component.scss'],
 })
 export class InvitationComponent implements OnInit {
-
   routeParams: Params = {};
   inviteSuccess: boolean | null = null;
-  organizationName: string = '';
-  message: string = '';
+  organizationName = '';
+  message = '';
 
   constructor(
     private router: Router,
     private http: HttpClient,
     private activatedRoute: ActivatedRoute
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
       this.http
         .post(
-          `${environment.apiBaseUrl}/invite/accept/${params.get("slug")}`,
+          `${environment.apiBaseUrl}/invite/accept/${params.get('slug')}`,
           {}
         )
         .subscribe({
@@ -37,7 +36,8 @@ export class InvitationComponent implements OnInit {
             } else {
               // Handle when new user created in keycloak
               this.organizationName = data.organization.name;
-              this.message = 'また、メールでパスワードを送信しましたのでご確認ください。';
+              this.message =
+                'また、メールでパスワードを送信しましたのでご確認ください。';
             }
           },
           error: (error) => {
@@ -46,8 +46,8 @@ export class InvitationComponent implements OnInit {
             if (error.error.message == 'Already has an organization') {
               this.router.navigate(['/mypage']);
             }
-          }
-        })
+          },
+        });
     });
   }
 }

@@ -44,34 +44,39 @@ export class UserInfoService {
 
   constructor(
     private readonly keycloak: KeycloakService,
-    private http: HttpClient,
+    private http: HttpClient
   ) {
     this.initializeProfile();
   }
 
+  public setKeycloakProfile(param: any) {
+    this.keycloakProfile = { ...this.keycloakProfile, ...param };
+  }
+
   public syncSystemProfile() {
     // Synchronize Keycloak profile with one from backend API
-    return this.http
-      .post(`${environment.apiBaseUrl}/user`, {})
-      .subscribe({
-        next: (data) => this.systemProfile = data as SystemProfile,
-        error: (error) => console.error("ERROR: ", error)
-      });
+    return this.http.post(`${environment.apiBaseUrl}/user`, {}).subscribe({
+      next: (data) => (this.systemProfile = data as SystemProfile),
+      error: (error) => console.error('ERROR: ', error),
+    });
+  }
+
+  public async syncKeycloakProfile() {
+    const keycloakProfile = await this.keycloak.loadUserProfile();
+    this.setKeycloakProfile({
+      uid: keycloakProfile.id as string,
+      email: keycloakProfile.email as string,
+      username: keycloakProfile.username as string,
+      firstName: keycloakProfile.firstName as string,
+      lastName: keycloakProfile.lastName as string,
+    });
   }
 
   async initializeProfile() {
     const isLoggedIn = await this.keycloak.isLoggedIn();
     if (isLoggedIn) {
       this.syncSystemProfile();
-      // Load Keycloak profile
-      const keycloakProfile = await this.keycloak.loadUserProfile();
-      this.keycloakProfile = {
-        uid: keycloakProfile.id as string,
-        email: keycloakProfile.email as string,
-        username: keycloakProfile.username as string,
-        firstName: keycloakProfile.firstName as string,
-        lastName: keycloakProfile.lastName as string,
-      };
+      this.syncKeycloakProfile();
     } else {
       this.keycloakProfile = null;
     }

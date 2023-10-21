@@ -99,10 +99,7 @@ export class ProfileComponent implements OnInit {
 
   onSubmitAccountForm() {
     this.http
-      .put(
-        `${environment.apiBaseUrl}/user`,
-        this.accountForm.value
-      )
+      .put(`${environment.apiBaseUrl}/user`, this.accountForm.value)
       .subscribe({
         next: (data) => {
           if (data == 204) {
@@ -112,6 +109,7 @@ export class ProfileComponent implements OnInit {
               duration: 5000,
               panelClass: 'notify-success',
             });
+            this.userInfo.setKeycloakProfile(this.accountForm.value);
           } else {
             this._snackBar.open(MSG_UPDATE_FAILED, 'Close', {
               horizontalPosition: 'end',

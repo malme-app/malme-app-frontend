@@ -28,7 +28,6 @@ export class PlanComponent implements OnInit {
     this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
       next: (data: any) => {
         this.lastSale = data;
-        console.log('last sale: ', data);
       },
       error: (_error) =>
         this._snackBar.open(MSG_FETCH_FAILED, 'Close', {
@@ -44,7 +43,6 @@ export class PlanComponent implements OnInit {
     this.http.get(`${environment.apiBaseUrl}/plan`).subscribe({
       next: (data: any) => {
         this.plans = data;
-        console.log('plans: ', data);
       },
       error: (_error) =>
         this._snackBar.open(MSG_FETCH_FAILED, 'Close', {
@@ -60,7 +58,6 @@ export class PlanComponent implements OnInit {
     this.http.post(`${environment.apiBaseUrl}/sale`, { planId }).subscribe({
       next: (data: any) => {
         this.lastSale = data;
-        console.log('applied for: ', data);
         this._snackBar.open(MSG_APPLY_SUCCESS, 'Close', {
           horizontalPosition: 'end',
           verticalPosition: 'top',

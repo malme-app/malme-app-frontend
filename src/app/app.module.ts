@@ -19,6 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
 import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
 import { AuthGuard } from './app.authguard';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
@@ -26,24 +27,26 @@ import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InvitationComponent } from './invitation/invitation.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
-    keycloak.init({
-      config: {
-        url: 'https://auth.malme.app',
-        realm: 'structural-engine',
-        clientId: 'structural-engine',
-      },
-      initOptions: {
-        onLoad: 'check-sso',
-      },
-      enableBearerInterceptor: true,
-      bearerPrefix: 'Bearer',
-      bearerExcludedUrls: [],
-    }).catch(error => window.alert("ログインに失敗しました"));
+    keycloak
+      .init({
+        config: {
+          url: 'https://auth.malme.app',
+          realm: 'structural-engine',
+          clientId: 'structural-engine',
+        },
+        initOptions: {
+          onLoad: 'check-sso',
+        },
+        enableBearerInterceptor: true,
+        bearerPrefix: 'Bearer',
+        bearerExcludedUrls: [],
+      })
+      .catch((error) => window.alert('ログインに失敗しました'));
 }
 
 @NgModule({
@@ -76,6 +79,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     MatTableModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
+    MatDialogModule,
   ],
   providers: [
     AuthGuard,

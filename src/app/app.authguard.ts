@@ -14,7 +14,7 @@ export class AuthGuard extends KeycloakAuthGuard {
   constructor(
     protected override readonly router: Router,
     protected readonly keycloak: KeycloakService,
-    private readonly userInfo: UserInfoService,
+    private readonly userInfo: UserInfoService
   ) {
     super(router, keycloak);
   }

@@ -1,15 +1,23 @@
 <div class="container">
-    <div *ngIf="inviteSuccess===true" class="container-inner">
-        <p class="company-name">{{organizationName}}</p>
+    <div *ngIf="inviteSuccess === true" class="container-inner">
+        <p class="company-name">{{ organizationName }}</p>
         <div>
-            <img mat-card-image src="../../../assets/images/invited.png" alt="招待されました" />
+            <img
+                mat-card-image
+                src="../../../assets/images/invited.png"
+                alt="招待されました"
+            />
         </div>
-        <p class="description">StructuralEngineの組織に招待されました。<br />{{message}}</p>
+        <p class="description">
+            StructuralEngineの組織に招待されました。<br />{{ message }}
+        </p>
     </div>
-    <div *ngIf="inviteSuccess===false" class="container-inner">
-        <p class="description">エラーが発生しました。<br />管理者にお問い合わせください。</p>
+    <div *ngIf="inviteSuccess === false" class="container-inner">
+        <p class="description">
+            エラーが発生しました。<br />管理者にお問い合わせください。
+        </p>
     </div>
-    <div *ngIf="inviteSuccess===null" class="container-inner">
+    <div *ngIf="inviteSuccess === null" class="container-inner">
         <mat-spinner></mat-spinner>
     </div>
 </div>
