@@ -50,11 +50,11 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.userInfo.syncSystemProfile().add(() => {
-      if (this.userInfo.keycloakProfile) {
+      if (this.userInfo.keycloakProfile?.username) {
         this.accountForm.setValue({
           email: this.userInfo.keycloakProfile.email,
-          firstName: this.userInfo.keycloakProfile.firstName,
-          lastName: this.userInfo.keycloakProfile.lastName,
+          firstName: this.userInfo.keycloakProfile.firstName ?? '',
+          lastName: this.userInfo.keycloakProfile.lastName ?? '',
         });
       }
       if (
