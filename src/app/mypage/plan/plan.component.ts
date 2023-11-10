@@ -4,14 +4,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   MSG_APPLY_FAILED,
   MSG_APPLY_SUCCESS,
-  MSG_FETCH_FAILED,
+  MSG_FETCH_FAILED
 } from 'src/app/helper/notificationMessages';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-plan',
   templateUrl: './plan.component.html',
-  styleUrls: ['./plan.component.scss'],
+  styleUrls: ['./plan.component.scss']
 })
 export class PlanComponent implements OnInit {
   plans: any[] = [];
@@ -34,8 +34,8 @@ export class PlanComponent implements OnInit {
           horizontalPosition: 'end',
           verticalPosition: 'top',
           duration: 5000,
-          panelClass: 'notify-failed',
-        }),
+          panelClass: 'notify-failed'
+        })
     });
   }
 
@@ -49,8 +49,8 @@ export class PlanComponent implements OnInit {
           horizontalPosition: 'end',
           verticalPosition: 'top',
           duration: 5000,
-          panelClass: 'notify-failed',
-        }),
+          panelClass: 'notify-failed'
+        })
     });
   }
 
@@ -62,7 +62,7 @@ export class PlanComponent implements OnInit {
           horizontalPosition: 'end',
           verticalPosition: 'top',
           duration: 5000,
-          panelClass: 'notify-success',
+          panelClass: 'notify-success'
         });
       },
       error: (_error) =>
@@ -70,8 +70,8 @@ export class PlanComponent implements OnInit {
           horizontalPosition: 'end',
           verticalPosition: 'top',
           duration: 5000,
-          panelClass: 'notify-failed',
-        }),
+          panelClass: 'notify-failed'
+        })
     });
   }
 }

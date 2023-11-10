@@ -36,16 +36,13 @@ interface SystemProfile {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class UserInfoService {
   public keycloakProfile: KeycloakProfile | null = null;
   public systemProfile: SystemProfile | null = null;
 
-  constructor(
-    private readonly keycloak: KeycloakService,
-    private http: HttpClient
-  ) {
+  constructor(private readonly keycloak: KeycloakService, private http: HttpClient) {
     this.initializeProfile();
   }
 
@@ -57,7 +54,7 @@ export class UserInfoService {
     // Synchronize Keycloak profile with one from backend API
     return this.http.post(`${environment.apiBaseUrl}/user`, {}).subscribe({
       next: (data) => (this.systemProfile = data as SystemProfile),
-      error: (error) => console.error('ERROR: ', error),
+      error: (error) => console.error('ERROR: ', error)
     });
   }
 
@@ -68,7 +65,7 @@ export class UserInfoService {
       email: keycloakProfile.email as string,
       username: keycloakProfile.username as string,
       firstName: keycloakProfile.firstName as string,
-      lastName: keycloakProfile.lastName as string,
+      lastName: keycloakProfile.lastName as string
     });
   }
 
