@@ -37,14 +37,14 @@ function initializeKeycloak(keycloak: KeycloakService) {
         config: {
           url: 'https://auth.malme.app',
           realm: 'structural-engine',
-          clientId: 'structural-engine',
+          clientId: 'structural-engine'
         },
         initOptions: {
-          onLoad: 'check-sso',
+          onLoad: 'check-sso'
         },
         enableBearerInterceptor: true,
         bearerPrefix: 'Bearer',
-        bearerExcludedUrls: [],
+        bearerExcludedUrls: []
       })
       .catch((error) => window.alert('ログインに失敗しました'));
 }
@@ -58,7 +58,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     InvoiceComponent,
     InviteComponent,
     PlanComponent,
-    InvitationComponent,
+    InvitationComponent
   ],
   imports: [
     BrowserModule,
@@ -79,7 +79,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     MatTableModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
-    MatDialogModule,
+    MatDialogModule
   ],
   providers: [
     AuthGuard,
@@ -87,9 +87,9 @@ function initializeKeycloak(keycloak: KeycloakService) {
       provide: APP_INITIALIZER,
       useFactory: initializeKeycloak,
       multi: true,
-      deps: [KeycloakService],
-    },
+      deps: [KeycloakService]
+    }
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppModule {}

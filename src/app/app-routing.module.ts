@@ -15,44 +15,44 @@ const routes: Routes = [
   {
     path: 'mypage/profile',
     component: ProfileComponent,
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard]
   },
   {
     path: 'mypage/invoice',
     component: InvoiceComponent,
     canActivate: [AuthGuard],
     data: {
-      role: 'Admin',
-    },
+      role: 'Admin'
+    }
   },
   {
     path: 'mypage/plan',
     component: PlanComponent,
     canActivate: [AuthGuard],
     data: {
-      role: 'Admin',
-    },
+      role: 'Admin'
+    }
   },
   {
     path: 'mypage/invite',
     component: InviteComponent,
     canActivate: [AuthGuard],
     data: {
-      role: 'Admin',
-    },
+      role: 'Admin'
+    }
   },
   {
     path: 'invite/accept/:slug',
-    component: InvitationComponent,
+    component: InvitationComponent
   },
   {
     path: '**',
-    component: TopComponent,
-  },
+    component: TopComponent
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, { useHash: true })],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class AppRoutingModule {}
