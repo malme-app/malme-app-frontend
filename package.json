@@ -1,9 +1,11 @@
 {
   "name": "structuralengine-platform",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start:dev": "NODE_ENV=development ng serve",
+    "start": "NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 ng serve",
     "build": "ng build",
     "deploy": "ng build --configuration production --base-href \"https://structuralengine.github.io/structuralengine-platform-frontend/\" && angular-cli-ghpages",
     "watch": "ng build --watch --configuration development",
