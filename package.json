@@ -4,11 +4,12 @@
   "type": "module",
   "scripts": {
     "ng": "ng",
-    "start:dev": "NODE_ENV=development ng serve",
-    "start": "NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 ng serve",
-    "build": "ng build",
+    "start:dev": "ng serve",
+    "start": "ng serve ",
+    "start:stg": " ng serve  --configuration stg",
+    "build": "ng build  --configuration stg ",
     "deploy": "ng build --configuration production --base-href \"https://structuralengine.github.io/structuralengine-platform-frontend/\" && angular-cli-ghpages",
-    "watch": "ng build --watch --configuration development",
+    "watch": "ng build --watch",
     "test": "ng test",
     "lint": "ng lint ",
     "lint:fix": "ng lint --fix"
