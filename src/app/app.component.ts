@@ -9,13 +9,8 @@ import { environment } from 'src/environments/environment';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-<<<<<<< Updated upstream
-export class AppComponent {
-  title = 'structuralengine-platform';
-=======
 export class AppComponent implements OnInit, AfterViewInit {
   title = 'malmeApp';
->>>>>>> Stashed changes
 
   constructor(
     private router: Router,
@@ -30,6 +25,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     console.log('AppComponent ngAfterViewInit');
+    // this.userInfo.initializeProfile();
   }
 
   login() {

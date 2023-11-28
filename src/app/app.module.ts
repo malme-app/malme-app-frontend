@@ -35,9 +35,9 @@ function initializeKeycloak(keycloak: KeycloakService) {
     keycloak
       .init({
         config: {
-          url: 'https://auth.malme.app',
-          realm: 'structural-engine',
-          clientId: 'structural-engine'
+          url: environment.keycloakUrl,
+          realm: environment.keycloakRealm,
+          clientId: environment.keycloakClientId
         },
         initOptions: {
           onLoad: 'check-sso'
