@@ -46,7 +46,10 @@ function initializeKeycloak(keycloak: KeycloakService) {
         bearerPrefix: 'Bearer',
         bearerExcludedUrls: []
       })
-      .catch((error) => window.alert('ログインに失敗しました'));
+      .catch((error) => {
+        console.log('error =', error);
+        window.alert('ログインに失敗しました');
+      });
 }
 
 @NgModule({
