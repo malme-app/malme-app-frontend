@@ -153,7 +153,6 @@ export class ProfileComponent implements OnInit {
         .put(`${environment.apiBaseUrl}/group`, {
           userId: this.userInfo.systemProfile?.id ?? 0,
           licenses: this.groupForm.controls.licenses.value,
-          // licenses: 12,
           ...this.groupForm.value
         })
         .subscribe({

@@ -81,9 +81,12 @@
                         </mat-card-header>
                     </mat-card>
                 </li>
-                <li class="page-item">
-                    <mat-card routerLink="/mypage/invite">
-                        <mat-card-header>
+                 <li class="page-item">
+                    <mat-card routerLink="/mypage/invite" *ngIf="
+                    userInfo.systemProfile &&
+                    userInfo.systemProfile.roles.includes('Admin')
+                ">
+                         <mat-card-header>
                             <mat-card-title-group>
                                 <img
                                     mat-card-image

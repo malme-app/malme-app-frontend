@@ -24,7 +24,7 @@
                         [formGroup]="inviteForm"
                         (ngSubmit)="onSubmitInviteForm()"
                     >
-                        <div>
+                        <div class="flex-container">
                             <div>
                                 <mat-form-field>
                                     <mat-label>メールアドレス</mat-label>
@@ -56,12 +56,13 @@
                                     </mat-error>
                                 </mat-form-field>
                             </div>
-                            <div>
+                            <div class="invite-message">{{ invitedMessage }}</div>
+                            <div class="invite-button" >
                                 <button
                                     mat-raised-button
                                     color="primary"
                                     type="submit"
-                                    [disabled]="!inviteForm.valid"
+                                    [disabled]="!inviteForm.valid || invitedFlag "
                                     class="btn-1"
                                 >
                                     招待を送る
@@ -77,7 +78,7 @@
                 <div class="border-1 pa-15">
                     <p class="bold mt-0">チームメンバー</p>
                     <div class="table-wrapper">
-                        <table mat-table [dataSource]="dataSource">
+                        <table mat-table [dataSource]="inviteDataArray">
                             <ng-container matColumnDef="email">
                                 <th mat-header-cell *matHeaderCellDef>
                                     メールアドレス
