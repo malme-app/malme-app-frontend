@@ -1,14 +1,7 @@
 #######################
 # malme fontend angular
 #######################
-<<<<<<< Updated upstream
-FROM node:21-alpine
-RUN apk update && \
-    apk upgrade && \
-    apk add git && \
-    npm install -g @angular/cli
-EXPOSE 4200
-=======
+
 # FROM node:18.13-alpine as base
 # WORKDIR /app
 
@@ -30,5 +23,3 @@ EXPOSE 4200
 FROM nginx:alpine as prod
 COPY ./dist /usr/share/nginx/html
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
-
->>>>>>> Stashed changes

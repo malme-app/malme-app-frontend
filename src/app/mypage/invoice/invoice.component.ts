@@ -12,17 +12,25 @@ export interface TableRow {
   method: string;
   amount: string;
 }
-
+export interface Plan {
+  name: string;
+  expirationStart: Date;
+  expirationEnd: Date;
+  paymentMethod: string;
+  contractTitle: string;
+  contractContent: string;
+  contractUrl: string;
+}
 @Component({
   selector: 'app-invoice',
   templateUrl: './invoice.component.html',
   styleUrls: ['./invoice.component.scss']
 })
 export class InvoiceComponent implements OnInit {
-  currentPlan: any = {
+  currentPlan: Plan = {
     name: '',
-    expirationStart: null,
-    expirationEnd: null,
+    expirationStart: new Date(),
+    expirationEnd: new Date(),
     paymentMethod: '',
     contractTitle: '',
     contractContent: '',
@@ -41,11 +49,12 @@ export class InvoiceComponent implements OnInit {
             name: data.plan.name,
             expirationStart: data.expirationStart && new Date(data.expirationStart),
             expirationEnd: data.expirationEnd && new Date(data.expirationEnd),
-            paymentMethod: data.paymentMethod?.name,
-            contractTitle: data.contract?.title,
-            contractContent: data.contract?.content,
-            contractUrl: data.contract?.url
+            paymentMethod: data.paymentMethod?.name ?? '',
+            contractTitle: data.contract?.title ?? '',
+            contractContent: data.contract?.content ?? '',
+            contractUrl: data.contract?.url ?? ''
           };
+          console.log('current plan =' + this.currentPlan);
         }
       },
       error: (_error) =>

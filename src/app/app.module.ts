@@ -29,6 +29,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InvitationComponent } from './invitation/invitation.component';
+import { ExhibitionComponent } from './exhibition/exhibition.component';
 
 function initializeKeycloak(keycloak: KeycloakService) {
   return () =>
@@ -61,7 +62,8 @@ function initializeKeycloak(keycloak: KeycloakService) {
     InvoiceComponent,
     InviteComponent,
     PlanComponent,
-    InvitationComponent
+    InvitationComponent,
+    ExhibitionComponent
   ],
   imports: [
     BrowserModule,

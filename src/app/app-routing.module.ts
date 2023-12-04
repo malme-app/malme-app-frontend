@@ -8,6 +8,7 @@ import { PlanComponent } from './mypage/plan/plan.component';
 import { InviteComponent } from './mypage/invite/invite.component';
 import { AuthGuard } from './app.authguard';
 import { InvitationComponent } from './invitation/invitation.component';
+import { ExhibitionComponent } from './exhibition/exhibition.component';
 
 const routes: Routes = [
   { path: '', component: TopComponent },
@@ -54,6 +55,10 @@ const routes: Routes = [
   {
     path: 'invite/accept/:slug',
     component: InvitationComponent
+  },
+  {
+    path: 'exhibition',
+    component: ExhibitionComponent
   },
   {
     path: '**',
