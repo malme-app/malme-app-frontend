@@ -8,7 +8,7 @@ import { PlanComponent } from './mypage/plan/plan.component';
 import { InviteComponent } from './mypage/invite/invite.component';
 import { AuthGuard } from './app.authguard';
 import { InvitationComponent } from './invitation/invitation.component';
-import { ExhibitionComponent } from './exhibition/exhibition.component';
+import { Dxlogin2023Component } from './dxlogin2023/dxlogin2023.component';
 
 const routes: Routes = [
   { path: '', component: TopComponent },
@@ -57,8 +57,8 @@ const routes: Routes = [
     component: InvitationComponent
   },
   {
-    path: 'exhibition',
-    component: ExhibitionComponent
+    path: 'dxlogin2023',
+    component: Dxlogin2023Component
   },
   {
     path: '**',

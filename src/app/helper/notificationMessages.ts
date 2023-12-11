@@ -9,3 +9,4 @@ export const MSG_INVITE_SUCCESS = 'Successfully invited';
 export const MSG_INVITE_FAILED = 'Failed to invite email';
 export const MSG_APPLY_SUCCESS = 'Successfully applied. Please contact admin to pay for the plan';
 export const MSG_APPLY_FAILED = 'Failed to apply for the plan';
+export const MSG_CREATE_USER_FAILED = 'Failed to create user';
