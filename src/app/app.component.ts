@@ -8,7 +8,7 @@ import { FooterService } from './service/footer.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, AfterViewInit {
-  title = 'malmeApp';
+  title = 'MalmeApp | 構造解析サービス';
 
   constructor(private header: HeaderService, private footer: FooterService) {}
 
