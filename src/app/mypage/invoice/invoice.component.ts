@@ -38,6 +38,7 @@ export class InvoiceComponent implements OnInit {
   };
   displayedColumns: string[] = ['paymentDay', 'plan', 'period', 'method', 'amount'];
   dataSource: TableRow[] = [];
+  hasExpirationDate = true;
 
   constructor(public dialog: MatDialog, private http: HttpClient, private _snackBar: MatSnackBar) {}
 
@@ -57,13 +58,16 @@ export class InvoiceComponent implements OnInit {
           console.log('current plan =' + this.currentPlan);
         }
       },
-      error: (_error) =>
-        this._snackBar.open(MSG_FETCH_FAILED, 'Close', {
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          duration: 5000,
-          panelClass: 'notify-failed'
-        })
+      error: (_error) => {
+        this.currentPlan.name = '';
+        this.hasExpirationDate = false;
+      }
+      //   this._snackBar.open(MSG_FETCH_FAILED, 'Close', {
+      //     horizontalPosition: 'end',
+      //     verticalPosition: 'top',
+      //     duration: 5000,
+      //     panelClass: 'notify-failed'
+      //   })
     });
     this.http.get(`${environment.apiBaseUrl}/sale/list`).subscribe({
       next: (data: any) => {
@@ -83,13 +87,17 @@ export class InvoiceComponent implements OnInit {
         });
         this.dataSource = paymentHistories;
       },
-      error: (_error) =>
-        this._snackBar.open(MSG_FETCH_FAILED, 'Close', {
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          duration: 5000,
-          panelClass: 'notify-failed'
-        })
+      error: (_error) => {
+        this.currentPlan.name = '';
+        this.hasExpirationDate = false;
+      }
+
+      // this._snackBar.open(MSG_FETCH_FAILED, 'Close', {
+      //   horizontalPosition: 'end',
+      //   verticalPosition: 'top',
+      //   duration: 5000,
+      //   panelClass: 'notify-failed'
+      // })
     });
   }
 
