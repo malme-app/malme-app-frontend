@@ -20,12 +20,11 @@ export class HeaderComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     console.log('AppComponent initializing');
-    // this.userInfo.initializeProfile();    //TODO Only Dx2023のみコメント
+    this.userInfo.initializeProfile();
   }
 
   ngAfterViewInit() {
     console.log('AppComponent ngAfterViewInit');
-    // this.userInfo.initializeProfile();
   }
 
   login() {
