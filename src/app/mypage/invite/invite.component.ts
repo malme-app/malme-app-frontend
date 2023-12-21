@@ -34,7 +34,8 @@ export interface InviteFormDatas {
 export class InviteComponent implements OnInit {
   displayedColumns: string[] = ['email', 'role', 'status', 'action'];
   inviteDataArray: InviteFormDatas[] = [];
-  invitedMessage = '';
+  invitedMessage1 = '';
+  invitedMessage2 = '';
   invitedFlag = false;
 
   inviteForm = new FormGroup({
@@ -49,8 +50,9 @@ export class InviteComponent implements OnInit {
 
   ngOnInit() {
     this.syncTeamMembers();
+    this.userInfo.syncSystemProfile();
     this.inviteForm.valueChanges.subscribe(() => {
-      this.invitedMessage = '';
+      this.invitedMessage1 = '';
       this.invitedFlag = false;
     });
   }
@@ -117,6 +119,15 @@ export class InviteComponent implements OnInit {
           });
         });
         this.inviteDataArray = inviteFormDatas;
+        if (
+          this.userInfo.systemProfile &&
+          this.userInfo.systemProfile.group &&
+          this.userInfo.systemProfile.group.licenses - this.inviteDataArray.length <= 0
+        ) {
+          this.invitedMessage2 = '招待の上限を超えています';
+        } else {
+          this.invitedMessage2 = '';
+        }
       },
       error: (_error) =>
         this.snackBar.open(MSG_SERVER_ERROR, 'Close', {
@@ -138,7 +149,7 @@ export class InviteComponent implements OnInit {
           panelClass: 'notify-success'
         });
         this.syncTeamMembers();
-        this.invitedMessage = '招待メールを送信しました';
+        this.invitedMessage1 = '招待メールを送信しました';
       },
       error: (_error) => {
         this.snackBar.open(MSG_INVITE_FAILED, 'Close', {
@@ -147,7 +158,7 @@ export class InviteComponent implements OnInit {
           duration: 5000,
           panelClass: 'notify-failed'
         });
-        this.invitedMessage = '登録できませんでした。サポートにお問い合わせください';
+        this.invitedMessage1 = '登録できませんでした。サポートにお問い合わせください';
       }
     });
   }

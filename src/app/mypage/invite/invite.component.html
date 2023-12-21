@@ -28,43 +28,35 @@
                             <div>
                                 <mat-form-field>
                                     <mat-label>メールアドレス</mat-label>
-                                    <input
-                                        matInput
-                                        type="email"
-                                        formControlName="email"
-                                    />
-                                    <mat-error
-                                        *ngIf="
-                                            inviteFormControl.email.hasError(
-                                                'required'
-                                            )
-                                        "
-                                    >
+                                    <input matInput type="email" formControlName="email" />
+                                    <mat-error *ngIf="
+                                                                    inviteFormControl.email.hasError(
+                                                                        'required'
+                                                                    )
+                                                                ">
                                         このフィールドを入力してください。
                                     </mat-error>
-                                    <mat-error
-                                        *ngIf="
-                                            !inviteFormControl.email.hasError(
-                                                'required'
-                                            ) &&
-                                            inviteFormControl.email.hasError(
-                                                'email'
-                                            )
-                                        "
-                                    >
+                                    <mat-error *ngIf="
+                                                                    !inviteFormControl.email.hasError(
+                                                                        'required'
+                                                                    ) &&
+                                                                    inviteFormControl.email.hasError(
+                                                                        'email'
+                                                                    )
+                                                                ">
                                         メール形式が正しくありません。
                                     </mat-error>
                                 </mat-form-field>
                             </div>
-                            <div class="invite-message">{{ invitedMessage }}</div>
-                            <div class="invite-button" >
-                                <button
-                                    mat-raised-button
-                                    color="primary"
-                                    type="submit"
-                                    [disabled]="!inviteForm.valid || invitedFlag "
-                                    class="btn-1"
-                                >
+                            <div class="invite-message-div"><span class="invite-message-span1">{{ invitedMessage1 }}</span><span
+                                    class="invite-message-span2">{{ invitedMessage2 }}</span></div>
+                            <div class="invite-button">
+                                <button mat-raised-button color="primary" type="submit" [disabled]="
+                                                                      !inviteForm.valid || 
+                                                                      invitedFlag 
+                                                                      || (userInfo.systemProfile && userInfo.systemProfile.group &&
+                                                                                        userInfo.systemProfile.group.licenses -inviteDataArray.length <= 0)
+                                                                                        " class="btn-1">
                                     招待を送る
                                 </button>
                             </div>
