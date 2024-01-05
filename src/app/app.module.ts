@@ -26,7 +26,6 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
 import { HttpClientModule } from '@angular/common/http';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InvitationComponent } from './invitation/invitation.component';
 import { Dxlogin2023Component } from './dxlogin2023/dxlogin2023.component';
@@ -86,7 +85,6 @@ function initializeKeycloak(keycloak: KeycloakService) {
     MatMenuModule,
     MatCardModule,
     MatTableModule,
-    MatSnackBarModule,
     MatProgressSpinnerModule,
     MatDialogModule
   ],

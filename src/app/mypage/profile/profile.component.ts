@@ -2,13 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  MSG_CREATE_FAILED,
-  MSG_CREATE_SUCCESS,
-  MSG_UPDATE_FAILED,
-  MSG_UPDATE_SUCCESS
-} from 'src/app/helper/notificationMessages';
 import { UserInfoService } from 'src/app/providers/user-info.service';
 import { environment } from 'src/environments/environment';
 
@@ -39,11 +32,7 @@ export class ProfileComponent implements OnInit {
     licenses: new FormControl({ value: 0, disabled: true })
   });
 
-  constructor(
-    public userInfo: UserInfoService,
-    private http: HttpClient,
-    private _snackBar: MatSnackBar
-  ) {}
+  constructor(public userInfo: UserInfoService, private http: HttpClient) {}
 
   ngOnInit() {
     this.userInfo.syncSystemProfile().add(() => {
@@ -96,29 +85,14 @@ export class ProfileComponent implements OnInit {
       .subscribe({
         next: (data) => {
           if (data == 204) {
-            this._snackBar.open(MSG_UPDATE_SUCCESS, 'Close', {
-              horizontalPosition: 'end',
-              verticalPosition: 'top',
-              duration: 5000,
-              panelClass: 'notify-success'
-            });
             this.userInfo.setKeycloakProfile(this.accountForm.value);
           } else {
-            this._snackBar.open(MSG_UPDATE_FAILED, 'Close', {
-              horizontalPosition: 'end',
-              verticalPosition: 'top',
-              duration: 5000,
-              panelClass: 'notify-failed'
-            });
+            console.log('error');
           }
         },
-        error: (_error) =>
-          this._snackBar.open(MSG_UPDATE_FAILED, 'Close', {
-            horizontalPosition: 'end',
-            verticalPosition: 'top',
-            duration: 5000,
-            panelClass: 'notify-failed'
-          })
+        error: (_error) => {
+          console.log('error = ', _error);
+        }
       });
   }
 
@@ -132,21 +106,11 @@ export class ProfileComponent implements OnInit {
         })
         .subscribe({
           next: (_data) => {
-            this._snackBar.open(MSG_CREATE_SUCCESS, 'Close', {
-              horizontalPosition: 'end',
-              verticalPosition: 'top',
-              duration: 5000,
-              panelClass: 'notify-success'
-            });
             this.hasGroup = true;
           },
-          error: (_error) =>
-            this._snackBar.open(MSG_CREATE_FAILED, 'Close', {
-              horizontalPosition: 'end',
-              verticalPosition: 'top',
-              duration: 5000,
-              panelClass: 'notify-failed'
-            })
+          error: (_error) => {
+            console.log('error = ', _error);
+          }
         });
     } else {
       this.http
@@ -157,21 +121,11 @@ export class ProfileComponent implements OnInit {
         })
         .subscribe({
           next: (_data) => {
-            this._snackBar.open(MSG_UPDATE_SUCCESS, 'Close', {
-              horizontalPosition: 'end',
-              verticalPosition: 'top',
-              duration: 5000,
-              panelClass: 'notify-success'
-            });
             this.hasGroup = true;
           },
-          error: (_error) =>
-            this._snackBar.open(MSG_UPDATE_FAILED, 'Close', {
-              horizontalPosition: 'end',
-              verticalPosition: 'top',
-              duration: 5000,
-              panelClass: 'notify-failed'
-            })
+          error: (_error) => {
+            console.log('error = ', _error);
+          }
         });
     }
   }
