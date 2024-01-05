@@ -1,8 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MSG_FETCH_FAILED } from 'src/app/helper/notificationMessages';
+import { MatDialog } from '@angular/material/dialog';
 import { environment } from 'src/environments/environment';
 
 export interface TableRow {
@@ -12,7 +10,7 @@ export interface TableRow {
   method: string;
   amount: string;
 }
-export interface Plan {
+export interface SaleInfo {
   name: string;
   expirationStart: Date;
   expirationEnd: Date;
@@ -27,7 +25,7 @@ export interface Plan {
   styleUrls: ['./invoice.component.scss']
 })
 export class InvoiceComponent implements OnInit {
-  currentPlan: Plan = {
+  currentSaleInfo: SaleInfo = {
     name: '',
     expirationStart: new Date(),
     expirationEnd: new Date(),
@@ -40,13 +38,13 @@ export class InvoiceComponent implements OnInit {
   dataSource: TableRow[] = [];
   hasExpirationDate = true;
 
-  constructor(public dialog: MatDialog, private http: HttpClient, private _snackBar: MatSnackBar) {}
+  constructor(public dialog: MatDialog, private http: HttpClient) {}
 
   ngOnInit() {
     this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
       next: (data: any) => {
         if (data) {
-          this.currentPlan = {
+          this.currentSaleInfo = {
             name: data.plan.name,
             expirationStart: data.expirationStart && new Date(data.expirationStart),
             expirationEnd: data.expirationEnd && new Date(data.expirationEnd),
@@ -55,19 +53,13 @@ export class InvoiceComponent implements OnInit {
             contractContent: data.contract?.content ?? '',
             contractUrl: data.contract?.url ?? ''
           };
-          console.log('current plan =' + this.currentPlan);
+          console.log('current plan =' + JSON.stringify(this.currentSaleInfo, null, 2));
         }
       },
       error: (_error) => {
-        this.currentPlan.name = '';
+        this.currentSaleInfo.name = '';
         this.hasExpirationDate = false;
       }
-      //   this._snackBar.open(MSG_FETCH_FAILED, 'Close', {
-      //     horizontalPosition: 'end',
-      //     verticalPosition: 'top',
-      //     duration: 5000,
-      //     panelClass: 'notify-failed'
-      //   })
     });
     this.http.get(`${environment.apiBaseUrl}/sale/list`).subscribe({
       next: (data: any) => {
@@ -88,16 +80,9 @@ export class InvoiceComponent implements OnInit {
         this.dataSource = paymentHistories;
       },
       error: (_error) => {
-        this.currentPlan.name = '';
+        this.currentSaleInfo.name = '';
         this.hasExpirationDate = false;
       }
-
-      // this._snackBar.open(MSG_FETCH_FAILED, 'Close', {
-      //   horizontalPosition: 'end',
-      //   verticalPosition: 'top',
-      //   duration: 5000,
-      //   panelClass: 'notify-failed'
-      // })
     });
   }
 
