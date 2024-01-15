@@ -59,13 +59,13 @@
                         <div class="bold">次回お支払い日</div>
                         <div class="mt-10" *ngIf="hasExpirationDate">
                             {{
-                                currentSaleInfo.expirationEnd &&
-                                    currentSaleInfo.expirationEnd.getFullYear() +
-                                        "/" +
-                                        (currentSaleInfo.expirationEnd.getMonth() +
-                                            1).toString().padStart(2, '0') +
-                                        "/" +
-                                        currentSaleInfo.expirationEnd.getDate().toString().padStart(2, '0')
+                            currentSaleInfo.expirationEnd &&
+                            currentSaleInfo.expirationEnd.getFullYear() +
+                            "/" +
+                            (currentSaleInfo.expirationEnd.getMonth() +
+                            1).toString().padStart(2, '0') +
+                            "/" +
+                            currentSaleInfo.expirationEnd.getDate().toString().padStart(2, '0')
                             }}
                         </div>
                     </div>
