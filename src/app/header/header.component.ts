@@ -40,6 +40,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   goMypage() {
-    this.router.navigate(['/mypage']);
+    this.router.navigate(['/']);
   }
 }

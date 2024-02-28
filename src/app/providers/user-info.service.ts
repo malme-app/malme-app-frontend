@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { environment } from 'src/environments/environment';
+import { Router } from '@angular/router';
 
 interface KeycloakProfile {
   uid: string;
@@ -42,7 +43,10 @@ export class UserInfoService {
   public keycloakProfile: KeycloakProfile | null = null;
   public systemProfile: SystemProfile | null = null;
 
-  constructor(private readonly keycloak: KeycloakService, private http: HttpClient) {}
+  constructor(
+    private router: Router,
+    private readonly keycloak: KeycloakService,
+    private http: HttpClient) {}
 
   public setKeycloakProfile(param: any) {
     this.keycloakProfile = { ...this.keycloakProfile, ...param };
@@ -77,6 +81,7 @@ export class UserInfoService {
       this.syncSystemProfile();
       this.syncKeycloakProfile();
     } else {
+      window.location.href = environment.myURL;
       this.keycloakProfile = null;
     }
   }

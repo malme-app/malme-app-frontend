@@ -6,7 +6,7 @@
                 mat-button
                 aria-label="ダッシュボード"
                 class="white f-16"
-                routerLink="/mypage"
+                routerLink="/"
             >
                 <b>ダッシュボードへ戻る</b>
                 <mat-icon>reply</mat-icon>
@@ -48,7 +48,7 @@
                             <div class="invite-button">
                                 <button mat-raised-button color="primary" type="submit" [disabled]="
                                                                       !inviteForm.valid || memberInputedFlag ||
-                                                                      invitedFlag 
+                                                                      invitedFlag
                                                                       || (userInfo.systemProfile && userInfo.systemProfile.group &&
                                                                                         userInfo.systemProfile.group.licenses -inviteDataArray.length <= 0)
                                                                                         " class="btn-1">
