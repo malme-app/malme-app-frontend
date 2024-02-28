@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TopComponent } from './top/top.component';
 import { DashboardComponent } from './mypage/dashboard/dashboard.component';
 import { ProfileComponent } from './mypage/profile/profile.component';
 import { InvoiceComponent } from './mypage/invoice/invoice.component';
@@ -11,9 +10,9 @@ import { InvitationComponent } from './invitation/invitation.component';
 import { Dxlogin2023Component } from './dxlogin2023/dxlogin2023.component';
 
 const routes: Routes = [
-  { path: '', component: TopComponent },
+  { path: '', component: DashboardComponent },
   {
-    path: 'mypage',
+    path: '',
     component: DashboardComponent,
     canActivate: [AuthGuard],
     data: {
@@ -21,7 +20,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'mypage/profile',
+    path: 'profile',
     component: ProfileComponent,
     canActivate: [AuthGuard],
     data: {
@@ -29,7 +28,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'mypage/invoice',
+    path: 'invoice',
     component: InvoiceComponent,
     canActivate: [AuthGuard],
     data: {
@@ -37,7 +36,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'mypage/plan',
+    path: 'plan',
     component: PlanComponent,
     canActivate: [AuthGuard],
     data: {
@@ -45,7 +44,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'mypage/invite',
+    path: 'invite',
     component: InviteComponent,
     canActivate: [AuthGuard],
     data: {
@@ -62,12 +61,12 @@ const routes: Routes = [
   },
   {
     path: '**',
-    component: TopComponent
+    component: DashboardComponent
   }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { useHash: true })],
+  imports: [RouterModule.forRoot(routes, { useHash: false })],
   exports: [RouterModule]
 })
 export class AppRoutingModule {}

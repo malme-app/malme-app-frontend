@@ -40,7 +40,7 @@ export class InvitationComponent implements OnInit {
             // Handle when error occurred
             this.inviteSuccess = false;
             if (error.error.message == 'Already has an group') {
-              this.router.navigate(['/mypage']);
+              this.router.navigate(['/']);
             }
           }
         });
