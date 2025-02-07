@@ -43,29 +43,33 @@ interface SystemProfile {
 export class UserInfoService {
   public keycloakProfile: KeycloakProfile | null = null;
   public systemProfile: SystemProfile | null = null;
+  public b2cProfile: any | null = null;
 
   constructor(
     private router: Router,
     //private readonly keycloak: KeycloakService,
     private http: HttpClient,
     private authService: MsalService,
-    )
-    {}
+  ) { }
 
   public setKeycloakProfile(param: any) {
-    this.keycloakProfile = { ...this.keycloakProfile, ...param };
+    // this.keycloakProfile = { ...this.keycloakProfile, ...param };
   }
 
+  public setB2cProfile(param : any) {
+    this.b2cProfile = { ...this.b2cProfile, ...param};
+  }
+  
   public syncSystemProfile() {
     // Synchronize Keycloak profile with one from backend API
-    // return this.http.post(`${environment.apiBaseUrl}/user`, {}).subscribe({
-    //   next: (data) => {
-    //     this.systemProfile = data as SystemProfile;
-    //   },
-    //   error: (error) => {
-    //     console.log('ERROR', error);
-    //   }
-    // });
+    return this.http.post(`${environment.apiBaseUrl}/user`, {}).subscribe({
+      next: (data) => {
+        this.systemProfile = data as SystemProfile;
+      },
+      error: (error) => {
+        console.log('ERROR', error);
+      }
+    });
   }
 
   public async syncKeycloakProfile() {

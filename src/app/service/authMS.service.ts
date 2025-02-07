@@ -19,6 +19,7 @@ import {
 } from '@azure/msal-browser';
 import { filter, Subject, takeUntil } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { UserInfoService } from '../providers/user-info.service';
 
 type IdTokenClaimsWithPolicyId = IdTokenClaims & {
   acr?: string;
@@ -33,7 +34,8 @@ export class AuthMSService {
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
     private authService: MsalService,
-    private msalBroadcastService: MsalBroadcastService
+    private msalBroadcastService: MsalBroadcastService,
+    private user : UserInfoService
   ) {
     
   }
@@ -64,12 +66,12 @@ export class AuthMSService {
           this.checkAndSetActiveAccount();
           if (this.authService.instance.getAllAccounts().length > 0) {
             const listClaims = this.getClaims(this.authService.instance.getActiveAccount()?.idTokenClaims as Record<string, any>);
-            // this.user.setUserProfile({
-            //   uid: listClaims.find(item => item.claim === "sub")?.value,
-            //   email: listClaims.find(item => item.claim === "emails")?.value[0],
-            //   firstName: listClaims.find(item => item.claim === "given_name")?.value,
-            //   lastName: listClaims.find(item => item.claim === "family_name")?.value
-            // });
+            this.user.setB2cProfile({
+              uid: listClaims.find(item => item.claim === "sub")?.value,
+              email: (listClaims.find(item => item.claim === "emails")?.value as string)[0],
+              firstName: listClaims.find(item => item.claim === "given_name")?.value,
+              lastName: listClaims.find(item => item.claim === "family_name")?.value
+            });
           }
         })
 

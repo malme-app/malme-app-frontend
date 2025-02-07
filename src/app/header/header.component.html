@@ -1,12 +1,12 @@
 <header *ngIf="header.visible">
     <img class="logo" src="./assets/images/malme_logo.svg" alt="Malme" />
-    <div *ngIf="!userInfo.keycloakProfile" class="btn-wrapper">
+    <div *ngIf="!userInfo.b2cProfile" class="btn-wrapper">
         <button class="login-btn" (click)="login()">Login</button>
         <button class="login-btn" (click)="signup()">Signup</button>
     </div>
-    <div *ngIf="userInfo.keycloakProfile" class="btn-wrapper">
+    <div *ngIf="userInfo.b2cProfile" class="btn-wrapper">
         <button mat-fab extended [matMenuTriggerFor]="menu" class="header-btn">
-            <mat-icon>account_circle</mat-icon>{{ userInfo.keycloakProfile.username }}さん
+            <mat-icon>account_circle</mat-icon>{{ userInfo.b2cProfile.email}}さん
         </button>
         <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="goMypage()">My page</button>
