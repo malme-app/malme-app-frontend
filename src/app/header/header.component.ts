@@ -39,17 +39,13 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     // private readonly keycloak: KeycloakService,
     public userInfo: UserInfoService,
     public header: HeaderService,
-    // public authMs: AuthMSService,
-    @Inject(MSAL_GUARD_CONFIG)
-    private msalGuardConfig: MsalGuardConfiguration,
-    private authService: MsalService,
-    private msalBroadcastService: MsalBroadcastService
+    public authMs: AuthMSService,
   ) {}
 
   ngOnInit() {
     console.log('AppComponent initializing');
     this.userInfo.initializeProfile();
-    this.initMSAL();
+    this.authMs.initMSAL();
   }
 
   ngAfterViewInit() {
@@ -66,61 +62,12 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     return listClaims;
   }
 
-  checkAndSetActiveAccount() {
-    /**
-     * If no active account set but there are accounts signed in, sets first account to active account
-     * To use active account set here, subscribe to inProgress$ first in your component
-     * Note: Basic usage demonstrated. Your app may require more complicated account selection logic
-     */
-    let activeAccount = this.authService.instance.getActiveAccount();
-
-    if (!activeAccount && this.authService.instance.getAllAccounts().length > 0) {
-      let accounts = this.authService.instance.getAllAccounts();
-      this.authService.instance.setActiveAccount(accounts[0]);
-    }
-  }
-
-  async login(userFlowRequest?: RedirectRequest | PopupRequest) {
-    console.log('aaaaaaaaaaaaaa');
-
-    // this.keycloak.login();
-    this.msalBroadcastService.inProgress$
-      .pipe(
-        filter(
-          (status: InteractionStatus) =>
-            status === InteractionStatus.None || status === InteractionStatus.HandleRedirect
-        )
-      )
-      .subscribe(async () => {
-        if (this.msalGuardConfig.authRequest) {
-          await this.authService.loginRedirect({
-            ...this.msalGuardConfig.authRequest
-          } as RedirectRequest);
-          await this.authService.acquireTokenRedirect({
-            ...this.msalGuardConfig.authRequest
-          } as RedirectRequest);
-        } else {
-          await this.authService.loginRedirect();
-        }
-      });
+  async login() {
+    this.authMs.login()
   }
 
   async logout() {
-    await this.authService.instance
-      .handleRedirectPromise()
-      .then((tokenResponse) => {
-        if (!tokenResponse) {
-          // this.user.setUserProfile(null);
-          this.authService.logoutRedirect();
-        }
-        // else {
-        //   // Do something with the tokenResponse
-        // }
-      })
-      .catch((err) => {
-        // Handle error
-        console.error(err);
-      });
+    this.authMs.logout();
   }
 
   signup() {
@@ -131,103 +78,4 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/']);
   }
 
-  initMSAL() {
-    this.authService.instance.enableAccountStorageEvents();
-    this.msalBroadcastService.msalSubject$
-      .pipe(
-        filter(
-          (msg: EventMessage) =>
-            msg.eventType === EventType.ACCOUNT_ADDED || msg.eventType === EventType.ACCOUNT_REMOVED
-        )
-      )
-      .subscribe((result: EventMessage) => {
-        console.log({ result });
-        
-        if (this.authService.instance.getAllAccounts().length === 0) {
-          window.location.pathname = '/';
-        } else {
-          // this.setLoginDisplay();
-        }
-      });
-
-    this.msalBroadcastService.inProgress$
-      .pipe(
-        filter((status: InteractionStatus) => status === InteractionStatus.None),
-        takeUntil(this._destroying$)
-      )
-      .subscribe(() => {
-        // this.setLoginDisplay();
-        this.checkAndSetActiveAccount();
-      });
-
-    this.msalBroadcastService.msalSubject$
-      .pipe(
-        filter(
-          (msg: EventMessage) =>
-            msg.eventType === EventType.LOGIN_SUCCESS ||
-            msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS ||
-            msg.eventType === EventType.SSO_SILENT_SUCCESS
-        ),
-        takeUntil(this._destroying$)
-      )
-      .subscribe((result: EventMessage) => {
-        let payload = result.payload as AuthenticationResult;
-        let idtoken = payload.idTokenClaims as IdTokenClaimsWithPolicyId;
-
-        if (
-          idtoken.acr === environment.b2cPolicies.names.signUpSignIn ||
-          idtoken.tfp === environment.b2cPolicies.names.signUpSignIn
-        ) {
-          this.authService.instance.setActiveAccount(payload.account);
-        }
-       
-        if (
-          idtoken.acr === environment.b2cPolicies.names.resetPassword ||
-          idtoken.tfp === environment.b2cPolicies.names.resetPassword
-        ) {
-          let signUpSignInFlowRequest: RedirectRequest | PopupRequest = {
-            authority: environment.b2cPolicies.authorities.signUpSignIn.authority,
-            scopes: [...environment.apiConfig.scopes],
-            prompt: PromptValue.LOGIN
-          };
-
-          this.login(signUpSignInFlowRequest);
-        }
-        
-        if (
-          idtoken.acr === environment.b2cPolicies.names.resetPassword ||
-          idtoken.tfp === environment.b2cPolicies.names.resetPassword
-        ) {
-          let signUpSignInFlowRequest: RedirectRequest | PopupRequest = {
-            authority: environment.b2cPolicies.authorities.signUpSignIn.authority,
-            scopes: [...environment.apiConfig.scopes],
-            prompt: PromptValue.LOGIN // force user to reauthenticate with their new password
-          };
-
-          this.login(signUpSignInFlowRequest);
-        }
-
-        return result;
-      });
-
-    this.msalBroadcastService.msalSubject$
-      .pipe(
-        filter(
-          (msg: EventMessage) =>
-            msg.eventType === EventType.LOGIN_FAILURE ||
-            msg.eventType === EventType.ACQUIRE_TOKEN_FAILURE
-        ),
-        takeUntil(this._destroying$)
-      )
-      .subscribe((result: EventMessage) => {
-        if (result.error && result.error.message.indexOf('AADB2C90118') > -1) {
-          let resetPasswordFlowRequest: RedirectRequest | PopupRequest = {
-            authority: environment.b2cPolicies.authorities.resetPassword.authority,
-            scopes: []
-          };
-
-          this.login(resetPasswordFlowRequest);
-        }
-      });
-  }
 }

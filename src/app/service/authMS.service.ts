@@ -157,9 +157,9 @@ export class AuthMSService {
           await this.authService.loginRedirect({
             ...this.msalGuardConfig.authRequest
           } as RedirectRequest);
-          await this.authService.acquireTokenRedirect({
-            ...this.msalGuardConfig.authRequest
-          } as RedirectRequest);
+          // await this.authService.acquireTokenRedirect({
+          //   ...this.msalGuardConfig.authRequest
+          // } as RedirectRequest);
         } else {
           await this.authService.loginRedirect();
         }
