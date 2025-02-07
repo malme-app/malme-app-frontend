@@ -35,36 +35,36 @@ export class ProfileComponent implements OnInit {
   constructor(public userInfo: UserInfoService, private http: HttpClient) {}
 
   ngOnInit() {
-    this.userInfo.syncSystemProfile().add(() => {
-      if (this.userInfo.keycloakProfile?.username) {
-        this.accountForm.setValue({
-          email: this.userInfo.keycloakProfile.email,
-          userRole: this.userInfo.systemProfile?.roles.includes('SuperAdmin')
-            ? 'SuperAdmin'
-            : this.userInfo.systemProfile?.roles.includes('Admin')
-            ? 'Admin'
-            : '',
-          firstName: this.userInfo.keycloakProfile.firstName ?? '',
-          lastName: this.userInfo.keycloakProfile.lastName ?? ''
-        });
-      }
-      if (this.userInfo.systemProfile && this.userInfo.systemProfile.group) {
-        this.hasGroup = true;
-        this.groupForm.setValue({
-          type: this.userInfo.systemProfile?.group?.type ?? null,
-          name: this.userInfo.systemProfile?.group?.name ?? null,
-          department: this.userInfo.systemProfile?.group?.department ?? null,
-          zipcode: this.userInfo.systemProfile?.group?.zipcode ?? null,
-          address: this.userInfo.systemProfile?.group?.address ?? null,
-          tel: this.userInfo.systemProfile?.group?.tel ?? null,
-          bankName: this.userInfo.systemProfile?.group?.bankName ?? null,
-          bankBranchName: this.userInfo.systemProfile?.group?.bankBranchName ?? null,
-          bankAccountType: this.userInfo.systemProfile?.group?.bankAccountType ?? null,
-          bankAccountNumber: this.userInfo.systemProfile?.group?.bankAccountNumber ?? null,
-          licenses: this.userInfo.systemProfile?.group?.licenses ?? 0
-        });
-      }
-    });
+    // this.userInfo.syncSystemProfile().add(() => {
+    //   if (this.userInfo.keycloakProfile?.username) {
+    //     this.accountForm.setValue({
+    //       email: this.userInfo.keycloakProfile.email,
+    //       userRole: this.userInfo.systemProfile?.roles.includes('SuperAdmin')
+    //         ? 'SuperAdmin'
+    //         : this.userInfo.systemProfile?.roles.includes('Admin')
+    //         ? 'Admin'
+    //         : '',
+    //       firstName: this.userInfo.keycloakProfile.firstName ?? '',
+    //       lastName: this.userInfo.keycloakProfile.lastName ?? ''
+    //     });
+    //   }
+    //   if (this.userInfo.systemProfile && this.userInfo.systemProfile.group) {
+    //     this.hasGroup = true;
+    //     this.groupForm.setValue({
+    //       type: this.userInfo.systemProfile?.group?.type ?? null,
+    //       name: this.userInfo.systemProfile?.group?.name ?? null,
+    //       department: this.userInfo.systemProfile?.group?.department ?? null,
+    //       zipcode: this.userInfo.systemProfile?.group?.zipcode ?? null,
+    //       address: this.userInfo.systemProfile?.group?.address ?? null,
+    //       tel: this.userInfo.systemProfile?.group?.tel ?? null,
+    //       bankName: this.userInfo.systemProfile?.group?.bankName ?? null,
+    //       bankBranchName: this.userInfo.systemProfile?.group?.bankBranchName ?? null,
+    //       bankAccountType: this.userInfo.systemProfile?.group?.bankAccountType ?? null,
+    //       bankAccountNumber: this.userInfo.systemProfile?.group?.bankAccountNumber ?? null,
+    //       licenses: this.userInfo.systemProfile?.group?.licenses ?? 0
+    //     });
+    //   }
+    // });
   }
 
   get accountFormControl() {

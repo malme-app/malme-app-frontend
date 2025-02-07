@@ -39,7 +39,7 @@ export class InviteComponent implements OnInit {
 
   ngOnInit() {
     this.syncTeamMembers();
-    this.userInfo.syncSystemProfile();
+    //this.userInfo.syncSystemProfile();
     if (!(this.userInfo.systemProfile && this.userInfo.systemProfile.group)) {
       this.memberInputedFlag = true;
     }

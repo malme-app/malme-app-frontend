@@ -25,34 +25,84 @@ import { AuthGuard } from './app.authguard';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InvitationComponent } from './invitation/invitation.component';
 import { Dxlogin2023Component } from './dxlogin2023/dxlogin2023.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { MsalInterceptorConfiguration, MsalGuardConfiguration, MsalModule, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG, MsalBroadcastService, MsalGuard, MsalInterceptor, MsalService, MsalRedirectComponent } from '@azure/msal-angular';
+import { IPublicClientApplication, PublicClientApplication, BrowserCacheLocation, InteractionType } from '@azure/msal-browser';
+import { LogLevel as LogLevelMasl } from "@azure/msal-browser";
 
-function initializeKeycloak(keycloak: KeycloakService) {
-  return () =>
-    keycloak
-      .init({
-        config: {
-          url: environment.keycloakUrl,
-          realm: environment.keycloakRealm,
-          clientId: environment.keycloakClientId
-        },
-        initOptions: {
-          onLoad: 'check-sso'
-        },
-        enableBearerInterceptor: true,
-        bearerPrefix: 'Bearer',
-        bearerExcludedUrls: []
-      })
-      .catch((error) => {
-        console.log('error =', error);
-        window.alert('ログインに失敗しました');
-      });
+// function initializeKeycloak(keycloak: KeycloakService) {
+//   return () =>
+//     keycloak
+//       .init({
+//         config: {
+//           url: environment.keycloakUrl,
+//           realm: environment.keycloakRealm,
+//           clientId: environment.keycloakClientId
+//         },
+//         initOptions: {
+//           onLoad: 'check-sso'
+//         },
+//         enableBearerInterceptor: true,
+//         bearerPrefix: 'Bearer',
+//         bearerExcludedUrls: []
+//       })
+//       .catch((error) => {
+//         console.log('error =', error);
+//         window.alert('ログインに失敗しました');
+//       });
+// }
+
+export function loggerCallback(logLevel: LogLevelMasl, message: string) {
+  console.log(message);
+}
+
+export function MSALInstanceFactory(): IPublicClientApplication {
+  return new PublicClientApplication({
+    auth: {
+      clientId: environment.msalConfig.auth.clientId,
+      authority: environment.b2cPolicies.authorities.signUpSignIn.authority,
+      redirectUri: environment.msalConfig.auth.redirectUri,
+      postLogoutRedirectUri: environment.msalConfig.auth.postLogoutRedirectUri,
+      knownAuthorities: [environment.b2cPolicies.authorityDomain]
+    },
+    cache: {
+      cacheLocation: BrowserCacheLocation.LocalStorage
+    },
+    system: {
+      allowNativeBroker: false, // Disables WAM Broker
+      loggerOptions: {
+        loggerCallback,
+        logLevel: LogLevelMasl.Verbose,
+        piiLoggingEnabled: false
+      }
+    }
+  });
+}
+
+export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
+  const protectedResourceMap = new Map<string, Array<string>>();
+  protectedResourceMap.set(environment.apiConfig.uri, environment.apiConfig.scopes);
+
+  return {
+    interactionType: InteractionType.Redirect,
+    protectedResourceMap
+  };
+}
+
+export function MSALGuardConfigFactory(): MsalGuardConfiguration {
+  return {
+    interactionType: InteractionType.Redirect,
+    authRequest: {
+      scopes: [...environment.apiConfig.scopes],
+    },
+    loginFailedRoute: "/login-failed",
+  };
 }
 
 @NgModule({
@@ -74,7 +124,7 @@ function initializeKeycloak(keycloak: KeycloakService) {
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    KeycloakAngularModule,
+    // KeycloakAngularModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
     ReactiveFormsModule,
@@ -87,18 +137,40 @@ function initializeKeycloak(keycloak: KeycloakService) {
     MatCardModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
+    MsalModule
   ],
   providers: [
-    AuthGuard,
+    // AuthGuard,
+    // {
+    //   provide: APP_INITIALIZER,
+    //   useFactory: initializeKeycloak,
+    //   multi: true,
+    //   deps: [KeycloakService]
+    // },
+
     {
-      provide: APP_INITIALIZER,
-      useFactory: initializeKeycloak,
+      provide: HTTP_INTERCEPTORS,
+      useClass: MsalInterceptor,
       multi: true,
-      deps: [KeycloakService]
     },
+    {
+      provide: MSAL_INSTANCE,
+      useFactory: MSALInstanceFactory,
+    },
+    {
+      provide: MSAL_GUARD_CONFIG,
+      useFactory: MSALGuardConfigFactory,
+    },
+    {
+      provide: MSAL_INTERCEPTOR_CONFIG,
+      useFactory: MSALInterceptorConfigFactory,
+    },
+    MsalService,
+    MsalGuard,
+    MsalBroadcastService,
     { provide: LocationStrategy, useClass: PathLocationStrategy }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent, MsalRedirectComponent]
 })
 export class AppModule {}

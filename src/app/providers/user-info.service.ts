@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { KeycloakService } from 'keycloak-angular';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
+import { MsalService } from '@azure/msal-angular';
 
 interface KeycloakProfile {
   uid: string;
@@ -45,8 +46,11 @@ export class UserInfoService {
 
   constructor(
     private router: Router,
-    private readonly keycloak: KeycloakService,
-    private http: HttpClient) {}
+    //private readonly keycloak: KeycloakService,
+    private http: HttpClient,
+    private authService: MsalService,
+    )
+    {}
 
   public setKeycloakProfile(param: any) {
     this.keycloakProfile = { ...this.keycloakProfile, ...param };
@@ -54,35 +58,35 @@ export class UserInfoService {
 
   public syncSystemProfile() {
     // Synchronize Keycloak profile with one from backend API
-    return this.http.post(`${environment.apiBaseUrl}/user`, {}).subscribe({
-      next: (data) => {
-        this.systemProfile = data as SystemProfile;
-      },
-      error: (error) => {
-        console.log('ERROR', error);
-      }
-    });
+    // return this.http.post(`${environment.apiBaseUrl}/user`, {}).subscribe({
+    //   next: (data) => {
+    //     this.systemProfile = data as SystemProfile;
+    //   },
+    //   error: (error) => {
+    //     console.log('ERROR', error);
+    //   }
+    // });
   }
 
   public async syncKeycloakProfile() {
-    const keycloakProfile = await this.keycloak.loadUserProfile();
-    this.setKeycloakProfile({
-      uid: keycloakProfile.id as string,
-      email: keycloakProfile.email as string,
-      username: keycloakProfile.username as string,
-      firstName: keycloakProfile.firstName as string,
-      lastName: keycloakProfile.lastName as string
-    });
+    // const keycloakProfile = await this.keycloak.loadUserProfile();
+    // this.setKeycloakProfile({
+    //   uid: keycloakProfile.id as string,
+    //   email: keycloakProfile.email as string,
+    //   username: keycloakProfile.username as string,
+    //   firstName: keycloakProfile.firstName as string,
+    //   lastName: keycloakProfile.lastName as string
+    // });
   }
 
   public async initializeProfile() {
-    const isLoggedIn = await this.keycloak.isLoggedIn();
-    if (isLoggedIn) {
-      this.syncSystemProfile();
-      this.syncKeycloakProfile();
-    } else {
-      window.location.href = environment.myURL;
-      this.keycloakProfile = null;
-    }
+    // const isLoggedIn = await this.keycloak.isLoggedIn();
+    // if (isLoggedIn) {
+    //   this.syncSystemProfile();
+    //   this.syncKeycloakProfile();
+    // } else {
+    //   window.location.href = environment.myURL;
+    //   this.keycloakProfile = null;
+    // }
   }
 }
