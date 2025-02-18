@@ -36,7 +36,7 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.userInfo.syncSystemProfile().add(() => {
-      if (this.userInfo.b2cProfile?.username) {
+      if (this.userInfo.b2cProfile?.name) {
         this.accountForm.setValue({
           email: this.userInfo.b2cProfile.email,
           userRole: this.userInfo.systemProfile?.roles.includes('SuperAdmin')
