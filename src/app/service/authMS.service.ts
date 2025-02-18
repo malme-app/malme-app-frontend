@@ -66,12 +66,17 @@ export class AuthMSService {
           this.checkAndSetActiveAccount();
           if (this.authService.instance.getAllAccounts().length > 0) {
             const listClaims = this.getClaims(this.authService.instance.getActiveAccount()?.idTokenClaims as Record<string, any>);
+            const clientId = environment.msalConfig.auth.clientId;
             this.user.setB2cProfile({
               uid: listClaims.find(item => item.claim === "sub")?.value,
               email: (listClaims.find(item => item.claim === "emails")?.value as string)[0],
+              name: listClaims.find(item => item.claim === "name")?.value,
               firstName: listClaims.find(item => item.claim === "given_name")?.value,
-              lastName: listClaims.find(item => item.claim === "family_name")?.value
+              lastName: listClaims.find(item => item.claim === "family_name")?.value,
+              companyName: listClaims.find(item => item.claim === `extension_${clientId}_companyName`)?.value,
+              
             });
+            this.user.getAccessToken();
           }
         })
 
@@ -159,6 +164,9 @@ export class AuthMSService {
           await this.authService.loginRedirect({
             ...this.msalGuardConfig.authRequest
           } as RedirectRequest);
+
+          // this.user.getAuthorizeCode()
+
           // await this.authService.acquireTokenRedirect({
           //   ...this.msalGuardConfig.authRequest
           // } as RedirectRequest);
