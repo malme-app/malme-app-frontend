@@ -86,7 +86,7 @@
                     <form [formGroup]="groupForm" (ngSubmit)="onSubmitGroupForm()">
                         <div class="group-info">
                             <div>
-                                <mat-form-field>
+                                <!-- <mat-form-field>
                                     <mat-label>アカウント種類</mat-label>
                                     <mat-select required formControlName="type">
                                         <mat-option [value]="0">個人</mat-option>
@@ -94,12 +94,12 @@
                                         <mat-option [value]="2">大学</mat-option>
                                         <mat-option [value]="3">学生</mat-option>
                                     </mat-select>
-                                </mat-form-field>
+                                </mat-form-field> -->
                                 <mat-form-field>
                                     <mat-label>団体名 / 学校名 / 法人名</mat-label>
-                                    <input matInput type="text" formControlName="name" />
+                                    <input matInput type="text" formControlName="companyName" />
                                     <mat-error *ngIf="
-                                            groupFormControl.name.hasError(
+                                            groupFormControl.companyName.hasError(
                                                 'required'
                                             )
                                         ">
@@ -108,16 +108,16 @@
                                 </mat-form-field>
                                 <mat-form-field>
                                     <mat-label>部署名</mat-label>
-                                    <input matInput type="text" formControlName="department" />
+                                    <input matInput type="text" formControlName="departmentName" />
                                     <mat-error *ngIf="
-                                            groupFormControl.department.hasError(
+                                            groupFormControl.departmentName.hasError(
                                                 'required'
                                             )
                                         ">
                                         このフィールドを入力してください。
                                     </mat-error>
                                 </mat-form-field>
-                                <mat-form-field>
+                                <!-- <mat-form-field>
                                     <mat-label>郵便番号</mat-label>
                                     <input matInput type="text" formControlName="zipcode" />
                                     <mat-error *ngIf="
@@ -127,8 +127,8 @@
                                         ">
                                         このフィールドを入力してください。
                                     </mat-error>
-                                </mat-form-field>
-                                <mat-form-field>
+                                </mat-form-field> -->
+                                <!-- <mat-form-field>
                                     <mat-label>住所</mat-label>
                                     <input matInput type="text" formControlName="address" />
                                     <mat-error *ngIf="
@@ -138,8 +138,8 @@
                                         ">
                                         このフィールドを入力してください。
                                     </mat-error>
-                                </mat-form-field>
-                                <mat-form-field>
+                                </mat-form-field> -->
+                                <!-- <mat-form-field>
                                     <mat-label>TEL</mat-label>
                                     <input matInput type="tel" formControlName="tel" />
                                     <mat-error *ngIf="
@@ -149,7 +149,7 @@
                                         ">
                                         このフィールドを入力してください。
                                     </mat-error>
-                                </mat-form-field>
+                                </mat-form-field> -->
                             </div>
                             <div>
 

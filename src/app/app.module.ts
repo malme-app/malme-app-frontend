@@ -59,7 +59,7 @@ import { LogLevel as LogLevelMasl } from "@azure/msal-browser";
 // }
 
 export function loggerCallback(logLevel: LogLevelMasl, message: string) {
-  console.log(message);
+  // console.log(message);
 }
 
 export function MSALInstanceFactory(): IPublicClientApplication {

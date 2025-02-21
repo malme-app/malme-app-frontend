@@ -13,19 +13,19 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     //this.userInfo.syncSystemProfile();
-    this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.currentPlanName = data.plan.name;
-        }
-      },
-      error: () => {
-        this.currentPlanName = '';
-      }
-    });
+    // this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
+    //   next: (data: any) => {
+    //     if (data) {
+    //       this.currentPlanName = data.plan.name;
+    //     }
+    //   },
+    //   error: () => {
+    //     this.currentPlanName = '';
+    //   }
+    // });
   }
 
   goTutorial() {
-    // window.open('https:');
+    window.open('https://fresh-tachometer-148.notion.site/Malme-app-Hub-81aaa47e70af4d41ad5c68e011fad92b');
   }
 }

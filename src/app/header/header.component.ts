@@ -62,4 +62,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/']);
   }
 
+  navigateMalmePage() {
+    window.open('https://malme.app');
+  }
 }

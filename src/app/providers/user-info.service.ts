@@ -4,6 +4,7 @@ import { KeycloakService } from 'keycloak-angular';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
+import { map, Observable, switchMap } from 'rxjs';
 
 interface KeycloakProfile {
   uid: string;
@@ -16,8 +17,8 @@ interface KeycloakProfile {
 interface Group {
   id: number;
   status: number;
-  name: string;
-  department: string;
+  companyName: string;
+  departmentName: string;
   type: number;
   zipcode: string;
   address: string;
@@ -29,6 +30,17 @@ interface Group {
   licenses: number;
 }
 
+interface Company {
+  id: number;
+  status: number;
+  companyName: string;
+  departmentName: string;
+  bankName: string;
+  bankBranchName: string;
+  bankAccountType: string;
+  bankAccountNumber: string;
+  licenses: number;
+}
 interface SystemProfile {
   id: number;
   uid: string;
@@ -61,29 +73,27 @@ export class UserInfoService {
     console.log(this.b2cProfile, 'b2c profile')
   }
 
-  public syncSystemProfile(idToken?: string) {
-    const header = new HttpHeaders({
-      'Authorization': `Bearer ${idToken}`,
-    });
-    // Synchronize Keycloak profile with one from backend API
-    return this.http.post(`${environment.apiBaseUrl}/user/sync-b2c`, {}, { headers: header }).subscribe({
-      next: (data : any) => {
-        console.log(data)
-        this.systemProfile = {
-          id : data.id,
-          uid: data.azureB2CId,
-          roles : data.roles,
-          email: data.email,
-          group: {
-            id: data.company.id,
-            status: data.company.status,
-            name: data.company.companyName,
-            department: data.company.departmentName
-          },
-        } as SystemProfile
+  public syncSystemProfile() {
+    this.getAcessToken().subscribe({
+      next: (token) => {
+        const header = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+        });
+        console.log(Date.now(), 'time')
+        // setTimeout(() => {
+          this.http.post(`${environment.apiBaseUrl}/user/sync-b2c`, {}, { headers: header }).subscribe({
+            next: (res) => {
+              console.log('synced profile successfully', res)
+            },
+            error: (err) => {
+              console.log('error', err);
+            }
+          });
+        // }, 5000)
+
       },
-      error: (error) => {
-        console.log('ERROR', error);
+      error: (err) => {
+        console.error('error:', err);
       }
     });
   }
@@ -110,19 +120,59 @@ export class UserInfoService {
     // }
   }
 
-  getAccessToken() {
-    const request = {
-      scopes: environment.apiConfig.scopes
-    };
-    this.authService.acquireTokenSilent(request).subscribe({
-      next: (result) => {
-        console.log('Access Token:', result);
-        this.syncSystemProfile(result.idToken)
+  getSystemProfile(): void {
+    this.getAcessToken().subscribe({
+      next: (token) => {
+        const header = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+        });
+        this.http.get(`${environment.apiBaseUrl}/user/profile`, { headers: header }).subscribe({
+          next: (res: any) => {
+            const group: Company = {
+              id: res.company.id,
+              status: res.company.status,
+              companyName: res.company.companyName,
+              departmentName: res.company.departmentName,
+              bankName: res.company.bankName,
+              bankBranchName: res.company.bankBranchName,
+              bankAccountType: res.company.bankAccountType,
+              bankAccountNumber: res.company.bankAccountNumber,
+              licenses: res.company.licenses,
+            }
+            this.systemProfile = {
+              id: res.id,
+              uid: res.azureB2CId,
+              roles: res.roles,
+              email: res.email,
+              group: group,
+            } as SystemProfile
+            console.log(this.systemProfile, 'system profile');
+
+          },
+          error: (err) => {
+            console.log(err);
+          }
+        })
       },
       error: (err) => {
-        console.error('Token error:', err);
-        this.authService.acquireTokenRedirect(request);
+        console.log(err);
       }
+    })
+  }
+
+  getAcessToken(): Observable<string> {
+    const request = { scopes: environment.apiConfig.scopes };
+    return new Observable<string>((observer) => {
+      this.authService.acquireTokenSilent(request).subscribe({
+        next: (result) => {
+          observer.next(result.accessToken);
+          observer.complete();
+        },
+        error: (err) => {
+          console.error('Token error:', err);
+          observer.error(err);
+        }
+      });
     });
   }
 

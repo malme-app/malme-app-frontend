@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
@@ -13,18 +13,18 @@ import { environment } from 'src/environments/environment';
 export class ProfileComponent implements OnInit {
   hasGroup = false;
   accountForm = new FormGroup({
-    email: new FormControl('', Validators.required),
+    email: new FormControl({ value: '', disabled: true }, Validators.required),
     userRole: new FormControl({ value: '', disabled: true }, Validators.required),
     firstName: new FormControl('', Validators.required),
     lastName: new FormControl('', Validators.required)
   });
   groupForm = new FormGroup({
-    name: new FormControl('', Validators.required),
-    department: new FormControl('', Validators.required),
-    type: new FormControl(0, Validators.required),
-    zipcode: new FormControl('', Validators.required),
-    address: new FormControl('', Validators.required),
-    tel: new FormControl('', Validators.required),
+    companyName: new FormControl('', Validators.required),
+    departmentName: new FormControl('', Validators.required),
+    // type: new FormControl(0, Validators.required),
+    // zipcode: new FormControl('', Validators.required),
+    // address: new FormControl('', Validators.required),
+    // tel: new FormControl('', Validators.required),
     bankName: new FormControl('', Validators.required),
     bankBranchName: new FormControl('', Validators.required),
     bankAccountType: new FormControl('', Validators.required),
@@ -32,39 +32,50 @@ export class ProfileComponent implements OnInit {
     licenses: new FormControl({ value: 0, disabled: true })
   });
 
-  constructor(public userInfo: UserInfoService, private http: HttpClient) {}
+  constructor(public userInfo: UserInfoService, private http: HttpClient) { }
 
   ngOnInit() {
-    this.userInfo.syncSystemProfile().add(() => {
-      if (this.userInfo.b2cProfile?.name) {
-        this.accountForm.setValue({
-          email: this.userInfo.b2cProfile.email,
-          userRole: this.userInfo.systemProfile?.roles.includes('SuperAdmin')
-            ? 'SuperAdmin'
-            : this.userInfo.systemProfile?.roles.includes('Admin')
+
+    // goi api get profile, set lai form
+    // update systemProfile va b2cProfile
+
+    // this.userInfo.getSystemProfile().subscribe({
+    //   next: (profile) => {
+    //     this.userInfo.systemProfile = profile;
+
+    if (this.userInfo.b2cProfile?.name) {
+      this.accountForm.setValue({
+        email: this.userInfo.b2cProfile.email,
+        userRole: this.userInfo.systemProfile?.roles.includes('SuperAdmin')
+          ? 'SuperAdmin'
+          : this.userInfo.systemProfile?.roles.includes('Admin')
             ? 'Admin'
             : '',
-          firstName: this.userInfo.b2cProfile.firstName ?? '',
-          lastName: this.userInfo.b2cProfile.lastName ?? ''
-        });
-      }
-      if (this.userInfo.systemProfile && this.userInfo.systemProfile.group) {
-        this.hasGroup = true;
-        this.groupForm.setValue({
-          type: this.userInfo.systemProfile?.group?.type ?? null,
-          name: this.userInfo.systemProfile?.group?.name ?? null,
-          department: this.userInfo.systemProfile?.group?.department ?? null,
-          zipcode: this.userInfo.systemProfile?.group?.zipcode ?? null,
-          address: this.userInfo.systemProfile?.group?.address ?? null,
-          tel: this.userInfo.systemProfile?.group?.tel ?? null,
-          bankName: this.userInfo.systemProfile?.group?.bankName ?? null,
-          bankBranchName: this.userInfo.systemProfile?.group?.bankBranchName ?? null,
-          bankAccountType: this.userInfo.systemProfile?.group?.bankAccountType ?? null,
-          bankAccountNumber: this.userInfo.systemProfile?.group?.bankAccountNumber ?? null,
-          licenses: this.userInfo.systemProfile?.group?.licenses ?? 0
-        });
-      }
-    });
+        firstName: this.userInfo.b2cProfile.firstName ?? '',
+        lastName: this.userInfo.b2cProfile.lastName ?? ''
+      });
+    }
+
+    if (this.userInfo.systemProfile && this.userInfo.systemProfile.group) {
+      this.hasGroup = true;
+      this.groupForm.setValue({
+        // type: this.userInfo.systemProfile?.group?.type ?? null,
+        companyName: this.userInfo.systemProfile?.group?.companyName ?? null,
+        departmentName: this.userInfo.systemProfile?.group?.departmentName ?? null,
+        // zipcode: this.userInfo.systemProfile?.group?.zipcode ?? null,
+        // address: this.userInfo.systemProfile?.group?.address ?? null,
+        // tel: this.userInfo.systemProfile?.group?.tel ?? null,
+        bankName: this.userInfo.systemProfile?.group?.bankName ?? null,
+        bankBranchName: this.userInfo.systemProfile?.group?.bankBranchName ?? null,
+        bankAccountType: this.userInfo.systemProfile?.group?.bankAccountType ?? null,
+        bankAccountNumber: this.userInfo.systemProfile?.group?.bankAccountNumber ?? null,
+        licenses: this.userInfo.systemProfile?.group?.licenses ?? 0
+      });
+    }
+
+    //   },
+    //   error: (error) => console.error('Error fetching profile:', error)
+    // });
   }
 
   get accountFormControl() {
@@ -76,57 +87,85 @@ export class ProfileComponent implements OnInit {
   }
 
   onSubmitAccountForm() {
-    this.http
-      .put(`${environment.apiBaseUrl}/user`, {
-        id: this.userInfo.systemProfile?.id ?? 0,
-        licenses: this.groupForm.controls.licenses.value,
-        ...this.accountForm.value
+    this.userInfo.getAcessToken().subscribe({
+      next: (token) => {
+        console.log('Access Token:', token)
+        const header = new HttpHeaders({
+          'Authorization': `Bearer ${token}`,
+        });
+        this.http
+          .patch(`${environment.apiBaseUrl}/user/update-user`, {
+            id: this.userInfo.systemProfile?.id ?? 0,
+            licenses: this.groupForm.controls.licenses.value,
+            ...this.accountForm.value
+          }, { headers: header })
+          .subscribe({
+            next: (data) => {
+              console.log(data)
+              // this.userInfo.setB2cProfile(this.accountForm.value);
+            },
+            error: (_error) => {
+              console.log('error = ', _error);
+            }
+          });
+      },
+      error: (err) => console.error(err)
+    });
+
+  }
+
+  onSubmitGroupForm() {
+    if (!this.hasGroup) {
+      this.userInfo.getAcessToken().subscribe({
+        next: (token) => {
+          const header = new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+          });
+          this.http
+            .patch(`${environment.apiBaseUrl}/user/update-user`, {
+              userId: this.userInfo.systemProfile?.id ?? 0,
+              licenses: this.groupForm.controls.licenses.value,
+              ...this.groupForm.value
+            }, { headers: header })
+            .subscribe({
+              next: (_data) => {
+                this.hasGroup = true;
+                console.log(_data)
+              },
+              error: (_error) => {
+                console.log('error = ', _error);
+              }
+            });
+        }
       })
-      .subscribe({
-        next: (data) => {
-          if (data == 204) {
-            this.userInfo.setKeycloakProfile(this.accountForm.value);
-          } else {
-            console.log('error');
-          }
+    } else {
+      this.userInfo.getAcessToken().subscribe({
+        next: (token) => {
+          const header = new HttpHeaders({
+            'Authorization': `Bearer ${token}`,
+          });
+
+          this.http
+            .patch(`${environment.apiBaseUrl}/user/update-user`, {
+              userId: this.userInfo.systemProfile?.id ?? 0,
+              licenses: this.groupForm.controls.licenses.value,
+              ...this.groupForm.value
+            }, { headers: header })
+            .subscribe({
+              next: (_data) => {
+                this.hasGroup = true;
+                console.log(_data)
+              },
+              error: (_error) => {
+                console.log('error = ', _error);
+              }
+            });
         },
         error: (_error) => {
           console.log('error = ', _error);
         }
       });
-  }
 
-  onSubmitGroupForm() {
-    if (!this.hasGroup) {
-      this.http
-        .post(`${environment.apiBaseUrl}/group`, {
-          userId: this.userInfo.systemProfile?.id ?? 0,
-          licenses: this.groupForm.controls.licenses.value,
-          ...this.groupForm.value
-        })
-        .subscribe({
-          next: (_data) => {
-            this.hasGroup = true;
-          },
-          error: (_error) => {
-            console.log('error = ', _error);
-          }
-        });
-    } else {
-      this.http
-        .put(`${environment.apiBaseUrl}/group`, {
-          userId: this.userInfo.systemProfile?.id ?? 0,
-          licenses: this.groupForm.controls.licenses.value,
-          ...this.groupForm.value
-        })
-        .subscribe({
-          next: (_data) => {
-            this.hasGroup = true;
-          },
-          error: (_error) => {
-            console.log('error = ', _error);
-          }
-        });
     }
   }
 }
