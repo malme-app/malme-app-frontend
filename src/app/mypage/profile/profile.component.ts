@@ -1,7 +1,8 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { UserInfoService } from 'src/app/providers/user-info.service';
 import { environment } from 'src/environments/environment';
 
@@ -21,61 +22,51 @@ export class ProfileComponent implements OnInit {
   groupForm = new FormGroup({
     companyName: new FormControl('', Validators.required),
     departmentName: new FormControl('', Validators.required),
-    // type: new FormControl(0, Validators.required),
-    // zipcode: new FormControl('', Validators.required),
-    // address: new FormControl('', Validators.required),
-    // tel: new FormControl('', Validators.required),
     bankName: new FormControl('', Validators.required),
     bankBranchName: new FormControl('', Validators.required),
     bankAccountType: new FormControl('', Validators.required),
     bankAccountNumber: new FormControl('', Validators.required),
     licenses: new FormControl({ value: 0, disabled: true })
   });
+  private userInfoSubscription!: Subscription;
 
   constructor(public userInfo: UserInfoService, private http: HttpClient) { }
 
   ngOnInit() {
 
-    // goi api get profile, set lai form
-    // update systemProfile va b2cProfile
+    this.userInfoSubscription = this.userInfo.userInfo$.subscribe(res => {
+      if (res) {
+        if (this.userInfo.b2cProfile?.name) {
+          this.accountForm.setValue({
+            email: this.userInfo.b2cProfile.email,
+            userRole: this.userInfo.systemProfile?.roles.includes('SuperAdmin')
+              ? 'SuperAdmin'
+              : this.userInfo.systemProfile?.roles.includes('Admin')
+                ? 'Admin'
+                : '',
+            firstName: this.userInfo.b2cProfile.firstName ?? '',
+            lastName: this.userInfo.b2cProfile.lastName ?? ''
+          });
+        }
 
-    // this.userInfo.getSystemProfile().subscribe({
-    //   next: (profile) => {
-    //     this.userInfo.systemProfile = profile;
+        if (this.userInfo.systemProfile && this.userInfo.systemProfile.group) {
+          this.hasGroup = true;
+          this.groupForm.setValue({
+            companyName: this.userInfo.systemProfile?.group?.companyName ?? null,
+            departmentName: this.userInfo.systemProfile?.group?.departmentName ?? null,
+            bankName: this.userInfo.systemProfile?.group?.bankName ?? null,
+            bankBranchName: this.userInfo.systemProfile?.group?.bankBranchName ?? null,
+            bankAccountType: this.userInfo.systemProfile?.group?.bankAccountType ?? null,
+            bankAccountNumber: this.userInfo.systemProfile?.group?.bankAccountNumber ?? null,
+            licenses: this.userInfo.systemProfile?.group?.licenses ?? 0
+          });
+        }
+      }
+    });
+  }
 
-    if (this.userInfo.b2cProfile?.name) {
-      this.accountForm.setValue({
-        email: this.userInfo.b2cProfile.email,
-        userRole: this.userInfo.systemProfile?.roles.includes('SuperAdmin')
-          ? 'SuperAdmin'
-          : this.userInfo.systemProfile?.roles.includes('Admin')
-            ? 'Admin'
-            : '',
-        firstName: this.userInfo.b2cProfile.firstName ?? '',
-        lastName: this.userInfo.b2cProfile.lastName ?? ''
-      });
-    }
-
-    if (this.userInfo.systemProfile && this.userInfo.systemProfile.group) {
-      this.hasGroup = true;
-      this.groupForm.setValue({
-        // type: this.userInfo.systemProfile?.group?.type ?? null,
-        companyName: this.userInfo.systemProfile?.group?.companyName ?? null,
-        departmentName: this.userInfo.systemProfile?.group?.departmentName ?? null,
-        // zipcode: this.userInfo.systemProfile?.group?.zipcode ?? null,
-        // address: this.userInfo.systemProfile?.group?.address ?? null,
-        // tel: this.userInfo.systemProfile?.group?.tel ?? null,
-        bankName: this.userInfo.systemProfile?.group?.bankName ?? null,
-        bankBranchName: this.userInfo.systemProfile?.group?.bankBranchName ?? null,
-        bankAccountType: this.userInfo.systemProfile?.group?.bankAccountType ?? null,
-        bankAccountNumber: this.userInfo.systemProfile?.group?.bankAccountNumber ?? null,
-        licenses: this.userInfo.systemProfile?.group?.licenses ?? 0
-      });
-    }
-
-    //   },
-    //   error: (error) => console.error('Error fetching profile:', error)
-    // });
+  ngOnDestroy() {
+    this.userInfoSubscription.unsubscribe();
   }
 
   get accountFormControl() {
@@ -87,85 +78,86 @@ export class ProfileComponent implements OnInit {
   }
 
   onSubmitAccountForm() {
-    this.userInfo.getAcessToken().subscribe({
-      next: (token) => {
-        console.log('Access Token:', token)
-        const header = new HttpHeaders({
-          'Authorization': `Bearer ${token}`,
-        });
-        this.http
-          .patch(`${environment.apiBaseUrl}/user/update-user`, {
-            id: this.userInfo.systemProfile?.id ?? 0,
-            licenses: this.groupForm.controls.licenses.value,
-            ...this.accountForm.value
-          }, { headers: header })
-          .subscribe({
-            next: (data) => {
-              console.log(data)
-              // this.userInfo.setB2cProfile(this.accountForm.value);
-            },
-            error: (_error) => {
-              console.log('error = ', _error);
-            }
-          });
-      },
-      error: (err) => console.error(err)
-    });
-
-  }
-
-  onSubmitGroupForm() {
-    if (!this.hasGroup) {
-      this.userInfo.getAcessToken().subscribe({
-        next: (token) => {
-          const header = new HttpHeaders({
-            'Authorization': `Bearer ${token}`,
-          });
-          this.http
-            .patch(`${environment.apiBaseUrl}/user/update-user`, {
-              userId: this.userInfo.systemProfile?.id ?? 0,
-              licenses: this.groupForm.controls.licenses.value,
-              ...this.groupForm.value
-            }, { headers: header })
-            .subscribe({
-              next: (_data) => {
-                this.hasGroup = true;
-                console.log(_data)
-              },
-              error: (_error) => {
-                console.log('error = ', _error);
-              }
-            });
-        }
-      })
-    } else {
-      this.userInfo.getAcessToken().subscribe({
-        next: (token) => {
-          const header = new HttpHeaders({
-            'Authorization': `Bearer ${token}`,
-          });
-
-          this.http
-            .patch(`${environment.apiBaseUrl}/user/update-user`, {
-              userId: this.userInfo.systemProfile?.id ?? 0,
-              licenses: this.groupForm.controls.licenses.value,
-              ...this.groupForm.value
-            }, { headers: header })
-            .subscribe({
-              next: (_data) => {
-                this.hasGroup = true;
-                console.log(_data)
-              },
-              error: (_error) => {
-                console.log('error = ', _error);
-              }
-            });
+    this.http.patch(`${environment.apiBaseUrl}/user/update-user`, {
+      id: this.userInfo.systemProfile?.id ?? 0,
+      licenses: this.groupForm.controls.licenses.value,
+      ...this.accountForm.value
+    })
+      .subscribe({
+        next: () => {
+          this.userInfo.setB2cProfile(this.accountForm.value);
         },
         error: (_error) => {
           console.log('error = ', _error);
         }
       });
+  }
 
+  onSubmitGroupForm() {
+    if (!this.hasGroup) {
+      this.http.patch(`${environment.apiBaseUrl}/user/update-user`, {
+        userId: this.userInfo.systemProfile?.id ?? 0,
+        licenses: this.groupForm.controls.licenses.value,
+        ...this.groupForm.value
+      })
+        .subscribe({
+          next: (res: any) => {
+            this.hasGroup = true;
+            const group: any = {
+              id: res.company.id,
+              status: res.company.status,
+              companyName: res.company.companyName,
+              departmentName: res.company.departmentName,
+              bankName: res.company.bankName,
+              bankBranchName: res.company.bankBranchName,
+              bankAccountType: res.company.bankAccountType,
+              bankAccountNumber: res.company.bankAccountNumber,
+            }
+
+            this.userInfo.systemProfile = {
+              id: res.id,
+              uid: res.azureB2CId,
+              email: res.email,
+              roles: res.roles,
+              group: group ?? null,
+            }
+          },
+          error: (_error) => {
+            console.log('error = ', _error);
+          }
+        });
+    } else {
+      this.http.patch(`${environment.apiBaseUrl}/user/update-user`, {
+        userId: this.userInfo.systemProfile?.id ?? 0,
+        licenses: this.groupForm.controls.licenses.value,
+        ...this.groupForm.value
+      })
+        .subscribe({
+          next: (res: any) => {
+            this.hasGroup = true;
+            const group: any = {
+              id: res.company.id,
+              status: res.company.status,
+              companyName: res.company.companyName,
+              departmentName: res.company.departmentName,
+              bankName: res.company.bankName,
+              bankBranchName: res.company.bankBranchName,
+              bankAccountType: res.company.bankAccountType,
+              bankAccountNumber: res.company.bankAccountNumber,
+            }
+
+            this.userInfo.systemProfile = {
+              id: res.id,
+              uid: res.azureB2CId,
+              email: res.email,
+              roles: res.roles,
+              group: group ?? null,
+            }
+          },
+          error: (_error) => {
+            console.log('error = ', _error);
+          }
+        });
     }
   }
 }

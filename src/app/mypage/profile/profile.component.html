@@ -107,10 +107,21 @@
                                     </mat-error>
                                 </mat-form-field>
                                 <mat-form-field>
-                                    <mat-label>部署名</mat-label>
-                                    <input matInput type="text" formControlName="departmentName" />
+                                    <mat-label>銀行名</mat-label>
+                                    <input matInput type="text" formControlName="bankName" />
                                     <mat-error *ngIf="
-                                            groupFormControl.departmentName.hasError(
+                                            groupFormControl.bankName.hasError(
+                                                'required'
+                                            )
+                                        ">
+                                        このフィールドを入力してください。
+                                    </mat-error>
+                                </mat-form-field>
+                                <mat-form-field>
+                                    <mat-label>口座種別</mat-label>
+                                    <input matInput type="text" formControlName="bankAccountType" />
+                                    <mat-error *ngIf="
+                                            groupFormControl.bankAccountType.hasError(
                                                 'required'
                                             )
                                         ">
@@ -153,11 +164,12 @@
                             </div>
                             <div>
 
+
                                 <mat-form-field>
-                                    <mat-label>銀行名</mat-label>
-                                    <input matInput type="text" formControlName="bankName" />
+                                    <mat-label>部署名</mat-label>
+                                    <input matInput type="text" formControlName="departmentName" />
                                     <mat-error *ngIf="
-                                            groupFormControl.bankName.hasError(
+                                            groupFormControl.departmentName.hasError(
                                                 'required'
                                             )
                                         ">
@@ -175,17 +187,7 @@
                                         このフィールドを入力してください。
                                     </mat-error>
                                 </mat-form-field>
-                                <mat-form-field>
-                                    <mat-label>口座種別</mat-label>
-                                    <input matInput type="text" formControlName="bankAccountType" />
-                                    <mat-error *ngIf="
-                                            groupFormControl.bankAccountType.hasError(
-                                                'required'
-                                            )
-                                        ">
-                                        このフィールドを入力してください。
-                                    </mat-error>
-                                </mat-form-field>
+
                                 <mat-form-field>
                                     <mat-label>口座番号</mat-label>
                                     <input matInput type="tel" formControlName="bankAccountNumber" />

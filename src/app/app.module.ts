@@ -35,6 +35,7 @@ import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { MsalInterceptorConfiguration, MsalGuardConfiguration, MsalModule, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG, MsalBroadcastService, MsalGuard, MsalInterceptor, MsalService, MsalRedirectComponent } from '@azure/msal-angular';
 import { IPublicClientApplication, PublicClientApplication, BrowserCacheLocation, InteractionType } from '@azure/msal-browser';
 import { LogLevel as LogLevelMasl } from "@azure/msal-browser";
+import { httpInterceptorProviders } from './interceptors/auth.interceptor';
 
 // function initializeKeycloak(keycloak: KeycloakService) {
 //   return () =>
@@ -169,7 +170,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     MsalService,
     MsalGuard,
     MsalBroadcastService,
-    { provide: LocationStrategy, useClass: PathLocationStrategy }
+    { provide: LocationStrategy, useClass: PathLocationStrategy },
+    httpInterceptorProviders
   ],
   bootstrap: [AppComponent, MsalRedirectComponent]
 })

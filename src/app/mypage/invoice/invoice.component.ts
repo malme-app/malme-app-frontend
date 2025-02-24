@@ -18,6 +18,7 @@ export interface SaleInfo {
   contractTitle: string;
   contractContent: string;
   contractUrl: string;
+  paymentStatus: number;
 }
 @Component({
   selector: 'app-invoice',
@@ -32,26 +33,29 @@ export class InvoiceComponent implements OnInit {
     paymentMethod: '',
     contractTitle: '',
     contractContent: '',
-    contractUrl: ''
+    contractUrl: '',
+    paymentStatus: 0
   };
   displayedColumns: string[] = ['paymentDay', 'plan', 'period', 'method', 'amount'];
   dataSource: TableRow[] = [];
   hasExpirationDate = true;
 
-  constructor(public dialog: MatDialog, private http: HttpClient) {}
+  constructor(public dialog: MatDialog, private http: HttpClient) { }
 
   ngOnInit() {
     this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
       next: (data: any) => {
         if (data) {
+          console.log(data, 'last sale')
           this.currentSaleInfo = {
-            name: data.plan.name,
+            name: data?.plan?.name ?? '',
             expirationStart: data.expirationStart && new Date(data.expirationStart),
             expirationEnd: data.expirationEnd && new Date(data.expirationEnd),
             paymentMethod: data.paymentMethod?.name ?? '',
             contractTitle: data.contract?.title ?? '',
             contractContent: data.contract?.content ?? '',
-            contractUrl: data.contract?.url ?? ''
+            contractUrl: data.contract?.url ?? '',
+            paymentStatus: data.status,
           };
           console.log('current plan =' + JSON.stringify(this.currentSaleInfo, null, 2));
         }
@@ -64,17 +68,16 @@ export class InvoiceComponent implements OnInit {
     this.http.get(`${environment.apiBaseUrl}/sale/list`).subscribe({
       next: (data: any) => {
         const paymentHistories: any[] = [];
+        console.log(data, 'list invoice')
         data.forEach((sale: any) => {
           paymentHistories.push(
-            ...sale.paymentHistories.map((e: any) => {
-              return {
-                payDate: new Date(e.payDate),
-                plan: sale.plan.name,
-                closingDate: new Date(e.closingMonth),
-                paymentMethod: sale.paymentMethod.name,
-                amount: e.price
-              };
-            })
+            {
+              payDate: new Date(sale.payAt),
+              plan: sale.name ?? null,
+              closingDate: new Date(sale.expirationEnd),
+              paymentMethod: sale?.paymentMethod?.name ?? null,
+              amount: sale.price
+            }
           );
         });
         this.dataSource = paymentHistories;

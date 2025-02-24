@@ -1,10 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { KeycloakService } from 'keycloak-angular';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
-import { map, Observable, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 interface KeycloakProfile {
   uid: string;
@@ -19,10 +18,10 @@ interface Group {
   status: number;
   companyName: string;
   departmentName: string;
-  type: number;
-  zipcode: string;
-  address: string;
-  tel: string;
+  // type: number;
+  // zipcode: string;
+  // address: string;
+  // tel: string;
   bankName: string;
   bankBranchName: string;
   bankAccountType: string;
@@ -56,68 +55,28 @@ export class UserInfoService {
   public keycloakProfile: KeycloakProfile | null = null;
   public systemProfile: SystemProfile | null = null;
   public b2cProfile: any | null = null;
-
+  private tokenKey: string = 'malmeapp_token';
+  private userInfoSubject = new BehaviorSubject<any>(null);
+  userInfo$ = this.userInfoSubject.asObservable();
+  
   constructor(
-    private router: Router,
-    //private readonly keycloak: KeycloakService,
     private http: HttpClient,
     private authService: MsalService,
   ) { }
 
-  public setKeycloakProfile(param: any) {
-    // this.keycloakProfile = { ...this.keycloakProfile, ...param };
-  }
-
   public setB2cProfile(param: any) {
     this.b2cProfile = { ...this.b2cProfile, ...param };
-    console.log(this.b2cProfile, 'b2c profile')
   }
 
   public syncSystemProfile() {
-    this.getAcessToken().subscribe({
-      next: (token) => {
-        const header = new HttpHeaders({
-          'Authorization': `Bearer ${token}`,
-        });
-        console.log(Date.now(), 'time')
-        // setTimeout(() => {
-          this.http.post(`${environment.apiBaseUrl}/user/sync-b2c`, {}, { headers: header }).subscribe({
-            next: (res) => {
-              console.log('synced profile successfully', res)
-            },
-            error: (err) => {
-              console.log('error', err);
-            }
-          });
-        // }, 5000)
-
+    this.http.post(`${environment.apiBaseUrl}/user/sync-b2c`, {}).subscribe({
+      next: () => {
+        console.log('Synced b2c profile successfully.')
       },
       error: (err) => {
-        console.error('error:', err);
+        console.log('error', err);
       }
-    });
-  }
-
-  public async syncKeycloakProfile() {
-    // const keycloakProfile = await this.keycloak.loadUserProfile();
-    // this.setKeycloakProfile({
-    //   uid: keycloakProfile.id as string,
-    //   email: keycloakProfile.email as string,
-    //   username: keycloakProfile.username as string,
-    //   firstName: keycloakProfile.firstName as string,
-    //   lastName: keycloakProfile.lastName as string
-    // });
-  }
-
-  public async initializeProfile() {
-    // const isLoggedIn = await this.keycloak.isLoggedIn();
-    // if (isLoggedIn) {
-    //   this.syncSystemProfile();
-    //   this.syncKeycloakProfile();
-    // } else {
-    //   window.location.href = environment.myURL;
-    //   this.keycloakProfile = null;
-    // }
+    })
   }
 
   getSystemProfile(): void {
@@ -165,6 +124,7 @@ export class UserInfoService {
     return new Observable<string>((observer) => {
       this.authService.acquireTokenSilent(request).subscribe({
         next: (result) => {
+          localStorage.setItem(this.tokenKey, result.accessToken);
           observer.next(result.accessToken);
           observer.complete();
         },
@@ -174,6 +134,52 @@ export class UserInfoService {
         }
       });
     });
+  }
+
+  public getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  public setUserProfile() {
+    this.http.get(`${environment.apiBaseUrl}/user/profile`).subscribe({
+      next: (res: any) => {
+        let group: any = {}
+        if (res.company) {
+          group = {
+            id: res.company.id,
+            status: res.company.status,
+            companyName: res.company.companyName,
+            departmentName: res.company.departmentName,
+            bankName: res.company.bankName,
+            bankBranchName: res.company.bankBranchName,
+            bankAccountType: res.company.bankAccountType,
+            bankAccountNumber: res.company.bankAccountNumber,
+            licenses: 0
+          }
+        }
+
+        this.b2cProfile = {
+          id: res.azureB2CId,
+          email: res.email,
+          name: res.displayName,
+          firstName: res.firstName,
+          lastName: res.lastName
+        }
+
+        this.systemProfile = {
+          id: res.id,
+          uid: res.azureB2CId,
+          email: res.email,
+          roles: res.roles,
+          group: group ?? null,
+        } as SystemProfile
+
+        this.userInfoSubject.next(this.systemProfile);
+      },
+      error: (err) => {
+        console.log('error', err)
+      }
+    })
   }
 
 }

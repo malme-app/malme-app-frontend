@@ -39,7 +39,6 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     console.log('AppComponent initializing');
     this.authMs.initMSAL();
-    this.userInfo.initializeProfile();
   }
 
   ngAfterViewInit() {
