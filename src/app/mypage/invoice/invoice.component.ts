@@ -73,9 +73,9 @@ export class InvoiceComponent implements OnInit {
           paymentHistories.push(
             {
               payDate: new Date(sale.payAt),
-              plan: sale.name ?? null,
+              plan: sale?.plan?.name ?? '',
               closingDate: new Date(sale.expirationEnd),
-              paymentMethod: sale?.paymentMethod?.name ?? null,
+              paymentMethod: sale?.paymentMethod?.name ?? '',
               amount: sale.price
             }
           );

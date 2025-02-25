@@ -19,7 +19,7 @@ import {
 } from '@azure/msal-browser';
 import { filter, Subject, takeUntil } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { UserInfoService } from '../providers/user-info.service';
+import { tokenKey, UserInfoService } from '../providers/user-info.service';
 
 type IdTokenClaimsWithPolicyId = IdTokenClaims & {
   acr?: string;
@@ -77,6 +77,8 @@ export class AuthMSService {
             this.user.syncSystemProfile();
             this.user.getAcessToken();
             this.user.setUserProfile();
+          } else {
+            this.login();
           }
         })
 
@@ -181,7 +183,9 @@ export class AuthMSService {
       .handleRedirectPromise()
       .then((tokenResponse) => {
         if (!tokenResponse) {
-          // this.user.setUserProfile(null);
+          this.user.systemProfile = null;
+          this.user.b2cProfile = null;
+          localStorage.removeItem(tokenKey);
           this.authService.logoutRedirect();
         }
         // else {

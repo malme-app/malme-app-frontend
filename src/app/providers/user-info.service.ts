@@ -48,6 +48,8 @@ interface SystemProfile {
   group: Group | null;
 }
 
+export const tokenKey: string = 'malmeapp_token';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -55,7 +57,6 @@ export class UserInfoService {
   public keycloakProfile: KeycloakProfile | null = null;
   public systemProfile: SystemProfile | null = null;
   public b2cProfile: any | null = null;
-  private tokenKey: string = 'malmeapp_token';
   private userInfoSubject = new BehaviorSubject<any>(null);
   userInfo$ = this.userInfoSubject.asObservable();
   
@@ -124,7 +125,7 @@ export class UserInfoService {
     return new Observable<string>((observer) => {
       this.authService.acquireTokenSilent(request).subscribe({
         next: (result) => {
-          localStorage.setItem(this.tokenKey, result.accessToken);
+          localStorage.setItem(tokenKey, result.accessToken);
           observer.next(result.accessToken);
           observer.complete();
         },
@@ -137,7 +138,7 @@ export class UserInfoService {
   }
 
   public getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    return localStorage.getItem(tokenKey);
   }
 
   public setUserProfile() {
