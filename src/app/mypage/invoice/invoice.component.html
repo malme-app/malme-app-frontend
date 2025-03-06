@@ -87,7 +87,7 @@
                     </div>
                     <div>
                         <div class="bold">Payment Status</div>
-                        <div class="mt-10">{{ currentSaleInfo.paymentStatus === 1 ? 'Paid' : 'Not Paid' }}</div>
+                        <div class="mt-10" *ngIf="currentSaleInfo.paymentStatus !== -1">{{ currentSaleInfo.paymentStatus === 1 ? 'Paid' : 'Not Paid' }}</div>
                     </div>
                 </div>
             </mat-card-content>

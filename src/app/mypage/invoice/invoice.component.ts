@@ -54,13 +54,14 @@ export class InvoiceComponent implements OnInit {
             contractTitle: data.contract?.title ?? '',
             contractContent: data.contract?.content ?? '',
             contractUrl: data.contract?.url ?? '',
-            paymentStatus: data.status,
+            paymentStatus: data.status ?? -1,
           };
           console.log('current plan =' + JSON.stringify(this.currentSaleInfo, null, 2));
         }
       },
       error: (_error) => {
         this.currentSaleInfo.name = '';
+        this.currentSaleInfo.paymentStatus = -1;
         this.hasExpirationDate = false;
       }
     });

@@ -86,6 +86,7 @@ export class ProfileComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           this.setSystemProfile(res);
+          this.userInfo.setB2cProfile(this.accountForm.value);
         },
         error: (_error) => {
           console.log('error = ', _error);

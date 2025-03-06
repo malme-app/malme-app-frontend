@@ -78,6 +78,7 @@ export class UserInfoService {
         this.loadingSubject.next(false);
       },
       error: (err) => {
+        this.loadingSubject.next(false);
         console.log('error', err);
       }
     })
@@ -109,7 +110,6 @@ export class UserInfoService {
               email: res.email,
               group: group,
             } as SystemProfile
-            console.log(this.systemProfile, 'system profile');
 
           },
           error: (err) => {

@@ -17,8 +17,10 @@ export class DashboardComponent implements OnInit {
     this.userInfo.syncSystemProfile();
     this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
       next: (data: any) => {
-        if (data) {
+        if (data && data.plan && data.plan.name) {
           this.currentPlanName = data.plan.name;
+        } else {
+          this.currentPlanName = '';
         }
       },
       error: () => {
