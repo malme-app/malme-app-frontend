@@ -28,6 +28,7 @@ type IdTokenClaimsWithPolicyId = IdTokenClaims & {
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
   private readonly _destroying$ = new Subject<void>();
+  
   constructor(
     private router: Router,
     // private readonly keycloak: KeycloakService,

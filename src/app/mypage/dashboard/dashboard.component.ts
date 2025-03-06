@@ -9,9 +9,11 @@ import { HttpClient } from '@angular/common/http';
 })
 export class DashboardComponent implements OnInit {
   currentPlanName = '';
-  constructor(public userInfo: UserInfoService, private http: HttpClient) {}
+  isLoading: boolean = true;
+  constructor(public userInfo: UserInfoService, private http: HttpClient) { }
 
   ngOnInit() {
+    this.userInfo.loadingSubject.subscribe((res) => this.isLoading = res);
     this.userInfo.syncSystemProfile();
     this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
       next: (data: any) => {

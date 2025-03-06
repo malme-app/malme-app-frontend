@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 interface KeycloakProfile {
   uid: string;
@@ -59,6 +59,7 @@ export class UserInfoService {
   public keycloakProfile: KeycloakProfile | null = null;
   public systemProfile: SystemProfile | null = null;
   public b2cProfile: any | null = null;
+  public loadingSubject = new Subject<boolean>();
   private userInfoSubject = new BehaviorSubject<any>(null);
   userInfo$ = this.userInfoSubject.asObservable();
   
@@ -74,7 +75,7 @@ export class UserInfoService {
   public syncSystemProfile() {
     this.http.post(`${environment.apiBaseUrl}/user/sync-b2c`, {}).subscribe({
       next: () => {
-        console.log('Synced b2c profile successfully.')
+        this.loadingSubject.next(false);
       },
       error: (err) => {
         console.log('error', err);
