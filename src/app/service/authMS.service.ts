@@ -74,8 +74,8 @@ export class AuthMSService {
             //   firstName: listClaims.find(item => item.claim === "given_name")?.value,
             //   lastName: listClaims.find(item => item.claim === "family_name")?.value,
             // });
-            this.user.syncSystemProfile();
             this.user.getAcessToken();
+            this.user.syncSystemProfile();
             this.user.setUserProfile();
           } else {
             this.login();

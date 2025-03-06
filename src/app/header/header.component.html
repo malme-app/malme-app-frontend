@@ -6,11 +6,10 @@
     </div>
     <div *ngIf="userInfo.b2cProfile" class="btn-wrapper">
         <button mat-fab extended [matMenuTriggerFor]="menu" class="header-btn">
-            <mat-icon>account_circle</mat-icon>{{ userInfo.b2cProfile.email}}さん
+            <mat-icon>account_circle</mat-icon>{{ userInfo.systemProfile?.firstName }} {{ userInfo.systemProfile?.lastName }}さん
         </button>
         <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="goMypage()">My page</button>
-            <button mat-menu-item (click)="logout()">Logout</button>
+            <button mat-menu-item (click)="logout()">ログアウト</button>
         </mat-menu>
     </div>
 </header>

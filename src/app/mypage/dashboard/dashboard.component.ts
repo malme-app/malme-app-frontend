@@ -12,17 +12,17 @@ export class DashboardComponent implements OnInit {
   constructor(public userInfo: UserInfoService, private http: HttpClient) {}
 
   ngOnInit() {
-    //this.userInfo.syncSystemProfile();
-    // this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
-    //   next: (data: any) => {
-    //     if (data) {
-    //       this.currentPlanName = data.plan.name;
-    //     }
-    //   },
-    //   error: () => {
-    //     this.currentPlanName = '';
-    //   }
-    // });
+    this.userInfo.syncSystemProfile();
+    this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
+      next: (data: any) => {
+        if (data) {
+          this.currentPlanName = data.plan.name;
+        }
+      },
+      error: () => {
+        this.currentPlanName = '';
+      }
+    });
   }
 
   goTutorial() {

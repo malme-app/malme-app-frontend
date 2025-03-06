@@ -43,6 +43,8 @@ interface Company {
 interface SystemProfile {
   id: number;
   uid: string;
+  firstName: string;
+  lastName : string;
   email: string;
   roles: string[];
   group: Group | null;
@@ -170,6 +172,8 @@ export class UserInfoService {
         this.systemProfile = {
           id: res.id,
           uid: res.azureB2CId,
+          firstName: res.firstName,
+          lastName: res.lastName,
           email: res.email,
           roles: res.roles,
           group: group ?? null,

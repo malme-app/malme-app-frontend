@@ -170,7 +170,7 @@
 <ng-template #template>
     <h1 mat-dialog-title>{{ currentSaleInfo.contractTitle }}</h1>
     <div mat-dialog-content>
-        <pre>{{ currentSaleInfo.contractContent }}</pre>
+        <pre [innerHTML]="currentSaleInfo.contractContent"></pre>
     </div>
     <div mat-dialog-actions>
         <button mat-button mat-dialog-close>閉じる</button>

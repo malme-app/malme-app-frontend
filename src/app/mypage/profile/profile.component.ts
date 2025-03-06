@@ -84,8 +84,8 @@ export class ProfileComponent implements OnInit {
       ...this.accountForm.value
     })
       .subscribe({
-        next: () => {
-          this.userInfo.setB2cProfile(this.accountForm.value);
+        next: (res: any) => {
+          this.setSystemProfile(res);
         },
         error: (_error) => {
           console.log('error = ', _error);
@@ -103,24 +103,7 @@ export class ProfileComponent implements OnInit {
         .subscribe({
           next: (res: any) => {
             this.hasGroup = true;
-            const group: any = {
-              id: res.company.id,
-              status: res.company.status,
-              companyName: res.company.companyName,
-              departmentName: res.company.departmentName,
-              bankName: res.company.bankName,
-              bankBranchName: res.company.bankBranchName,
-              bankAccountType: res.company.bankAccountType,
-              bankAccountNumber: res.company.bankAccountNumber,
-            }
-
-            this.userInfo.systemProfile = {
-              id: res.id,
-              uid: res.azureB2CId,
-              email: res.email,
-              roles: res.roles,
-              group: group ?? null,
-            }
+            this.setSystemProfile(res);
           },
           error: (_error) => {
             console.log('error = ', _error);
@@ -135,29 +118,35 @@ export class ProfileComponent implements OnInit {
         .subscribe({
           next: (res: any) => {
             this.hasGroup = true;
-            const group: any = {
-              id: res.company.id,
-              status: res.company.status,
-              companyName: res.company.companyName,
-              departmentName: res.company.departmentName,
-              bankName: res.company.bankName,
-              bankBranchName: res.company.bankBranchName,
-              bankAccountType: res.company.bankAccountType,
-              bankAccountNumber: res.company.bankAccountNumber,
-            }
-
-            this.userInfo.systemProfile = {
-              id: res.id,
-              uid: res.azureB2CId,
-              email: res.email,
-              roles: res.roles,
-              group: group ?? null,
-            }
+            this.setSystemProfile(res);
           },
           error: (_error) => {
             console.log('error = ', _error);
           }
         });
+    }
+  }
+
+  setSystemProfile(res: any) {
+    const group: any = {
+      id: res.company.id,
+      status: res.company.status,
+      companyName: res.company.companyName,
+      departmentName: res.company.departmentName,
+      bankName: res.company.bankName,
+      bankBranchName: res.company.bankBranchName,
+      bankAccountType: res.company.bankAccountType,
+      bankAccountNumber: res.company.bankAccountNumber,
+    }
+
+    this.userInfo.systemProfile = {
+      id: res.id,
+      uid: res.azureB2CId,
+      firstName: res.firstName,
+      lastName: res.lastName,
+      email: res.email,
+      roles: res.roles,
+      group: group ?? null,
     }
   }
 }

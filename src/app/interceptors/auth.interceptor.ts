@@ -7,7 +7,7 @@ import {
   HttpErrorResponse,
   HTTP_INTERCEPTORS
 } from '@angular/common/http';
-import { catchError, Observable, switchMap, throwError } from 'rxjs';
+import { catchError, Observable, switchMap, throwError, timer } from 'rxjs';
 import { UserInfoService } from '../providers/user-info.service';
 
 @Injectable()
@@ -30,16 +30,20 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          return this.userInfoService.getAcessToken().pipe(
-            switchMap((newToken) => {
-              request = request.clone({
-                setHeaders: {
-                  Authorization: `Bearer ${newToken}`,
-                }
-              });
-              return next.handle(request);
-            }),
-            catchError(() => throwError(() => error))
+          return timer(3500).pipe(
+            switchMap(() => {
+              return this.userInfoService.getAcessToken().pipe(
+                switchMap((newToken) => {
+                  request = request.clone({
+                    setHeaders: {
+                      Authorization: `Bearer ${newToken}`,
+                    }
+                  });
+                  return next.handle(request);
+                }),
+                catchError(() => throwError(() => error))
+              );
+            })
           );
         }
         return throwError(() => error);

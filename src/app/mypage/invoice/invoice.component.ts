@@ -46,7 +46,6 @@ export class InvoiceComponent implements OnInit {
     this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
       next: (data: any) => {
         if (data) {
-          console.log(data, 'last sale')
           this.currentSaleInfo = {
             name: data?.plan?.name ?? '',
             expirationStart: data.expirationStart && new Date(data.expirationStart),
@@ -68,7 +67,6 @@ export class InvoiceComponent implements OnInit {
     this.http.get(`${environment.apiBaseUrl}/sale/list`).subscribe({
       next: (data: any) => {
         const paymentHistories: any[] = [];
-        console.log(data, 'list invoice')
         data.forEach((sale: any) => {
           paymentHistories.push(
             {
