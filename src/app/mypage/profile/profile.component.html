@@ -10,7 +10,7 @@
         <mat-card>
             <mat-card-content>
                 <div class="border-1 pa-15">
-                    <form [formGroup]="accountForm" (ngSubmit)="onSubmitAccountForm()">
+                    <form [formGroup]="accountForm">
                         <div class="login-info">
                             <div>
                                 <mat-form-field>
@@ -65,7 +65,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <button mat-raised-button color="primary" type="submit" [disabled]="!accountForm.valid"
+                            <button mat-raised-button color="primary" (click)="onOpenDialog()" [disabled]="!accountForm.valid"
                                 class="btn-1">
                                 変&nbsp;更
                             </button>
