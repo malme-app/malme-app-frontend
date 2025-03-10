@@ -97,7 +97,7 @@ export class ProfileComponent implements OnInit {
       });
   }
 
-  onOpenDialog() {
+  onOpenAccountDialog() {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
         title: '会員情報を変更してもよろしいでしょうか？',
@@ -147,6 +147,22 @@ export class ProfileComponent implements OnInit {
           }
         });
     }
+  }
+
+  onOpenGroupDialog() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: '会社情報を変更してもよろしいでしょうか？',
+        message: '',
+        acceptBtn: 'OK',
+        cancelBtn: 'キャンセル'
+      }
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.onSubmitGroupForm();
+      }
+    });
   }
 
   setSystemProfile(res: any) {

@@ -1,8 +1,18 @@
-<h2 mat-dialog-title>{{data.title}}</h2>
-<mat-dialog-content>
-  {{data.message}}
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">{{data.cancelBtn}}</button>
-  <button mat-button (click)="onConfirm()" cdkFocusInitial>{{data.acceptBtn}}</button>
-</mat-dialog-actions>
+<div class="confirm-dialog">
+  <h2 mat-dialog-title>
+    <ng-container *ngFor="let line of data.title.split('\n'); let last = last">
+      {{ line }}<br *ngIf="!last" />
+    </ng-container>
+  </h2>
+  <mat-dialog-content>
+    {{ data.message }}
+  </mat-dialog-content>
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()" class="confirm-dialog__cancel">
+      {{ data.cancelBtn }}
+    </button>
+    <button mat-button (click)="onConfirm()" class="confirm-dialog__accept" cdkFocusInitial>
+      {{ data.acceptBtn }}
+    </button>
+  </mat-dialog-actions>
+</div>

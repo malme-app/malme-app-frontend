@@ -51,8 +51,8 @@ export class PlanComponent implements OnInit {
   onOpenDialog(planId: number) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
-        title: 'このプラン変更のリクエストを管理者に送信してもよろしいでしょうか？',
-        message: 'リクエストが送信されると、ご担当者から変更プランについてご案内いたします。',
+        title:
+          'このプラン変更のリクエストを管理者に送信してもよろしいでしょうか？ \nリクエストが送信されると、ご担当者から変更プランについてご案内いたします。',
         acceptBtn: 'OK',
         cancelBtn: 'キャンセル'
       }

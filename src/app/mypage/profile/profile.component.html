@@ -65,7 +65,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <button mat-raised-button color="primary" (click)="onOpenDialog()" [disabled]="!accountForm.valid"
+                            <button mat-raised-button color="primary" (click)="onOpenAccountDialog()" [disabled]="!accountForm.valid"
                                 class="btn-1">
                                 変&nbsp;更
                             </button>
@@ -83,7 +83,7 @@
                     <div *ngIf="!hasGroup" class="mb-15">
                         あなたはどの組織にも含まれていません。<br />組織アカウントを作成するには、以下のフォームを入力してください。
                     </div>
-                    <form [formGroup]="groupForm" (ngSubmit)="onSubmitGroupForm()">
+                    <form [formGroup]="groupForm">
                         <div class="group-info">
                             <div>
                                 <!-- <mat-form-field>
@@ -206,13 +206,13 @@
                             </div>
                         </div>
                         <div *ngIf="hasGroup" class="text-right">
-                            <button mat-raised-button color="primary" type="submit" [disabled]="!groupForm.valid"
+                            <button mat-raised-button color="primary" (click)="onOpenGroupDialog()" [disabled]="!groupForm.valid"
                                 class="btn-1">
                                 変&nbsp;更
                             </button>
                         </div>
                         <div *ngIf="!hasGroup" class="text-right">
-                            <button mat-raised-button color="primary" type="submit" [disabled]="!groupForm.valid"
+                            <button mat-raised-button color="primary" (click)="onOpenGroupDialog()" type="submit" [disabled]="!groupForm.valid"
                                 class="btn-1">
                                 作&nbsp;成
                             </button>
