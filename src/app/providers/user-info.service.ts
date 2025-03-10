@@ -158,7 +158,7 @@ export class UserInfoService {
             bankBranchName: res.company.bankBranchName,
             bankAccountType: res.company.bankAccountType,
             bankAccountNumber: res.company.bankAccountNumber,
-            licenses: 0
+            licenses: res.company.status,
           }
         }
 
