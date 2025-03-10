@@ -36,6 +36,7 @@ import { MsalInterceptorConfiguration, MsalGuardConfiguration, MsalModule, MSAL_
 import { IPublicClientApplication, PublicClientApplication, BrowserCacheLocation, InteractionType } from '@azure/msal-browser';
 import { LogLevel as LogLevelMasl } from "@azure/msal-browser";
 import { httpInterceptorProviders } from './interceptors/auth.interceptor';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 
 // function initializeKeycloak(keycloak: KeycloakService) {
 //   return () =>
@@ -118,7 +119,8 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     InvitationComponent,
     Dxlogin2023Component,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    ConfirmDialogComponent
   ],
   imports: [
     BrowserModule,

@@ -1,8 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+import { ConfirmDialogComponent } from 'src/app/confirm-dialog/confirm-dialog.component';
 import { UserInfoService } from 'src/app/providers/user-info.service';
 import { environment } from 'src/environments/environment';
 
@@ -29,12 +31,12 @@ export class ProfileComponent implements OnInit {
     licenses: new FormControl({ value: 0, disabled: true })
   });
   private userInfoSubscription!: Subscription;
+  readonly dialog = inject(MatDialog);
 
-  constructor(public userInfo: UserInfoService, private http: HttpClient) { }
+  constructor(public userInfo: UserInfoService, private http: HttpClient) {}
 
   ngOnInit() {
-
-    this.userInfoSubscription = this.userInfo.userInfo$.subscribe(res => {
+    this.userInfoSubscription = this.userInfo.userInfo$.subscribe((res) => {
       if (res) {
         if (this.userInfo.b2cProfile?.name) {
           this.accountForm.setValue({
@@ -42,8 +44,8 @@ export class ProfileComponent implements OnInit {
             userRole: this.userInfo.systemProfile?.roles.includes('SuperAdmin')
               ? 'SuperAdmin'
               : this.userInfo.systemProfile?.roles.includes('Admin')
-                ? 'Admin'
-                : '',
+              ? 'Admin'
+              : '',
             firstName: this.userInfo.b2cProfile.firstName ?? '',
             lastName: this.userInfo.b2cProfile.lastName ?? ''
           });
@@ -78,11 +80,12 @@ export class ProfileComponent implements OnInit {
   }
 
   onSubmitAccountForm() {
-    this.http.patch(`${environment.apiBaseUrl}/user/update-user`, {
-      id: this.userInfo.systemProfile?.id ?? 0,
-      licenses: this.groupForm.controls.licenses.value,
-      ...this.accountForm.value
-    })
+    this.http
+      .patch(`${environment.apiBaseUrl}/user/update-user`, {
+        id: this.userInfo.systemProfile?.id ?? 0,
+        licenses: this.groupForm.controls.licenses.value,
+        ...this.accountForm.value
+      })
       .subscribe({
         next: (res: any) => {
           this.setSystemProfile(res);
@@ -94,13 +97,30 @@ export class ProfileComponent implements OnInit {
       });
   }
 
+  onOpenDialog() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: '会員情報を変更してもよろしいでしょうか？',
+        message: '',
+        acceptBtn: 'OK',
+        cancelBtn: 'キャンセル'
+      }
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.onSubmitAccountForm();
+      }
+    });
+  }
+
   onSubmitGroupForm() {
     if (!this.hasGroup) {
-      this.http.patch(`${environment.apiBaseUrl}/user/update-user`, {
-        userId: this.userInfo.systemProfile?.id ?? 0,
-        licenses: this.groupForm.controls.licenses.value,
-        ...this.groupForm.value
-      })
+      this.http
+        .patch(`${environment.apiBaseUrl}/user/update-user`, {
+          userId: this.userInfo.systemProfile?.id ?? 0,
+          licenses: this.groupForm.controls.licenses.value,
+          ...this.groupForm.value
+        })
         .subscribe({
           next: (res: any) => {
             this.hasGroup = true;
@@ -111,11 +131,12 @@ export class ProfileComponent implements OnInit {
           }
         });
     } else {
-      this.http.patch(`${environment.apiBaseUrl}/user/update-user`, {
-        userId: this.userInfo.systemProfile?.id ?? 0,
-        licenses: this.groupForm.controls.licenses.value,
-        ...this.groupForm.value
-      })
+      this.http
+        .patch(`${environment.apiBaseUrl}/user/update-user`, {
+          userId: this.userInfo.systemProfile?.id ?? 0,
+          licenses: this.groupForm.controls.licenses.value,
+          ...this.groupForm.value
+        })
         .subscribe({
           next: (res: any) => {
             this.hasGroup = true;
@@ -137,8 +158,8 @@ export class ProfileComponent implements OnInit {
       bankName: res.company.bankName,
       bankBranchName: res.company.bankBranchName,
       bankAccountType: res.company.bankAccountType,
-      bankAccountNumber: res.company.bankAccountNumber,
-    }
+      bankAccountNumber: res.company.bankAccountNumber
+    };
 
     this.userInfo.systemProfile = {
       id: res.id,
@@ -147,7 +168,7 @@ export class ProfileComponent implements OnInit {
       lastName: res.lastName,
       email: res.email,
       roles: res.roles,
-      group: group ?? null,
-    }
+      group: group ?? null
+    };
   }
 }

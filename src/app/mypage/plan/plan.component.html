@@ -27,7 +27,7 @@
                                     }}</mat-card-subtitle>
                             </mat-card-header>
                              <mat-card-actions>
-                                <button mat-raised-button color="primary" [disabled]="!hasGroup || (plan.name== lastSale?.plan?.name)" (click)="applyForPlan(plan.id)" >
+                                <button mat-raised-button color="primary" [disabled]="!hasGroup || (plan.name== lastSale?.plan?.name)" (click)="onOpenDialog(plan.id)" >
                                     申込む
                                 </button>
                             </mat-card-actions>

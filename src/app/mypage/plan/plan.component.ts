@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { UserInfoService } from 'src/app/providers/user-info.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from 'src/app/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-plan',
@@ -12,6 +14,7 @@ export class PlanComponent implements OnInit {
   plans: any[] = [];
   lastSale: any = {};
   hasGroup = false;
+  readonly dialog = inject(MatDialog);
 
   constructor(public userInfo: UserInfoService, private http: HttpClient) {}
 
@@ -41,6 +44,22 @@ export class PlanComponent implements OnInit {
       },
       error: (_error) => {
         console.log('error = ', _error);
+      }
+    });
+  }
+
+  onOpenDialog(planId: number) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'このプラン変更のリクエストを管理者に送信してもよろしいでしょうか？',
+        message: 'リクエストが送信されると、ご担当者から変更プランについてご案内いたします。',
+        acceptBtn: 'OK',
+        cancelBtn: 'キャンセル'
+      }
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.applyForPlan(planId);
       }
     });
   }
