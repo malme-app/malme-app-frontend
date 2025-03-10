@@ -164,7 +164,7 @@ export class AuthMSService {
       .subscribe(async () => {
         if (this.msalGuardConfig.authRequest) {
           await this.authService.loginRedirect({
-            ...this.msalGuardConfig.authRequest
+            ...this.msalGuardConfig.authRequest,...userFlowRequest
           } as RedirectRequest);
 
           // this.user.getAuthorizeCode()
