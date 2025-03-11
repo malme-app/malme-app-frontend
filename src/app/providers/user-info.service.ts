@@ -147,7 +147,7 @@ export class UserInfoService {
   public setUserProfile() {
     this.http.get(`${environment.apiBaseUrl}/user/profile`).subscribe({
       next: (res: any) => {
-        let group: any = {}
+        let group: any = null;
         if (res.company) {
           group = {
             id: res.company.id,
