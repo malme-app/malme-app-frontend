@@ -20,8 +20,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
-import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
-import { AuthGuard } from './app.authguard';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
@@ -37,28 +35,6 @@ import { IPublicClientApplication, PublicClientApplication, BrowserCacheLocation
 import { LogLevel as LogLevelMasl } from "@azure/msal-browser";
 import { httpInterceptorProviders } from './interceptors/auth.interceptor';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-
-// function initializeKeycloak(keycloak: KeycloakService) {
-//   return () =>
-//     keycloak
-//       .init({
-//         config: {
-//           url: environment.keycloakUrl,
-//           realm: environment.keycloakRealm,
-//           clientId: environment.keycloakClientId
-//         },
-//         initOptions: {
-//           onLoad: 'check-sso'
-//         },
-//         enableBearerInterceptor: true,
-//         bearerPrefix: 'Bearer',
-//         bearerExcludedUrls: []
-//       })
-//       .catch((error) => {
-//         console.log('error =', error);
-//         window.alert('ログインに失敗しました');
-//       });
-// }
 
 export function loggerCallback(logLevel: LogLevelMasl, message: string) {
   // console.log(message);
@@ -107,6 +83,12 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
   };
 }
 
+export function initializeMsal(msalService: MsalService): () => Promise<void> {
+  return async () => {
+    await msalService.instance.initialize();
+  };
+}
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -127,7 +109,6 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    // KeycloakAngularModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
     ReactiveFormsModule,
@@ -144,14 +125,12 @@ export function MSALGuardConfigFactory(): MsalGuardConfiguration {
     MsalModule
   ],
   providers: [
-    // AuthGuard,
-    // {
-    //   provide: APP_INITIALIZER,
-    //   useFactory: initializeKeycloak,
-    //   multi: true,
-    //   deps: [KeycloakService]
-    // },
-
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeMsal,
+      deps: [MsalService],
+      multi: true,
+    },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: MsalInterceptor,
