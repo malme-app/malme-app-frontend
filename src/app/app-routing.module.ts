@@ -10,11 +10,10 @@ import { InvitationComponent } from './invitation/invitation.component';
 import { Dxlogin2023Component } from './dxlogin2023/dxlogin2023.component';
 
 const routes: Routes = [
-  // { path: '', component: DashboardComponent },
   {
     path: '',
     component: DashboardComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     data: {
       role: 'view-users'
     }
@@ -22,7 +21,7 @@ const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     data: {
       role: 'view-users'
     }
@@ -30,7 +29,7 @@ const routes: Routes = [
   {
     path: 'invoice',
     component: InvoiceComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     data: {
       role: 'Admin'
     }
@@ -38,7 +37,7 @@ const routes: Routes = [
   {
     path: 'plan',
     component: PlanComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     data: {
       role: 'Admin'
     }
@@ -46,7 +45,7 @@ const routes: Routes = [
   {
     path: 'invite',
     component: InviteComponent,
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     data: {
       role: 'view-users'
     }

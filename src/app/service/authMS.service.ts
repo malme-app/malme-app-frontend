@@ -65,20 +65,9 @@ export class AuthMSService {
         .subscribe(() => {
           this.checkAndSetActiveAccount();
           if (this.authService.instance.getAllAccounts().length > 0) {
-            // const listClaims = this.getClaims(this.authService.instance.getActiveAccount()?.idTokenClaims as Record<string, any>);
-            // const clientId = environment.msalConfig.auth.clientId;
-            // this.user.setB2cProfile({
-            //   uid: listClaims.find(item => item.claim === "sub")?.value,
-            //   email: (listClaims.find(item => item.claim === "emails")?.value as string)[0],
-            //   name: listClaims.find(item => item.claim === "name")?.value,
-            //   firstName: listClaims.find(item => item.claim === "given_name")?.value,
-            //   lastName: listClaims.find(item => item.claim === "family_name")?.value,
-            // });
             this.user.getAcessToken();
             this.user.syncSystemProfile();
             this.user.setUserProfile();
-          } else {
-            this.login();
           }
         })
 
@@ -153,7 +142,6 @@ export class AuthMSService {
   }
 
   async login(userFlowRequest?: RedirectRequest | PopupRequest) {
-    // this.keycloak.login();
     this.msalBroadcastService.inProgress$
       .pipe(
         filter(
@@ -166,12 +154,6 @@ export class AuthMSService {
           await this.authService.loginRedirect({
             ...this.msalGuardConfig.authRequest,...userFlowRequest
           } as RedirectRequest);
-
-          // this.user.getAuthorizeCode()
-
-          // await this.authService.acquireTokenRedirect({
-          //   ...this.msalGuardConfig.authRequest
-          // } as RedirectRequest);
         } else {
           await this.authService.loginRedirect();
         }
@@ -186,11 +168,9 @@ export class AuthMSService {
           this.user.systemProfile = null;
           this.user.b2cProfile = null;
           localStorage.removeItem(tokenKey);
+          console.log('here')
           this.authService.logoutRedirect();
         }
-        // else {
-        //   // Do something with the tokenResponse
-        // }
       })
       .catch((err) => {
         // Handle error
