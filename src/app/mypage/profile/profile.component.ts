@@ -38,16 +38,16 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     this.userInfoSubscription = this.userInfo.userInfo$.subscribe((res) => {
       if (res) {
-        if (this.userInfo.b2cProfile?.name) {
+        if (this.userInfo.systemProfile) {
           this.accountForm.setValue({
-            email: this.userInfo.b2cProfile.email,
+            email: this.userInfo.systemProfile.email,
             userRole: this.userInfo.systemProfile?.roles.includes('SuperAdmin')
               ? 'SuperAdmin'
               : this.userInfo.systemProfile?.roles.includes('Admin')
               ? 'Admin'
               : '',
-            firstName: this.userInfo.b2cProfile.firstName ?? '',
-            lastName: this.userInfo.b2cProfile.lastName ?? ''
+            firstName: this.userInfo.systemProfile.firstName ?? '',
+            lastName: this.userInfo.systemProfile.lastName ?? ''
           });
         }
 
@@ -89,7 +89,6 @@ export class ProfileComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           this.setSystemProfile(res);
-          this.userInfo.setB2cProfile(this.accountForm.value);
         },
         error: (_error) => {
           console.log('error = ', _error);

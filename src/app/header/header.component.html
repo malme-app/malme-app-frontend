@@ -1,12 +1,12 @@
 <header *ngIf="header.visible">
     <img class="logo" src="./assets/images/malme_logo.svg" alt="Malme" (click)="navigateMalmePage()"/>
-    <div *ngIf="!userInfo.b2cProfile" class="btn-wrapper">
+    <div *ngIf="!userInfo.systemProfile" class="btn-wrapper">
         <button class="login-btn" (click)="login()">Login</button>
         <button class="login-btn" (click)="signup()">Signup</button>
     </div>
-    <div *ngIf="userInfo.b2cProfile" class="btn-wrapper">
+    <div *ngIf="userInfo.systemProfile" class="btn-wrapper">
         <button mat-fab extended [matMenuTriggerFor]="menu" class="header-btn">
-            <mat-icon>account_circle</mat-icon>{{ userInfo.systemProfile?.lastName }} {{ userInfo.systemProfile?.firstName }}さん
+            <mat-icon>account_circle</mat-icon>{{ userInfo.systemProfile.lastName }} {{ userInfo.systemProfile.firstName }}さん
         </button>
         <mat-menu #menu="matMenu">
             <button mat-menu-item (click)="logout()">ログアウト</button>

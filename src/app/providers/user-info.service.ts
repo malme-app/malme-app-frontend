@@ -53,7 +53,6 @@ export const tokenKey: string = 'malmeapp_token';
 export class UserInfoService {
   public keycloakProfile: KeycloakProfile | null = null;
   public systemProfile: SystemProfile | null = null;
-  public b2cProfile: any | null = null;
   public loadingSubject = new Subject<boolean>();
   private userInfoSubject = new BehaviorSubject<any>(null);
   userInfo$ = this.userInfoSubject.asObservable();
@@ -63,14 +62,11 @@ export class UserInfoService {
     private authService: MsalService,
   ) { }
 
-  public setB2cProfile(param: any) {
-    this.b2cProfile = { ...this.b2cProfile, ...param };
-  }
-
   public syncSystemProfile() {
     this.http.post(`${environment.apiBaseUrl}/user/sync-b2c`, {}).subscribe({
       next: () => {
         this.loadingSubject.next(false);
+        this.setUserProfile();
       },
       error: (err) => {
         this.loadingSubject.next(false);
@@ -155,14 +151,6 @@ export class UserInfoService {
             bankAccountNumber: res.company.bankAccountNumber,
             licenses: res.company.status,
           }
-        }
-
-        this.b2cProfile = {
-          id: res.azureB2CId,
-          email: res.email,
-          name: res.displayName,
-          firstName: res.firstName,
-          lastName: res.lastName
         }
 
         this.systemProfile = {
