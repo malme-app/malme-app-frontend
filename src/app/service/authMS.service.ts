@@ -67,7 +67,7 @@ export class AuthMSService {
           if (this.authService.instance.getAllAccounts().length > 0) {
             this.user.getAcessToken();
             this.user.syncSystemProfile();
-            this.user.setUserProfile();
+            // this.user.setUserProfile();
           }
         })
 
@@ -166,9 +166,7 @@ export class AuthMSService {
       .then((tokenResponse) => {
         if (!tokenResponse) {
           this.user.systemProfile = null;
-          this.user.b2cProfile = null;
           localStorage.removeItem(tokenKey);
-          console.log('here')
           this.authService.logoutRedirect();
         }
       })

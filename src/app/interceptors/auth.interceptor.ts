@@ -9,12 +9,15 @@ import {
 } from '@angular/common/http';
 import { catchError, Observable, switchMap, throwError, timer } from 'rxjs';
 import { UserInfoService } from '../providers/user-info.service';
+import { MsalService } from '@azure/msal-angular';
+import { AuthMSService } from '../service/authMS.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor(
-    private userInfoService: UserInfoService
+    private userInfoService: UserInfoService,
+    private authService: AuthMSService,
   ) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
@@ -41,7 +44,10 @@ export class AuthInterceptor implements HttpInterceptor {
                   });
                   return next.handle(request);
                 }),
-                catchError(() => throwError(() => error))
+                catchError(() => {
+                  this.authService.login();
+                  return throwError(() => error);
+                })
               );
             })
           );
