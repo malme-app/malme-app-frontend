@@ -13,9 +13,11 @@
                     <p class="current-plan">
                         現在の購入プラン
                     </p>
-                    <p class="current-plan">
-                        {{ lastSale ? lastSale?.plan?.name : "なし" }}
-                    </p>
+                    <div *ngFor="let plan of plans" class="current-plan">
+                      <p *ngIf="activePlans.includes(plan.id)">
+                        {{ plan.name }}
+                      </p>
+                    </div>
 
                 <div class="plans">
                     <div class="plans-inner">
@@ -27,7 +29,13 @@
                                     }}</mat-card-subtitle>
                             </mat-card-header>
                              <mat-card-actions>
-                                <button mat-raised-button color="primary" [disabled]="!hasGroup || (plan.name== lastSale?.plan?.name)" (click)="onOpenDialog(plan.id)" >
+                                <button *ngIf="pendingPlans.includes(plan.id)" mat-raised-button class="pending-button" (click)="onOpenDialog(plan.id)">
+                                    申請中
+                                </button>
+                               <button *ngIf="activePlans.includes(plan.id)" mat-raised-button [disabled]="true">
+                                    申込む
+                                </button>
+                                <button *ngIf="!pendingPlans.includes(plan.id) && !activePlans.includes(plan.id)" mat-raised-button [color]="'primary'"  [disabled]="(activePlans.includes(plan.id))" (click)="onOpenDialog(plan.id)" >
                                     申込む
                                 </button>
                             </mat-card-actions>
