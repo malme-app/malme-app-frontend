@@ -16,6 +16,7 @@ export class PlanComponent implements OnInit {
   activePlans: number[] = [];
   pendingPlans: number[] = [];
   hasGroup = false;
+  isLoading = false;
   readonly dialog = inject(MatDialog);
 
   constructor(public userInfo: UserInfoService, private http: HttpClient) {}
@@ -45,7 +46,6 @@ export class PlanComponent implements OnInit {
     this.http.get(`${environment.apiBaseUrl}/sale/active`).subscribe({
       next: (data: any) => {
         this.activePlans = data.map((item: any) => item.planid);
-        console.log(this.activePlans);
       },
       error: (_error) => {
         console.log('error = ', _error);
@@ -94,13 +94,23 @@ export class PlanComponent implements OnInit {
   }
 
   applyForPlan(planId: number) {
+    this.isLoading = true;
     this.http.post(`${environment.apiBaseUrl}/sale`, { planId }).subscribe({
       next: (data: any) => {
         this.lastSale = data;
+        this.isLoading = false;
         this.pendingPlans.push(data.plan);
+        this.dialog.open(ConfirmDialogComponent, {
+          data: {
+            title:
+              'プラン変更のリクエストが正常に送信されました。 \nご担当者からのご案内をお待ちください。',
+            acceptBtn: 'OK'
+          }
+        });
       },
       error: (_error) => {
         console.log('error = ', _error);
+        this.isLoading = false;
       }
     });
   }

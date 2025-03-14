@@ -8,7 +8,7 @@
     {{ data.message }}
   </mat-dialog-content>
   <mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()" class="confirm-dialog__cancel">
+    <button mat-button (click)="onCancel()" class="confirm-dialog__cancel" *ngIf="data.cancelBtn">
       {{ data.cancelBtn }}
     </button>
     <button mat-button (click)="onConfirm()" class="confirm-dialog__accept" cdkFocusInitial>

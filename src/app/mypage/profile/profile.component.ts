@@ -32,6 +32,7 @@ export class ProfileComponent implements OnInit {
   });
   private userInfoSubscription!: Subscription;
   readonly dialog = inject(MatDialog);
+  isLoading = false;
 
   constructor(public userInfo: UserInfoService, private http: HttpClient) {}
 
@@ -80,6 +81,7 @@ export class ProfileComponent implements OnInit {
   }
 
   onSubmitAccountForm() {
+    this.isLoading = true;
     this.http
       .patch(`${environment.apiBaseUrl}/user/update-user`, {
         id: this.userInfo.systemProfile?.id ?? 0,
@@ -89,9 +91,11 @@ export class ProfileComponent implements OnInit {
       .subscribe({
         next: (res: any) => {
           this.setSystemProfile(res);
+          this.isLoading = false;
         },
         error: (_error) => {
           console.log('error = ', _error);
+          this.isLoading = false;
         }
       });
   }
@@ -114,6 +118,7 @@ export class ProfileComponent implements OnInit {
 
   onSubmitGroupForm() {
     if (!this.hasGroup) {
+      this.isLoading = true;
       this.http
         .patch(`${environment.apiBaseUrl}/user/update-user`, {
           userId: this.userInfo.systemProfile?.id ?? 0,
@@ -124,12 +129,15 @@ export class ProfileComponent implements OnInit {
           next: (res: any) => {
             this.hasGroup = true;
             this.setSystemProfile(res);
+            this.isLoading = false;
           },
           error: (_error) => {
             console.log('error = ', _error);
+            this.isLoading = false;
           }
         });
     } else {
+      this.isLoading = true;
       this.http
         .patch(`${environment.apiBaseUrl}/user/update-user`, {
           userId: this.userInfo.systemProfile?.id ?? 0,
@@ -140,9 +148,11 @@ export class ProfileComponent implements OnInit {
           next: (res: any) => {
             this.hasGroup = true;
             this.setSystemProfile(res);
+            this.isLoading = false;
           },
           error: (_error) => {
             console.log('error = ', _error);
+            this.isLoading = false;
           }
         });
     }
