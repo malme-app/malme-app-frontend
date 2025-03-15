@@ -8,28 +8,26 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  currentPlanName = '';
-  isLoading: boolean = true;
-  constructor(public userInfo: UserInfoService, private http: HttpClient) { }
+  currentPlanNameList = [];
+  isLoading = true;
+  constructor(public userInfo: UserInfoService, private http: HttpClient) {}
 
   ngOnInit() {
-    this.userInfo.loadingSubject.subscribe((res) => this.isLoading = res);
+    this.userInfo.loadingSubject.subscribe((res) => (this.isLoading = res));
     this.userInfo.syncSystemProfile();
-    this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
+    this.http.get(`${environment.apiBaseUrl}/sale/active`).subscribe({
       next: (data: any) => {
-        if (data && data.plan && data.plan.name) {
-          this.currentPlanName = data.plan.name;
-        } else {
-          this.currentPlanName = '';
-        }
+        this.currentPlanNameList = data.map((item: any) => item.planname);
       },
-      error: () => {
-        this.currentPlanName = '';
+      error: (_error) => {
+        console.log('error = ', _error);
       }
     });
   }
 
   goTutorial() {
-    window.open('https://fresh-tachometer-148.notion.site/Malme-app-Hub-81aaa47e70af4d41ad5c68e011fad92b');
+    window.open(
+      'https://fresh-tachometer-148.notion.site/Malme-app-Hub-81aaa47e70af4d41ad5c68e011fad92b'
+    );
   }
 }

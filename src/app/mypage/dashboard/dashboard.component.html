@@ -1,6 +1,10 @@
 <div class="mypage-container">
   <div class="mypage-inner">
-    <h1 class="page-title">{{ currentPlanName }}</h1>
+    <div *ngFor="let plan of currentPlanNameList" class="current-plan">
+      <h1  class="page-title">
+        {{ plan }}
+      </h1>
+    </div>
     <mat-card>
       <mat-card-header>
         <mat-card-title>アプリケーション</mat-card-title>

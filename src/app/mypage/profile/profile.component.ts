@@ -96,6 +96,13 @@ export class ProfileComponent implements OnInit {
         error: (_error) => {
           console.log('error = ', _error);
           this.isLoading = false;
+          this.dialog.open(ConfirmDialogComponent, {
+            data: {
+              title:
+                '現在システムで問題が発生しているため、処理を完了できませんでした。 \n恐れ入りますが、再度お試しください。',
+              acceptBtn: 'OK'
+            }
+          });
         }
       });
   }
@@ -134,6 +141,13 @@ export class ProfileComponent implements OnInit {
           error: (_error) => {
             console.log('error = ', _error);
             this.isLoading = false;
+            this.dialog.open(ConfirmDialogComponent, {
+              data: {
+                title:
+                  '現在システムで問題が発生しているため、処理を完了できませんでした。 \n恐れ入りますが、再度お試しください。',
+                acceptBtn: 'OK'
+              }
+            });
           }
         });
     } else {

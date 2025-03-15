@@ -33,7 +33,7 @@
                                     申請中
                                 </button>
                                <button *ngIf="activePlans.includes(plan.id)" mat-raised-button [disabled]="true">
-                                    申込む
+                                    利用中
                                 </button>
                                 <button *ngIf="!pendingPlans.includes(plan.id) && !activePlans.includes(plan.id)" mat-raised-button [color]="'primary'"  [disabled]="(activePlans.includes(plan.id))" (click)="onOpenDialog(plan.id)" >
                                     申込む

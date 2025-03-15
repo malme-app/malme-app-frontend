@@ -25,7 +25,7 @@ export class PlanComponent implements OnInit {
     if (this.userInfo.systemProfile && this.userInfo.systemProfile.group) {
       this.hasGroup = true;
     }
-    this.fetchLastSale();
+    // this.fetchLastSale();
     this.fetchPlans();
     this.fetchPendingPlans();
     this.fetchActivePlans();
@@ -109,8 +109,15 @@ export class PlanComponent implements OnInit {
         });
       },
       error: (_error) => {
-        console.log('error = ', _error);
+        console.log('Change plan failed: ', _error);
         this.isLoading = false;
+        this.dialog.open(ConfirmDialogComponent, {
+          data: {
+            title:
+              '現在システムで問題が発生しているため、処理を完了できませんでした。 \n恐れ入りますが、再度お試しください。',
+            acceptBtn: 'OK'
+          }
+        });
       }
     });
   }
