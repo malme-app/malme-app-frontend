@@ -14,12 +14,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatPaginatorModule } from '@angular/material/paginator';
+
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
@@ -35,6 +37,7 @@ import { IPublicClientApplication, PublicClientApplication, BrowserCacheLocation
 import { LogLevel as LogLevelMasl } from "@azure/msal-browser";
 import { httpInterceptorProviders } from './interceptors/auth.interceptor';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { UserComponent } from './mypage/user/user.component';
 
 export function loggerCallback(logLevel: LogLevelMasl, message: string) {
   // console.log(message);
@@ -102,7 +105,8 @@ export function initializeMsal(msalService: MsalService): () => Promise<void> {
     Dxlogin2023Component,
     HeaderComponent,
     FooterComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
@@ -122,7 +126,9 @@ export function initializeMsal(msalService: MsalService): () => Promise<void> {
     MatTableModule,
     MatProgressSpinnerModule,
     MatDialogModule,
-    MsalModule
+    MatPaginatorModule,
+    MsalModule,
+    FormsModule
   ],
   providers: [
     {
@@ -156,4 +162,4 @@ export function initializeMsal(msalService: MsalService): () => Promise<void> {
   ],
   bootstrap: [AppComponent, MsalRedirectComponent]
 })
-export class AppModule {}
+export class AppModule { }

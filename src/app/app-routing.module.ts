@@ -8,6 +8,7 @@ import { InviteComponent } from './mypage/invite/invite.component';
 import { AuthGuard } from './app.authguard';
 import { InvitationComponent } from './invitation/invitation.component';
 import { Dxlogin2023Component } from './dxlogin2023/dxlogin2023.component';
+import { UserComponent } from './mypage/user/user.component';
 
 const routes: Routes = [
   {
@@ -43,17 +44,25 @@ const routes: Routes = [
     }
   },
   {
-    path: 'invite',
-    component: InviteComponent,
+    path: 'user',
+    component: UserComponent,
     canActivate: [AuthGuard],
     data: {
-      role: 'view-users'
+      role: 'Admin'
     }
   },
-  {
-    path: 'invite/accept/:slug',
-    component: InvitationComponent
-  },
+  // {
+  //   path: 'invite',
+  //   component: InviteComponent,
+  //   canActivate: [AuthGuard],
+  //   data: {
+  //     role: 'view-users'
+  //   }
+  // },
+  // {
+  //   path: 'invite/accept/:slug',
+  //   component: InvitationComponent
+  // },
   {
     path: 'dxlogin2023',
     component: Dxlogin2023Component
