@@ -16,7 +16,7 @@ const routes: Routes = [
     component: DashboardComponent,
     canActivate: [AuthGuard],
     data: {
-      role: 'view-users'
+      role: 'Member'
     }
   },
   {
@@ -24,7 +24,7 @@ const routes: Routes = [
     component: ProfileComponent,
     canActivate: [AuthGuard],
     data: {
-      role: 'view-users'
+      role: 'Member'
     }
   },
   {

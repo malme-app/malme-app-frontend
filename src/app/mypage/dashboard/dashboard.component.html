@@ -62,7 +62,7 @@
             </mat-card-header>
           </mat-card>
         </li>
-        <li class="page-item">
+        <li *ngIf="isAdmin" class="page-item">
           <mat-card routerLink="/user">
             <mat-card-header>
               <mat-card-title-group>

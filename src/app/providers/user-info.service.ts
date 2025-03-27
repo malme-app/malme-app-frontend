@@ -39,14 +39,14 @@ interface SystemProfile {
   id: number;
   uid: string;
   firstName: string;
-  lastName : string;
+  lastName: string;
   email: string;
   roles: string[];
   group: Group | null;
 }
 
 export const tokenKey: string = 'malmeapp_token';
-
+export const rolesKey: string = 'malmeapp_roles';
 @Injectable({
   providedIn: 'root'
 })
@@ -55,8 +55,9 @@ export class UserInfoService {
   public systemProfile: SystemProfile | null = null;
   public loadingSubject = new Subject<boolean>();
   private userInfoSubject = new BehaviorSubject<any>(null);
+  public userRole: string[] = [];
   userInfo$ = this.userInfoSubject.asObservable();
-  
+
   constructor(
     private http: HttpClient,
     private authService: MsalService,
@@ -162,7 +163,7 @@ export class UserInfoService {
           roles: res.roles,
           group: group ?? null,
         } as SystemProfile
-
+        localStorage.setItem(rolesKey, JSON.stringify(this.systemProfile.roles));
         this.userInfoSubject.next(this.systemProfile);
       },
       error: (err) => {
@@ -171,4 +172,10 @@ export class UserInfoService {
     })
   }
 
+  checkAdminRole() {
+    const role = localStorage.getItem(rolesKey);
+    if (role) {
+      return JSON.parse(role).includes('Admin') ?? false
+    }
+  }
 }

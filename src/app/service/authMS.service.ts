@@ -19,7 +19,7 @@ import {
 } from '@azure/msal-browser';
 import { filter, Subject, takeUntil } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { tokenKey, UserInfoService } from '../providers/user-info.service';
+import { rolesKey, tokenKey, UserInfoService } from '../providers/user-info.service';
 
 type IdTokenClaimsWithPolicyId = IdTokenClaims & {
   acr?: string;
@@ -167,6 +167,7 @@ export class AuthMSService {
         if (!tokenResponse) {
           this.user.systemProfile = null;
           localStorage.removeItem(tokenKey);
+          localStorage.removeItem(rolesKey);
           this.authService.logoutRedirect();
         }
       })

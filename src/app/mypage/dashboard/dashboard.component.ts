@@ -10,7 +10,8 @@ import { HttpClient } from '@angular/common/http';
 export class DashboardComponent implements OnInit {
   currentPlanNameList = [];
   isLoading = true;
-  constructor(public userInfo: UserInfoService, private http: HttpClient) {}
+  public isAdmin : boolean = false;
+  constructor(public userInfo: UserInfoService, private http: HttpClient) { }
 
   ngOnInit() {
     this.userInfo.loadingSubject.subscribe((res) => (this.isLoading = res));
@@ -23,6 +24,10 @@ export class DashboardComponent implements OnInit {
         console.log('error = ', _error);
       }
     });
+
+    this.userInfo.userInfo$.subscribe(() => {
+      this.isAdmin = this.userInfo.checkAdminRole();
+    })
   }
 
   goTutorial() {
