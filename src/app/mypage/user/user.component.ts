@@ -1,12 +1,11 @@
 import { Component, inject, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { debounceTime, Subject } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/confirm-dialog/confirm-dialog.component';
+import { NotificationService } from 'src/app/service/notification.service';
 import { PermissionService } from 'src/app/service/permission.service';
-
 export interface User {
 	azureB2CId: string;
 	firstName: string;
@@ -32,11 +31,11 @@ export class UserComponent {
 	readonly dialog = inject(MatDialog);
 
 	private searchSubject = new Subject<string>();
-
 	@ViewChild(MatPaginator) paginator: any;
 
 	constructor(
-		private permissionService: PermissionService
+		private permissionService: PermissionService,
+		private notificationService: NotificationService
 	) { }
 
 	ngOnInit() {
@@ -51,7 +50,7 @@ export class UserComponent {
 
 	ngOnDestroy(): void {
 		this.searchSubject.complete();
-	  }
+	}
 
 	fetchPermissions() {
 		this.permissionService.getListPermission().subscribe({
@@ -60,6 +59,8 @@ export class UserComponent {
 			},
 			error: (error) => {
 				console.log('Failed to fetch list roles: ', error)
+				this.notificationService.showNotification('Failed to fetch list roles');
+
 			}
 		})
 	}
@@ -72,9 +73,11 @@ export class UserComponent {
 				this.disabled = false;
 				this.dataSourceUsers = new MatTableDataSource<any>(this.users);
 			},
-			error: (error) => {
+			error: (err) => {
 				this.disabled = false;
-				console.log('Failed to fetch list users: ', error)
+				console.log('Failed to fetch list users: ', err.error.message)
+				this.notificationService.showNotification('Failed to fetch list users');
+
 			}
 		})
 	}
@@ -86,10 +89,13 @@ export class UserComponent {
 	submitForm(element: any) {
 		console.log('Users with changed roles:', element);
 		this.permissionService.updateUserRole(element).subscribe({
-			next: (res) => {
-				this.fetchPermissions();
-			}, error: (error) => {
-				console.log("Failed to update user: ", error)
+			next: () => {
+				this.fetchUsersCompany();
+				this.notificationService.showNotification('Update roles successfully');
+			}, error: (err) => {
+				this.fetchUsersCompany();
+				console.log("Failed to update user: ", err.error.message)
+				this.notificationService.showNotification('Failed to update user');
 			}
 		})
 	}

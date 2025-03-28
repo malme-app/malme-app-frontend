@@ -21,6 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
@@ -128,7 +129,8 @@ export function initializeMsal(msalService: MsalService): () => Promise<void> {
     MatDialogModule,
     MatPaginatorModule,
     MsalModule,
-    FormsModule
+    FormsModule,
+    MatSnackBarModule
   ],
   providers: [
     {
