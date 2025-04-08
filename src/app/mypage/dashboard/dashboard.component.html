@@ -11,7 +11,7 @@
       </mat-card-header>
       <mat-card-content>
         <ul class="application-list">
-          <li class="application-item">
+          <li class="application-item" *ngIf="userInfo.userRole && userInfo.userRole.includes('FrameWeb')">
             <a href="https://frameweb.malme.app" target="_blank">
               <div>
                 <img src="./assets/images/frameweb_dark.png" alt="FrameWeb" />
@@ -19,7 +19,7 @@
             </a>
             <p>立体骨組み解析ソフト</p>
           </li>
-          <li class="application-item">
+          <li class="application-item" *ngIf="userInfo.userRole && userInfo.userRole.includes('Webdan')">
             <a href="https://webdan.malme.app" target="_blank">
               <div>
                 <img src="./assets/images/webdan-dark.png" alt="WebDan" />
@@ -67,7 +67,7 @@
             <mat-card-header>
               <mat-card-title-group>
                 <img mat-card-image src="./assets/images/invite.png" alt="ユーザー管理" />
-                <mat-card-title>ユーザー管理</mat-card-title>
+                <mat-card-title>ユーザー権限設定</mat-card-title>
               </mat-card-title-group>
             </mat-card-header>
           </mat-card>

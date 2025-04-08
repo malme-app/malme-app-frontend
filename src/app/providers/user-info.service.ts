@@ -45,8 +45,8 @@ interface SystemProfile {
   group: Group | null;
 }
 
-export const tokenKey: string = 'malmeapp_token';
-export const rolesKey: string = 'malmeapp_roles';
+export const tokenKey = 'malmeapp_token';
+export const rolesKey = 'malmeapp_roles';
 @Injectable({
   providedIn: 'root'
 })
@@ -58,29 +58,27 @@ export class UserInfoService {
   public userRole: string[] = [];
   userInfo$ = this.userInfoSubject.asObservable();
 
-  constructor(
-    private http: HttpClient,
-    private authService: MsalService,
-  ) { }
+  constructor(private http: HttpClient, private authService: MsalService) {}
 
   public syncSystemProfile() {
     this.http.post(`${environment.apiBaseUrl}/user/sync-b2c`, {}).subscribe({
       next: () => {
         this.loadingSubject.next(false);
         this.setUserProfile();
+        this.setPermission();
       },
       error: (err) => {
         this.loadingSubject.next(false);
         console.log('error', err);
       }
-    })
+    });
   }
 
   getSystemProfile(): void {
     this.getAcessToken().subscribe({
       next: (token) => {
         const header = new HttpHeaders({
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         });
         this.http.get(`${environment.apiBaseUrl}/user/profile`, { headers: header }).subscribe({
           next: (res: any) => {
@@ -93,26 +91,25 @@ export class UserInfoService {
               bankBranchName: res.company.bankBranchName,
               bankAccountType: res.company.bankAccountType,
               bankAccountNumber: res.company.bankAccountNumber,
-              licenses: res.company.licenses,
-            }
+              licenses: res.company.licenses
+            };
             this.systemProfile = {
               id: res.id,
               uid: res.azureB2CId,
               roles: res.roles,
               email: res.email,
-              group: group,
-            } as SystemProfile
-
+              group: group
+            } as SystemProfile;
           },
           error: (err) => {
             console.log(err);
           }
-        })
+        });
       },
       error: (err) => {
         console.log(err);
       }
-    })
+    });
   }
 
   getAcessToken(): Observable<string> {
@@ -129,6 +126,20 @@ export class UserInfoService {
           observer.error(err);
         }
       });
+    });
+  }
+
+  public setPermission() {
+    this.http.get(`${environment.apiBaseUrl}/user/check-permission`).subscribe({
+      next: (res: any) => {
+        this.userRole = [];
+        if (res.roles) {
+          this.userRole = res.roles;
+        }
+      },
+      error: (err) => {
+        console.log('error', err);
+      }
     });
   }
 
@@ -150,8 +161,8 @@ export class UserInfoService {
             bankBranchName: res.company.bankBranchName,
             bankAccountType: res.company.bankAccountType,
             bankAccountNumber: res.company.bankAccountNumber,
-            licenses: res.company.licenses,
-          }
+            licenses: res.company.licenses
+          };
         }
 
         this.systemProfile = {
@@ -161,21 +172,21 @@ export class UserInfoService {
           lastName: res.lastName,
           email: res.email,
           roles: res.roles,
-          group: group ?? null,
-        } as SystemProfile
+          group: group ?? null
+        } as SystemProfile;
         localStorage.setItem(rolesKey, JSON.stringify(this.systemProfile.roles));
         this.userInfoSubject.next(this.systemProfile);
       },
       error: (err) => {
-        console.log('error', err)
+        console.log('error', err);
       }
-    })
+    });
   }
 
   checkAdminRole() {
     const role = localStorage.getItem(rolesKey);
     if (role) {
-      return JSON.parse(role).includes('Admin') ?? false
+      return JSON.parse(role).includes('Admin') ?? false;
     }
   }
 }
