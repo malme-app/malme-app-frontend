@@ -66,7 +66,7 @@ export class UserComponent {
       },
       error: (error) => {
         console.log('Failed to fetch list roles: ', error);
-        this.notificationService.showNotification('Failed to fetch list roles');
+        this.notificationService.showNotification('表示可能な製品の権限が存在しません。');
         this.isLoading = false;
       }
     });
@@ -87,7 +87,7 @@ export class UserComponent {
         error: (err) => {
           this.disabled = false;
           console.log('Failed to fetch list users: ', err.error.message);
-          this.notificationService.showNotification('Failed to fetch list users');
+          this.notificationService.showNotification('表示可能な製品の権限が存在しません。');
           this.isLoading = false;
         }
       });
@@ -102,13 +102,15 @@ export class UserComponent {
     this.permissionService.updateUserRole(element).subscribe({
       next: () => {
         this.fetchUsersCompany();
-        this.notificationService.showNotification('Update roles successfully');
+        this.notificationService.showNotification('ユーザーの権限を更新しました。');
         this.isLoading = false;
       },
       error: (err) => {
         this.fetchUsersCompany();
         console.log('Failed to update user: ', err.error.message);
-        this.notificationService.showNotification('Failed to update user');
+        this.notificationService.showNotification(
+          'エラーが発生したため、ユーザー権限の更新に失敗しました。'
+        );
         this.isLoading = false;
       }
     });
@@ -117,7 +119,7 @@ export class UserComponent {
   onOpenGroupDialog(element: any) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       data: {
-        title: 'Update user role?',
+        title: 'ユーザーの権限を更新してよろしいですか？',
         message: '',
         acceptBtn: 'OK',
         cancelBtn: 'キャンセル'
