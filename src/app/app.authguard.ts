@@ -1,46 +1,38 @@
 import { Injectable } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
-import { KeycloakAuthGuard, KeycloakService } from 'keycloak-angular';
-import { UserInfoService } from './providers/user-info.service';
+import { MsalService } from '@azure/msal-angular';
+import { AuthMSService } from './service/authMS.service';
+import { rolesKey } from './providers/user-info.service';
+import { ActivatedRouteSnapshot, Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class AuthGuard extends KeycloakAuthGuard {
+export class AuthGuard {
   constructor(
-    protected override readonly router: Router,
-    protected readonly keycloak: KeycloakService,
-    private readonly userInfo: UserInfoService
-  ) {
-    super(router, keycloak);
-  }
+    private msalService: MsalService,
+    private authService: AuthMSService,
+    private router: Router
+  ) { }
 
-  public async isAccessAllowed(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ) {
-    // Force the user to log in if currently unauthenticated.
-    if (!this.authenticated) {
-      await this.keycloak.login({
-        redirectUri: window.location.origin + state.url,
-      });
+  canActivate(route: ActivatedRouteSnapshot): boolean {
+    if (this.msalService.instance.getActiveAccount()) {
+      const pathRole = route.data['role'];
+      if (pathRole && pathRole === 'Admin') {
+        const roles = localStorage.getItem('malmeapp_roles');
+        if (roles) {
+          const listRole = JSON.parse(roles);
+          if (listRole.includes(pathRole)) {
+            return true;
+          } else {
+            this.router.navigate(['/'])
+            return false;
+          }
+        }
+      } else {
+        return true;
+      }
     }
-
-    const userRoles = this.userInfo.systemProfile?.roles ?? [];
-
-    // Get the roles required from the route.
-    const requiredRole = route.data['role'];
-
-    // Allow the user to proceed if no additional roles are required to access the route.
-    if (!requiredRole) {
-      return true;
-    }
-
-    // Allow the user to proceed if all the required roles are present.
-    return userRoles.includes(requiredRole);
+    this.authService.login();
+    return false;
   }
 }
