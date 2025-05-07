@@ -1,0 +1,11 @@
+.confirm-dialog {
+  width: 400px;
+  &__accept {
+    color: #fff;
+    background-color: #0d6efd;
+  }
+  &__cancel {
+    color: #fff;
+    background-color: #dc3545;
+  }
+}

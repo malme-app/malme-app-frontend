@@ -1,10 +1,8 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { UserInfoService } from '../providers/user-info.service';
-import { environment } from 'src/environments/environment';
-import { KeycloakService } from 'keycloak-angular';
 import { Router } from '@angular/router';
 import { HeaderService } from '../service/header.service';
-
+import { AuthMSService } from '../service/authMS.service';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -13,33 +11,36 @@ import { HeaderService } from '../service/header.service';
 export class HeaderComponent implements OnInit, AfterViewInit {
   constructor(
     private router: Router,
-    private readonly keycloak: KeycloakService,
     public userInfo: UserInfoService,
-    public header: HeaderService
+    public header: HeaderService,
+    public authMs: AuthMSService,
   ) {}
 
   ngOnInit() {
     console.log('AppComponent initializing');
-    this.userInfo.initializeProfile();
+    this.authMs.initMSAL();
   }
 
   ngAfterViewInit() {
     console.log('AppComponent ngAfterViewInit');
   }
 
-  login() {
-    this.keycloak.login();
+  async login() {
+    this.authMs.login()
   }
 
-  logout() {
-    this.keycloak.logout(environment.myURL); //(window.origin);
+  async logout() {
+    this.authMs.logout();
   }
 
   signup() {
-    this.keycloak.register();
   }
 
   goMypage() {
     this.router.navigate(['/']);
+  }
+
+  navigateMalmePage() {
+    window.open('https://malme.app');
   }
 }

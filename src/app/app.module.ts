@@ -14,45 +14,83 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
-import { KeycloakAngularModule, KeycloakService } from 'keycloak-angular';
-import { AuthGuard } from './app.authguard';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InvitationComponent } from './invitation/invitation.component';
 import { Dxlogin2023Component } from './dxlogin2023/dxlogin2023.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { MsalInterceptorConfiguration, MsalGuardConfiguration, MsalModule, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG, MsalBroadcastService, MsalGuard, MsalInterceptor, MsalService, MsalRedirectComponent } from '@azure/msal-angular';
+import { IPublicClientApplication, PublicClientApplication, BrowserCacheLocation, InteractionType } from '@azure/msal-browser';
+import { LogLevel as LogLevelMasl } from "@azure/msal-browser";
+import { httpInterceptorProviders } from './interceptors/auth.interceptor';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { UserComponent } from './mypage/user/user.component';
 
-function initializeKeycloak(keycloak: KeycloakService) {
-  return () =>
-    keycloak
-      .init({
-        config: {
-          url: environment.keycloakUrl,
-          realm: environment.keycloakRealm,
-          clientId: environment.keycloakClientId
-        },
-        initOptions: {
-          onLoad: 'check-sso'
-        },
-        enableBearerInterceptor: true,
-        bearerPrefix: 'Bearer',
-        bearerExcludedUrls: []
-      })
-      .catch((error) => {
-        console.log('error =', error);
-        window.alert('ログインに失敗しました');
-      });
+export function loggerCallback(logLevel: LogLevelMasl, message: string) {
+  // console.log(message);
+}
+
+export function MSALInstanceFactory(): IPublicClientApplication {
+  return new PublicClientApplication({
+    auth: {
+      clientId: environment.msalConfig.auth.clientId,
+      authority: environment.b2cPolicies.authorities.signUpSignIn.authority,
+      redirectUri: environment.msalConfig.auth.redirectUri,
+      postLogoutRedirectUri: environment.msalConfig.auth.postLogoutRedirectUri,
+      knownAuthorities: [environment.b2cPolicies.authorityDomain]
+    },
+    cache: {
+      cacheLocation: BrowserCacheLocation.LocalStorage
+    },
+    system: {
+      allowNativeBroker: false, // Disables WAM Broker
+      loggerOptions: {
+        loggerCallback,
+        logLevel: LogLevelMasl.Verbose,
+        piiLoggingEnabled: false
+      }
+    }
+  });
+}
+
+export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
+  const protectedResourceMap = new Map<string, Array<string>>();
+  protectedResourceMap.set(environment.apiConfig.uri, environment.apiConfig.scopes);
+
+  return {
+    interactionType: InteractionType.Redirect,
+    protectedResourceMap
+  };
+}
+
+export function MSALGuardConfigFactory(): MsalGuardConfiguration {
+  return {
+    interactionType: InteractionType.Redirect,
+    authRequest: {
+      scopes: [...environment.apiConfig.scopes],
+    },
+    loginFailedRoute: "/login-failed",
+  };
+}
+
+export function initializeMsal(msalService: MsalService): () => Promise<void> {
+  return async () => {
+    await msalService.instance.initialize();
+  };
 }
 
 @NgModule({
@@ -67,14 +105,15 @@ function initializeKeycloak(keycloak: KeycloakService) {
     InvitationComponent,
     Dxlogin2023Component,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    ConfirmDialogComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    KeycloakAngularModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
     ReactiveFormsModule,
@@ -87,18 +126,42 @@ function initializeKeycloak(keycloak: KeycloakService) {
     MatCardModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatPaginatorModule,
+    MsalModule,
+    FormsModule,
+    MatSnackBarModule
   ],
   providers: [
-    AuthGuard,
     {
       provide: APP_INITIALIZER,
-      useFactory: initializeKeycloak,
+      useFactory: initializeMsal,
+      deps: [MsalService],
       multi: true,
-      deps: [KeycloakService]
     },
-    { provide: LocationStrategy, useClass: PathLocationStrategy }
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: MsalInterceptor,
+      multi: true,
+    },
+    {
+      provide: MSAL_INSTANCE,
+      useFactory: MSALInstanceFactory,
+    },
+    {
+      provide: MSAL_GUARD_CONFIG,
+      useFactory: MSALGuardConfigFactory,
+    },
+    {
+      provide: MSAL_INTERCEPTOR_CONFIG,
+      useFactory: MSALInterceptorConfigFactory,
+    },
+    MsalService,
+    MsalGuard,
+    MsalBroadcastService,
+    { provide: LocationStrategy, useClass: PathLocationStrategy },
+    httpInterceptorProviders
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent, MsalRedirectComponent]
 })
-export class AppModule {}
+export class AppModule { }

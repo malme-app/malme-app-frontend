@@ -1,24 +1,41 @@
+::ng-deep .mat-mdc-select-arrow-wrapper {
+  display: none !important;
+}
+
 div.form-container {
-    border: 1px solid #000;
-    margin-top: 16px;
+  border: 1px solid #000;
+  margin-top: 16px;
 }
 
 .login-info,
 .account-type,
 .group-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
 }
 
 .mat-mdc-form-field {
-    width: 100%;
+  width: 100%;
 }
 
 @media screen and (max-width: 959.98px) {
-    .login-info,
-    .account-type,
-    .group-info {
-        grid-template-columns: 1fr;
-    }
+  .login-info,
+  .account-type,
+  .group-info {
+    grid-template-columns: 1fr;
+  }
+}
+.spinner-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
 }

@@ -69,7 +69,7 @@
                             }}
                         </div>
                     </div>
-                    <div class="text-center">
+                    <!-- <div class="text-center">
                         <div class="bold">契約書</div>
                         <div class="mt-5">
                             <button
@@ -84,6 +84,10 @@
                                 <mat-icon>file_open</mat-icon>
                             </button>
                         </div>
+                    </div> -->
+                    <div>
+                        <div class="bold">支払い状況</div>
+                        <div class="mt-10" *ngIf="currentSaleInfo.paymentStatus !== -1">{{ currentSaleInfo.paymentStatus === 1 ? '支払い済み' : '未払い' }}</div>
                     </div>
                 </div>
             </mat-card-content>
@@ -166,7 +170,7 @@
 <ng-template #template>
     <h1 mat-dialog-title>{{ currentSaleInfo.contractTitle }}</h1>
     <div mat-dialog-content>
-        <pre>{{ currentSaleInfo.contractContent }}</pre>
+        <pre [innerHTML]="currentSaleInfo.contractContent"></pre>
     </div>
     <div mat-dialog-actions>
         <button mat-button mat-dialog-close>閉じる</button>

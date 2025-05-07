@@ -35,6 +35,10 @@
             letter-spacing: 3px;
             font-size: 16px;
         }
+        .pending-button {
+          background-color: #ffc107;
+          color: white;
+        }
     }
     &-content {
         margin-top: 3px;
@@ -44,4 +48,18 @@
             align-items: center;
         }
     }
+}
+
+.spinner-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1000;
 }
