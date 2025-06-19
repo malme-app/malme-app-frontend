@@ -20,9 +20,27 @@
                         />
                     </mat-form-field>
                 </div>
-
+                <div class="roles-information" *ngIf="companyRoles && companyRoles.length > 0">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Role Name</th>
+                                <th>Quantity</th>
+                                <th>Using</th>
+                                <th>Available</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let role of companyRoles">
+                                <td>{{ role.name }}</td>
+                                <td>{{ role.quantity }}</td>
+                                <td>{{ role.using }}</td>
+                                <td><span class="badge">{{ role.available }}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <table mat-table [dataSource]="dataSourceUsers">
-
                     <ng-container matColumnDef="username">
                         <th mat-header-cell *matHeaderCellDef>ユーザー名</th>
                         <td mat-cell *matCellDef="let element">
