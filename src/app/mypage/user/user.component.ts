@@ -98,7 +98,6 @@ export class UserComponent {
   fetchCompanyRoles() {
     this.permissionService.getCompanyRolesInformation().subscribe({
       next: (res) => {
-        console.log('Company roles fetched successfully: ', res);
         this.companyRoles = res;
       },
       error: (err) => {
