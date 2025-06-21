@@ -96,18 +96,14 @@ export class UserComponent {
   }
 
   fetchCompanyRoles() {
-    // this.isLoading = true;
     this.permissionService.getCompanyRolesInformation().subscribe({
       next: (res) => {
         console.log('Company roles fetched successfully: ', res);
-        // this.roleList = res;
-        // this.isLoading = false;
         this.companyRoles = res;
       },
       error: (err) => {
         console.log('Failed to fetch company roles: ', err.error.message);
         // this.notificationService.showNotification('表示可能な製品の権限が存在しません。');
-        // this.isLoading = false;
       }
     });
   }
