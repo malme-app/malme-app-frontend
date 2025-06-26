@@ -7,14 +7,9 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root'
 })
 export class PermissionService {
-
-  constructor(
-    private http: HttpClient,
-  ) { }
+  constructor(private http: HttpClient) {}
 
   getListPermission(): Observable<any> {
-
-
     return this.http.get(`${environment.apiBaseUrl}/user/get-permissions`);
   }
 
@@ -22,7 +17,7 @@ export class PermissionService {
     return this.http.get(`${environment.apiBaseUrl}/user/check-permission`);
   }
 
-  getUsersCompany(page: number, size: number , search?: string): Observable<any> {
+  getUsersCompany(page: number, size: number, search?: string): Observable<any> {
     let params: any = {
       page: page,
       size: size
@@ -35,7 +30,7 @@ export class PermissionService {
 
   updateUserRole(user: any): Observable<any> {
     const header = new HttpHeaders({
-      'Content-Type': `application/json`,
+      'Content-Type': `application/json`
     });
 
     const body = {
@@ -43,8 +38,14 @@ export class PermissionService {
       firstName: user.firstName,
       lastName: user.lastName,
       roles: user.roles
-    }
+    };
 
-    return this.http.put(`${environment.apiBaseUrl}/user/update-user/${user.azureB2CId}`, body, { headers: header });
+    return this.http.put(`${environment.apiBaseUrl}/user/update-user/${user.azureB2CId}`, body, {
+      headers: header
+    });
+  }
+
+  getCompanyRolesInformation(): Observable<any> {
+    return this.http.get(`${environment.apiBaseUrl}/user/get-company-roles`);
   }
 }

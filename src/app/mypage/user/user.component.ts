@@ -34,6 +34,7 @@ export class UserComponent {
   public disabled = false;
   isLoading = false;
   readonly dialog = inject(MatDialog);
+  public companyRoles: any[] = [];
 
   private searchSubject = new Subject<string>();
   @ViewChild(MatPaginator) paginator: any;
@@ -46,6 +47,7 @@ export class UserComponent {
   ngOnInit() {
     this.fetchPermissions();
     this.fetchUsersCompany();
+    this.fetchCompanyRoles();
 
     this.searchSubject.pipe(debounceTime(500)).subscribe((value) => {
       this.searchValue = value;
@@ -93,6 +95,18 @@ export class UserComponent {
       });
   }
 
+  fetchCompanyRoles() {
+    this.permissionService.getCompanyRolesInformation().subscribe({
+      next: (res) => {
+        this.companyRoles = res;
+      },
+      error: (err) => {
+        console.log('Failed to fetch company roles: ', err.error.message);
+        // this.notificationService.showNotification('表示可能な製品の権限が存在しません。');
+      }
+    });
+  }
+
   updateUserRoles(user: User, newRoles: string[]) {
     user.roles = [...newRoles];
   }
@@ -102,15 +116,18 @@ export class UserComponent {
     this.permissionService.updateUserRole(element).subscribe({
       next: () => {
         this.fetchUsersCompany();
+        this.fetchCompanyRoles();
         this.notificationService.showNotification('ユーザーの権限を更新しました。');
         this.isLoading = false;
       },
       error: (err) => {
         this.fetchUsersCompany();
+        this.fetchCompanyRoles();
         console.log('Failed to update user: ', err.error.message);
-        this.notificationService.showNotification(
-          'エラーが発生したため、ユーザー権限の更新に失敗しました。'
-        );
+        // this.notificationService.showNotification(
+        //   'エラーが発生したため、ユーザー権限の更新に失敗しました。'
+        // );
+        this.notificationService.showNotification(err.error.message);
         this.isLoading = false;
       }
     });
