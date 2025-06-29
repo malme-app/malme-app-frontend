@@ -29,10 +29,11 @@ export class UserComponent {
   public roleList: string[] = [];
   public searchValue = '';
   public pageIndex = 0;
-  public pageSize = 5;
+  public pageSize = 10;
   public length = 1;
   public disabled = false;
   isLoading = false;
+  isLoadCompanyRoles = false;
   readonly dialog = inject(MatDialog);
   public companyRoles: any[] = [];
 
@@ -48,7 +49,6 @@ export class UserComponent {
     this.fetchPermissions();
     this.fetchUsersCompany();
     this.fetchCompanyRoles();
-
     this.searchSubject.pipe(debounceTime(500)).subscribe((value) => {
       this.searchValue = value;
       this.fetchUsersCompany();
@@ -99,9 +99,11 @@ export class UserComponent {
     this.permissionService.getCompanyRolesInformation().subscribe({
       next: (res) => {
         this.companyRoles = res;
+        this.isLoadCompanyRoles = true;
       },
       error: (err) => {
         console.log('Failed to fetch company roles: ', err.error.message);
+        this.isLoadCompanyRoles = true;
         // this.notificationService.showNotification('表示可能な製品の権限が存在しません。');
       }
     });

@@ -7,6 +7,13 @@
                 <mat-icon>reply</mat-icon>
             </button>
         </div>
+        <div *ngIf="isLoadCompanyRoles && (!companyRoles || companyRoles.length === 0)">
+            <h3 class="white f-16">
+                現在、御社にはWebDanまたはFrameWebの有効なライセンスが確認できませんでした。
+                <br />
+                ご利用いただくには、有効なライセンスのご契約が必要です。
+            </h3>
+        </div>
         <mat-card>
             <mat-card-content>
                 <div class="search-input">
@@ -20,7 +27,7 @@
                         />
                     </mat-form-field>
                 </div>
-                <div class="roles-information" *ngIf="companyRoles && companyRoles.length > 0">
+                <!-- <div class="roles-information" *ngIf="companyRoles && companyRoles.length > 0">
                     <table>
                         <thead>
                             <tr>
@@ -39,7 +46,7 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </div> -->
                 <table mat-table [dataSource]="dataSourceUsers">
                     <ng-container matColumnDef="username">
                         <th mat-header-cell *matHeaderCellDef>ユーザー名</th>

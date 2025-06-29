@@ -14,7 +14,7 @@
         </div>
         <mat-card>
             <mat-card-content>
-                <div class="plan-info border-1 pa-15 space-between">
+                <!-- <div class="plan-info border-1 pa-15 space-between">
                     <div>
                         <div class="bold">現在の購入プラン</div>
                         <div class="mt-10">{{ currentSaleInfo.name }}</div>
@@ -69,7 +69,7 @@
                             }}
                         </div>
                     </div>
-                    <!-- <div class="text-center">
+                    <div class="text-center">
                         <div class="bold">契約書</div>
                         <div class="mt-5">
                             <button
@@ -84,10 +84,79 @@
                                 <mat-icon>file_open</mat-icon>
                             </button>
                         </div>
-                    </div> -->
+                    </div>
                     <div>
                         <div class="bold">支払い状況</div>
                         <div class="mt-10" *ngIf="currentSaleInfo.paymentStatus !== -1">{{ currentSaleInfo.paymentStatus === 1 ? '支払い済み' : '未払い' }}</div>
+                    </div>
+                </div> -->
+                <div class="border-1 pa-15">
+                    <p class="bold mt-0">現在の購入プラン</p>
+                    <div class="table-wrapper">
+                        <table mat-table [dataSource]="activePlans">
+                            <ng-container matColumnDef="paymentDay">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    お支払い日
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{
+                                        element.payDate &&
+                                            element.payDate.getFullYear() +
+                                                "/" +
+                                                (element.payDate.getMonth() +
+                                                    1).toString().padStart(2, '0') +
+                                                "/" +
+                                                element.payDate.getDate().toString().padStart(2, '0')
+                                    }}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="plan">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    購入プラン
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{ element.plan }}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="period">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    満了日
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{
+                                        element.closingDate &&
+                                            element.closingDate.getFullYear() +
+                                                "/" +
+                                                (element.closingDate.getMonth() +
+                                                    1).toString().padStart(2, '0') +
+                                                "/" +
+                                                element.closingDate.getDate().toString().padStart(2, '0')
+                                    }}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="method">
+                                <th mat-header-cell *matHeaderCellDef>
+                                    お支払い方法
+                                </th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{ element.paymentMethod }}
+                                </td>
+                            </ng-container>
+                            <ng-container matColumnDef="amount">
+                                <th mat-header-cell *matHeaderCellDef>金額</th>
+                                <td mat-cell *matCellDef="let element">
+                                    {{ element.amount.toLocaleString() }}円
+                                </td>
+                            </ng-container>
+                            <tr
+                                mat-header-row
+                                *matHeaderRowDef="displayedColumns"
+                            ></tr>
+                            <tr
+                                mat-row
+                                *matRowDef="let row; columns: displayedColumns"
+                            ></tr>
+                        </table>
                     </div>
                 </div>
             </mat-card-content>
