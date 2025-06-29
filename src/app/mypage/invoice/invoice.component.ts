@@ -38,46 +38,42 @@ export class InvoiceComponent implements OnInit {
   };
   displayedColumns: string[] = ['paymentDay', 'plan', 'period', 'method', 'amount'];
   dataSource: TableRow[] = [];
+  activePlans: TableRow[] = [];
   hasExpirationDate = true;
 
-  constructor(public dialog: MatDialog, private http: HttpClient) { }
+  constructor(public dialog: MatDialog, private http: HttpClient) {}
 
   ngOnInit() {
-    this.http.get(`${environment.apiBaseUrl}/sale/last`).subscribe({
-      next: (data: any) => {
-        if (data) {
-          this.currentSaleInfo = {
-            name: data?.plan?.name ?? '',
-            expirationStart: data.expirationStart && new Date(data.expirationStart),
-            expirationEnd: data.expirationEnd && new Date(data.expirationEnd),
-            paymentMethod: data.paymentMethod?.name ?? '',
-            contractTitle: data.contract?.title ?? '',
-            contractContent: data.contract?.content ?? '',
-            contractUrl: data.contract?.url ?? '',
-            paymentStatus: data.status ?? -1,
-          };
-          console.log('current plan =' + JSON.stringify(this.currentSaleInfo, null, 2));
-        }
-      },
-      error: (_error) => {
-        this.currentSaleInfo.name = '';
-        this.currentSaleInfo.paymentStatus = -1;
-        this.hasExpirationDate = false;
-      }
-    });
-    this.http.get(`${environment.apiBaseUrl}/sale/list`).subscribe({
+    this.http.get(`${environment.apiBaseUrl}/sale/list-active`).subscribe({
       next: (data: any) => {
         const paymentHistories: any[] = [];
         data.forEach((sale: any) => {
-          paymentHistories.push(
-            {
-              payDate: new Date(sale.payAt),
-              plan: sale?.plan?.name ?? '',
-              closingDate: new Date(sale.expirationEnd),
-              paymentMethod: sale?.paymentMethod?.name ?? '',
-              amount: sale.price
-            }
-          );
+          paymentHistories.push({
+            payDate: new Date(sale.payAt),
+            plan: sale?.plan?.name ?? '',
+            closingDate: new Date(sale.expirationEnd),
+            paymentMethod: sale?.paymentMethod?.name ?? '',
+            amount: sale.price
+          });
+        });
+        this.activePlans = paymentHistories;
+      },
+      error: (_error) => {
+        this.currentSaleInfo.name = '';
+        this.hasExpirationDate = false;
+      }
+    });
+    this.http.get(`${environment.apiBaseUrl}/sale/list-expired`).subscribe({
+      next: (data: any) => {
+        const paymentHistories: any[] = [];
+        data.forEach((sale: any) => {
+          paymentHistories.push({
+            payDate: new Date(sale.payAt),
+            plan: sale?.plan?.name ?? '',
+            closingDate: new Date(sale.expirationEnd),
+            paymentMethod: sale?.paymentMethod?.name ?? '',
+            amount: sale.price
+          });
         });
         this.dataSource = paymentHistories;
       },
