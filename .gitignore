@@ -47,8 +47,8 @@ Thumbs.db
 firebase.json
 firebase-debug.log
 
-# Environment files
-src/environments/
-
-# nginX files
-/nginx
+# Stray local files, not part of the Angular environment config
+src/environments/env.development
+src/environments/env.production
+src/environments/environment copy.ts
+src/environments/注意！！.envファイルを一つずつダウンロードするとファイル名先頭のドットが消える
