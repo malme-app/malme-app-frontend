@@ -1,0 +1,107 @@
+name: Build and Deploy Frontend
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    env:
+      APP_ENV: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+      ANGULAR_CONFIG: ${{ github.ref_name == 'main' && 'production' || 'stg' }}
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      SSH_PORT: ${{ vars.SSH_PORT || '22' }}
+      SSH_USER: ${{ vars.SSH_USER || 'ec2-user' }}
+      SSH_HOST: ${{ vars.SSH_HOST }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image
+        env:
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ env.APP_ENV }}-${{ github.sha }}
+        run: |
+          docker build --build-arg ANGULAR_CONFIG="${ANGULAR_CONFIG}" \
+            -t "${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}" \
+            -t "${REGISTRY}/${REPOSITORY}:${APP_ENV}-latest" .
+          docker push "${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}"
+          docker push "${REGISTRY}/${REPOSITORY}:${APP_ENV}-latest"
+
+      - name: Deploy on EC2
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          APP_ENV: ${{ env.APP_ENV }}
+          AWS_REGION: ${{ env.AWS_REGION }}
+          REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          IMAGE: ${{ steps.ecr-login.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ env.APP_ENV }}-${{ github.sha }}
+          CONTAINER_NAME: malme-app-frontend-${{ env.APP_ENV }}
+        with:
+          host: ${{ env.SSH_HOST }}
+          username: ${{ env.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ env.SSH_PORT }}
+          script_stop: true
+          envs: APP_ENV,AWS_REGION,REGISTRY,IMAGE,CONTAINER_NAME
+          script: |
+            set -e
+
+            aws ecr get-login-password --region "${AWS_REGION}" | docker login --username AWS --password-stdin "${REGISTRY}"
+
+            CERT_DIR="$HOME/malme-app-frontend/nginx"
+            if [ ! -f "${CERT_DIR}/malmeCert.pem" ] || [ ! -f "${CERT_DIR}/malmeCert.key" ]; then
+              echo "Missing ${CERT_DIR}/malmeCert.pem or malmeCert.key on host. Aborting." >&2
+              exit 1
+            fi
+
+            docker pull "${IMAGE}"
+            docker stop "${CONTAINER_NAME}" 2>/dev/null || true
+            docker rm "${CONTAINER_NAME}" 2>/dev/null || true
+
+            docker run -d \
+              --name "${CONTAINER_NAME}" \
+              --restart unless-stopped \
+              --add-host host.docker.internal:host-gateway \
+              -v "${CERT_DIR}/malmeCert.pem:/etc/nginx/malmeCert.pem:ro" \
+              -v "${CERT_DIR}/malmeCert.key:/etc/nginx/malmeCert.key:ro" \
+              -p 80:80 \
+              -p 443:443 \
+              --log-driver awslogs \
+              --log-opt awslogs-region="${AWS_REGION}" \
+              --log-opt awslogs-group="/malme-app-frontend/${APP_ENV}" \
+              --log-opt awslogs-create-group=true \
+              --log-opt awslogs-stream="${CONTAINER_NAME}" \
+              "${IMAGE}"
+
+            docker image prune -af --filter "until=72h" || true
+
+      - name: Deploy summary
+        run: |
+          echo "Environment: ${APP_ENV}"
+          echo "Host: ${SSH_HOST}"
