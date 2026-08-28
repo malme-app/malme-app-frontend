@@ -1,8 +1,16 @@
 #######################
 # malme fontend angular
 #######################
-FROM nginx:alpine as prod
-COPY ./dist /usr/share/nginx/html
+FROM node:18.10-alpine AS builder
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+ARG ANGULAR_CONFIG=production
+RUN npx ng build --configuration ${ANGULAR_CONFIG}
+
+FROM nginx:alpine AS prod
+COPY --from=builder /app/dist /usr/share/nginx/html
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
-COPY ./nginx/malmeCert.key /etc/nginx/malmeCert.key
-COPY ./nginx/malmeCert.pem /etc/nginx/malmeCert.pem
+
+EXPOSE 80 443
