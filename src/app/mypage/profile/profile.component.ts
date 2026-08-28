@@ -86,6 +86,7 @@ export class ProfileComponent implements OnInit {
       .patch(`${environment.apiBaseUrl}/user/update-user`, {
         id: this.userInfo.systemProfile?.id ?? 0,
         licenses: this.groupForm.controls.licenses.value,
+        displayName: `${this.accountForm.value.lastName} ${this.accountForm.value.firstName}`,
         ...this.accountForm.value
       })
       .subscribe({
