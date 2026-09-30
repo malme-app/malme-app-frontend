@@ -234,6 +234,115 @@
                 </div>
             </mat-card-content>
         </mat-card>
+        <mat-card class="mt-15" *ngIf="remindTestCases.length" data-testid="remind-test-panel">
+            <mat-card-content>
+                <div class="border-1 pa-15">
+                    <p class="bold mt-0">🧪 Remind テスト (dev only)</p>
+                    <p class="remind-test-hint">
+                        Goal: the reminder follows the license with the latest expiration, so an old license never needs
+                        <code>enabled = 0</code>. Reminder days: 90 / 60 / 30 days left. Run replaces all sales of this
+                        company and posts the result to Slack #test-notifier.
+                    </p>
+                    <p class="bold" data-testid="remind-test-now">
+                        Today (now): {{ remindTestNow | date: 'yyyy/MM/dd HH:mm:ss' }} — days left are counted from the moment you press Run.
+                    </p>
+                    <div class="table-wrapper">
+                        <table class="remind-test-table" data-testid="remind-test-cases">
+                            <thead>
+                                <tr>
+                                    <th>Case</th>
+                                    <th *ngFor="let l of remindTestLicenses">License {{ l }}</th>
+                                    <th>Expected</th>
+                                    <th>Run</th>
+                                    <th>Result</th>
+                                    <th>SQL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let c of remindTestCases" [class.active]="remindTestResult?.caseId === c.id">
+                                    <td class="bold">{{ c.label }}</td>
+                                    <td *ngFor="let l of remindTestLicenses; let i = index">
+                                        {{ c.daysLeft[i] !== undefined ? c.daysLeft[i] + ' days' : '—' }}
+                                    </td>
+                                    <td>{{ c.expected }}</td>
+                                    <td>
+                                        <button
+                                            mat-stroked-button
+                                            color="primary"
+                                            [disabled]="!!remindTestRunning"
+                                            [attr.data-testid]="'remind-case-' + c.id"
+                                            (click)="runRemindTest(c.id)"
+                                        >
+                                            <mat-spinner *ngIf="remindTestRunning === c.id" diameter="16"></mat-spinner>
+                                            Run
+                                        </button>
+                                    </td>
+                                    <td [attr.data-testid]="'remind-case-result-' + c.id">
+                                        <span *ngIf="remindTestPassByCase[c.id] === true" class="pass">PASS</span>
+                                        <span *ngIf="remindTestPassByCase[c.id] === false" class="fail">FAIL</span>
+                                    </td>
+                                    <td>
+                                        <button
+                                            mat-button
+                                            [attr.data-testid]="'remind-case-sql-' + c.id"
+                                            [title]="c.sql"
+                                            (click)="copyRemindTestSql(c)"
+                                        >
+                                            <mat-icon>content_copy</mat-icon>
+                                            {{ remindTestCopiedCaseId === c.id ? 'Copied ✓' : 'Copy SQL' }}
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="remind-test-error" *ngIf="remindTestError" data-testid="remind-test-error">{{ remindTestError }}</p>
+                    <div class="remind-test-result" *ngIf="remindTestResult as r" data-testid="remind-test-result">
+                        <div class="remind-test-slack" [class.ok]="r.slackSent" data-testid="remind-test-slack">
+                            {{ r.slackSent ? '✅ Sent to Slack #test-notifier' : '❌ Slack not sent: ' + r.slackError }}
+                            · Run at {{ r.runAt }}
+                        </div>
+                        <p class="bold">Result: {{ r.label }} · Today {{ r.today }}</p>
+                        <div class="table-wrapper">
+                            <table class="remind-test-table" data-testid="remind-test-licenses">
+                                <thead>
+                                    <tr>
+                                        <th>License</th>
+                                        <th>満了日</th>
+                                        <th>Days left</th>
+                                        <th>Reminder day today?</th>
+                                        <th>Cron picks (latest)</th>
+                                        <th>Mail</th>
+                                        <th>Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let l of r.licenses" [class.picked]="l.picked" [attr.data-testid]="'remind-license-' + l.license">
+                                        <td class="bold">License {{ l.license }} <span class="sale-id">#{{ l.saleId }}</span></td>
+                                        <td>{{ l.expirationEnd | date: 'yyyy/MM/dd' }}</td>
+                                        <td>{{ l.daysLeft }}</td>
+                                        <td>{{ l.reminderDay ? '✔ ' + l.daysLeft + '-day' : '—' }}</td>
+                                        <td>{{ l.picked ? '★ picked' : '' }}</td>
+                                        <td [attr.data-testid]="'remind-license-action-' + l.license" [class]="'action-' + l.action">
+                                            {{ remindTestActionLabels[l.action] }}
+                                        </td>
+                                        <td>{{ l.reason }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="remind-test-summary" data-testid="remind-test-summary" [class.send]="r.willSend">
+                            {{ r.willSend ? '📧' : '🚫' }} {{ r.summary }}
+                        </div>
+                        <div data-testid="remind-test-verdict">
+                            <b>Expected:</b> {{ r.expected }} →
+                            <span [class.pass]="r.pass" [class.fail]="!r.pass">{{ r.pass ? 'PASS' : 'FAIL' }}</span>
+                            · Recipients: {{ r.recipients.join(', ') || '(none)' }}
+                        </div>
+                    </div>
+                </div>
+            </mat-card-content>
+        </mat-card>
     </div>
 </div>
 <ng-template #template>
