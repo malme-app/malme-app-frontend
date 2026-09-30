@@ -1,5 +1,7 @@
 export const environment = {
   production: true,
+  // Dev-only remind test panel on /invoice (backend also requires an Admin of a ZZ_TEST_* company).
+  remindTestPanel: true,
   firebase: {
     apiKey: 'AIzaSyCO4R1CmJQzVUKfotcOqJCLbwNjrwMzRXc',
     authDomain: 'structuralen-395cf.firebaseapp.com',

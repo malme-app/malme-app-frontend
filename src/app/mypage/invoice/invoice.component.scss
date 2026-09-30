@@ -2,6 +2,67 @@
     justify-content: flex-end;
 }
 
+.remind-test-hint {
+    font-size: 12px;
+    color: #666;
+}
+.remind-test-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    th, td {
+        border-bottom: 1px solid #e0e0e0;
+        padding: 8px 10px;
+        text-align: left;
+        vertical-align: middle;
+    }
+    th {
+        font-weight: bold;
+        white-space: nowrap;
+    }
+    tr.active, tr.picked {
+        background: #e3f2fd;
+    }
+    mat-spinner {
+        display: inline-block;
+        margin-right: 6px;
+    }
+    .sale-id {
+        color: #888;
+        font-weight: normal;
+    }
+    .action-send { color: #2e7d32; font-weight: bold; white-space: nowrap; }
+    .action-skip { color: #ef6c00; font-weight: bold; white-space: nowrap; }
+    .action-none { color: #757575; font-weight: bold; white-space: nowrap; }
+}
+.remind-test-error {
+    color: #c62828;
+}
+.remind-test-result {
+    margin-top: 16px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+.remind-test-slack {
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    background: #ffebee;
+    color: #c62828;
+    &.ok {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+}
+.remind-test-summary {
+    margin: 10px 0 4px;
+    font-size: 15px;
+    font-weight: bold;
+    &.send { color: #2e7d32; }
+}
+.pass { color: #2e7d32; font-weight: bold; }
+.fail { color: #c62828; font-weight: bold; }
+
 @media screen and (max-width: 959.98px) {
     .plan-info {
         display: block;
