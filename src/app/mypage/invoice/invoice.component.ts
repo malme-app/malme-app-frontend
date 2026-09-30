@@ -141,12 +141,34 @@ export class InvoiceComponent implements OnInit {
     }, 2000);
   }
 
+  // Extra "Test license" column, only for the remind test company.
+  get activeColumns(): string[] {
+    return this.remindTestCases.length ? [...this.displayedColumns, 'testLicense'] : this.displayedColumns;
+  }
+
+  /** "License B · 60 days left · 📧 SEND" — A is the active license that expires first, like the test panel. */
+  remindTestLicenseLabel(row: any): string {
+    const sorted = [...this.activePlans].sort(
+      (a: any, b: any) => a.closingDate.getTime() - b.closingDate.getTime() || a.saleId - b.saleId
+    );
+    const letter = String.fromCharCode(65 + sorted.indexOf(row));
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const end = new Date(row.closingDate);
+    end.setHours(0, 0, 0, 0);
+    const daysLeft = Math.round((end.getTime() - today.getTime()) / 86_400_000);
+    const license = this.remindTestResult?.licenses.find((l) => l.saleId === row.saleId);
+    const action = license ? ` · ${this.remindTestActionLabels[license.action]}${license.picked ? ' (★ latest)' : ''}` : '';
+    return `License ${letter} · ${daysLeft} days left${action}`;
+  }
+
   loadSales() {
     this.http.get(`${environment.apiBaseUrl}/sale/list-active`).subscribe({
       next: (data: any) => {
         const paymentHistories: any[] = [];
         data.forEach((sale: any) => {
           paymentHistories.push({
+            saleId: sale.id,
             payDate: new Date(sale.payAt),
             plan: sale?.plan?.name ?? '',
             closingDate: new Date(sale.expirationEnd),
@@ -166,6 +188,7 @@ export class InvoiceComponent implements OnInit {
         const paymentHistories: any[] = [];
         data.forEach((sale: any) => {
           paymentHistories.push({
+            saleId: sale.id,
             payDate: new Date(sale.payAt),
             plan: sale?.plan?.name ?? '',
             closingDate: new Date(sale.expirationEnd),
