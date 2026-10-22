@@ -54,6 +54,47 @@ jobs:
           docker push "${REGISTRY}/${REPOSITORY}:${IMAGE_TAG}"
           docker push "${REGISTRY}/${REPOSITORY}:${APP_ENV}-latest"
 
+      # The production security group has no inbound port 22, so SSH goes through
+      # an SSM port-forwarding tunnel. Enabled by setting SSM_INSTANCE_ID on the environment.
+      - name: Require SSM tunnel on production
+        if: env.APP_ENV == 'production' && vars.SSM_INSTANCE_ID == ''
+        run: |
+          echo "::error::SSM_INSTANCE_ID is not set on the production environment; direct SSH (port 22) is closed."
+          exit 1
+
+      - name: Open SSM tunnel to EC2
+        id: ssm-tunnel
+        if: vars.SSM_INSTANCE_ID != ''
+        env:
+          SSM_INSTANCE_ID: ${{ vars.SSM_INSTANCE_ID }}
+          LOCAL_PORT: '2222'
+        run: |
+          if ! command -v session-manager-plugin >/dev/null; then
+            curl -fsSL -o "${RUNNER_TEMP}/session-manager-plugin.deb" \
+              https://s3.amazonaws.com/session-manager-downloads/plugin/1.2.835.0/ubuntu_64bit/session-manager-plugin.deb
+            sudo dpkg -i "${RUNNER_TEMP}/session-manager-plugin.deb"
+          fi
+
+          nohup aws ssm start-session \
+            --region "${AWS_REGION}" \
+            --target "${SSM_INSTANCE_ID}" \
+            --document-name AWS-StartPortForwardingSession \
+            --parameters "{\"portNumber\":[\"${SSH_PORT}\"],\"localPortNumber\":[\"${LOCAL_PORT}\"]}" \
+            > "${RUNNER_TEMP}/ssm-tunnel.log" 2>&1 &
+          tunnel_pid=$!
+
+          for _ in $(seq 1 30); do
+            kill -0 "${tunnel_pid}" 2>/dev/null || break
+            if timeout 1 bash -c "</dev/tcp/127.0.0.1/${LOCAL_PORT}" 2>/dev/null; then
+              echo "host=127.0.0.1" >> "$GITHUB_OUTPUT"
+              echo "port=${LOCAL_PORT}" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            sleep 1
+          done
+          cat "${RUNNER_TEMP}/ssm-tunnel.log"
+          exit 1
+
       - name: Deploy on EC2
         uses: appleboy/ssh-action@v1.2.0
         env:
@@ -62,11 +103,14 @@ jobs:
           REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           IMAGE: ${{ steps.ecr-login.outputs.registry }}/${{ vars.ECR_REPOSITORY }}:${{ env.APP_ENV }}-${{ github.sha }}
           CONTAINER_NAME: malme-app-frontend-${{ env.APP_ENV }}
+          # drone-ssh reads SSH_HOST/SSH_PORT before the action inputs, so override the job-level values.
+          SSH_HOST: ${{ steps.ssm-tunnel.outputs.host || env.SSH_HOST }}
+          SSH_PORT: ${{ steps.ssm-tunnel.outputs.port || env.SSH_PORT }}
         with:
-          host: ${{ env.SSH_HOST }}
+          host: ${{ steps.ssm-tunnel.outputs.host || env.SSH_HOST }}
           username: ${{ env.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          port: ${{ env.SSH_PORT }}
+          port: ${{ steps.ssm-tunnel.outputs.port || env.SSH_PORT }}
           script_stop: true
           envs: APP_ENV,AWS_REGION,REGISTRY,IMAGE,CONTAINER_NAME
           script: |
@@ -101,7 +145,17 @@ jobs:
 
             docker image prune -af --filter "until=72h" || true
 
+      - name: Show SSM tunnel log
+        if: failure() && steps.ssm-tunnel.outcome == 'success'
+        run: cat "${RUNNER_TEMP}/ssm-tunnel.log"
+
       - name: Deploy summary
+        env:
+          DEPLOY_TARGET: ${{ steps.ssm-tunnel.outcome == 'success' && format('{0} (SSM tunnel)', vars.SSM_INSTANCE_ID) || env.SSH_HOST }}
+          IMAGE_TAG: ${{ env.APP_ENV }}-${{ github.sha }}
         run: |
-          echo "Environment: ${APP_ENV}"
-          echo "Host: ${SSH_HOST}"
+          {
+            echo "- Environment: ${APP_ENV}"
+            echo "- Host: ${DEPLOY_TARGET}"
+            echo "- Image: ${IMAGE_TAG}"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
