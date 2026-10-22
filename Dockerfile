@@ -1,7 +1,7 @@
 #######################
 # malme fontend angular
 #######################
-FROM node:18.10-alpine AS builder
+FROM node:24.22.1-alpine AS builder
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
