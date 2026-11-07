@@ -1,148 +1,107 @@
 <div class="mypage-container">
-    <div class="mypage-inner">
-        <div class="page-header">
-            <h1 class="page-title">チームに招待する</h1>
-            <button
-                mat-button
-                aria-label="ダッシュボード"
-                class="white f-16"
-                routerLink="/"
-            >
-                <b>ダッシュボードへ戻る</b>
-                <mat-icon>reply</mat-icon>
-            </button>
-        </div>
-        <mat-card>
-            <mat-card-content>
-                <div class="border-1 pa-15">
-                    <form
-                        [formGroup]="inviteForm"
-                        (ngSubmit)="onSubmitInviteForm()"
-                    >
-                        <div class="flex-container">
-                            <div>
-                                <mat-form-field  *ngIf="!memberInputedFlag" >
-                                    <mat-label>メールアドレス</mat-label>
-                                    <input matInput type="email" formControlName="email"/>
-                                    <mat-error *ngIf="
-                                                                    inviteFormControl.email.hasError(
-                                                                        'required'
-                                                                    )
-                                                                ">
-                                        このフィールドを入力してください。
-                                    </mat-error>
-                                    <mat-error *ngIf="
-                                                                    !inviteFormControl.email.hasError(
-                                                                        'required'
-                                                                    ) &&
-                                                                    inviteFormControl.email.hasError(
-                                                                        'email'
-                                                                    )
-                                                                ">
-                                        メール形式が正しくありません。
-                                    </mat-error>
-                                </mat-form-field>
-                            </div>
-                            <div class="invite-message-div"><span class="invite-message-span1">{{ invitedMessage1 }}</span><span
-                                    class="invite-message-span2">{{ invitedMessage2 }}</span></div>
-                            <div class="invite-button">
-                                <button mat-raised-button color="primary" type="submit" [disabled]="
-                                                                      !inviteForm.valid || memberInputedFlag ||
-                                                                      invitedFlag
-                                                                      || (userInfo.systemProfile && userInfo.systemProfile.group &&
-                                                                                        userInfo.systemProfile.group.licenses -inviteDataArray.length <= 0)
-                                                                                        " class="btn-1">
-                                    招待を送る
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </mat-card-content>
-        </mat-card>
-        <mat-card class="mt-15">
-            <mat-card-content>
-                <div class="border-1 pa-15">
-                    <p class="bold mt-0">チームメンバー</p>
-                    <div class="table-wrapper">
-                        <table mat-table [dataSource]="inviteDataArray">
-                            <ng-container matColumnDef="email">
-                                <th mat-header-cell *matHeaderCellDef>
-                                    メールアドレス
-                                </th>
-                                <td mat-cell *matCellDef="let element">
-                                    {{ element.email }}
-                                </td>
-                            </ng-container>
-                            <ng-container matColumnDef="role">
-                                <th mat-header-cell *matHeaderCellDef>
-                                    ユーザー種別
-                                </th>
-                                <td mat-cell *matCellDef="let element">
-                                    {{ element.role }}
-                                </td>
-                            </ng-container>
-                            <ng-container matColumnDef="status">
-                                <th mat-header-cell *matHeaderCellDef>状態</th>
-                                <td mat-cell *matCellDef="let element">
-                                    {{ element.status }}
-                                </td>
-                            </ng-container>
-                            <ng-container matColumnDef="action">
-                                <th mat-header-cell *matHeaderCellDef>
-                                    その他
-                                </th>
-                                <td mat-cell *matCellDef="let element">
-                                    <button
-                                        *ngIf="
-                                            element.action ===
-                                            '管理権限を委託する'
-                                        "
-                                        button
-                                        mat-button
-                                        color="primary"
-                                        (click)="updateRole(element.email)"
-                                    >
-                                        管理権限を委託する
-                                    </button>
-                                    <button
-                                        *ngIf="
-                                            element.action ===
-                                                '管理権限を削除する' &&
-                                            element.email !==
-                                                this.userInfo.keycloakProfile
-                                                    ?.email
-                                        "
-                                        button
-                                        mat-button
-                                        color="warn"
-                                        (click)="updateRole(element.email)"
-                                    >
-                                        管理権限を削除する
-                                    </button>
-                                    <button
-                                        *ngIf="element.action === '再招待する'"
-                                        button
-                                        mat-button
-                                        color="primary"
-                                        (click)="invite(element.email)"
-                                    >
-                                        再招待する<mat-icon>mail</mat-icon>
-                                    </button>
-                                </td>
-                            </ng-container>
-                            <tr
-                                mat-header-row
-                                *matHeaderRowDef="displayedColumns"
-                            ></tr>
-                            <tr
-                                mat-row
-                                *matRowDef="let row; columns: displayedColumns"
-                            ></tr>
-                        </table>
-                    </div>
-                </div>
-            </mat-card-content>
-        </mat-card>
+  <div class="mypage-inner">
+    <div class="page-header">
+      <h1 class="page-title">チームに招待する</h1>
+      <button mat-button aria-label="ダッシュボード" class="white f-16" routerLink="/">
+        <b>ダッシュボードへ戻る</b>
+        <mat-icon>reply</mat-icon>
+      </button>
     </div>
+    <mat-card>
+      <mat-card-content>
+        <div class="border-1 pa-15">
+          <form [formGroup]="inviteForm" (ngSubmit)="onSubmitInviteForm()">
+            <div class="flex-container">
+              <div>
+                @if (!memberInputedFlag) {
+                <mat-form-field>
+                  <mat-label>メールアドレス</mat-label>
+                  <input matInput type="email" formControlName="email" />
+                  @if ( inviteFormControl.email.hasError( 'required' ) ) {
+                  <mat-error> このフィールドを入力してください。 </mat-error>
+                  } @if ( !inviteFormControl.email.hasError( 'required' ) &&
+                  inviteFormControl.email.hasError( 'email' ) ) {
+                  <mat-error> メール形式が正しくありません。 </mat-error>
+                  }
+                </mat-form-field>
+                }
+              </div>
+              <div class="invite-message-div">
+                <span class="invite-message-span1">{{ invitedMessage1 }}</span
+                ><span class="invite-message-span2">{{ invitedMessage2 }}</span>
+              </div>
+              <div class="invite-button">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  type="submit"
+                  [disabled]="
+                    !inviteForm.valid ||
+                    memberInputedFlag ||
+                    invitedFlag ||
+                    (userInfo.systemProfile &&
+                      userInfo.systemProfile.group &&
+                      userInfo.systemProfile.group.licenses - inviteDataArray.length <= 0)
+                  "
+                  class="btn-1"
+                >
+                  招待を送る
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card class="mt-15">
+      <mat-card-content>
+        <div class="border-1 pa-15">
+          <p class="bold mt-0">チームメンバー</p>
+          <div class="table-wrapper">
+            <table mat-table [dataSource]="inviteDataArray">
+              <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef>メールアドレス</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.email }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="role">
+                <th mat-header-cell *matHeaderCellDef>ユーザー種別</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.role }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>状態</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.status }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>その他</th>
+                <td mat-cell *matCellDef="let element">
+                  @if ( element.action === '管理権限を委託する' ) {
+                  <button button mat-button color="primary" (click)="updateRole(element.email)">
+                    管理権限を委託する
+                  </button>
+                  } @if ( element.action === '管理権限を削除する' && element.email !==
+                  this.userInfo.keycloakProfile ?.email ) {
+                  <button button mat-button color="warn" (click)="updateRole(element.email)">
+                    管理権限を削除する
+                  </button>
+                  } @if (element.action === '再招待する') {
+                  <button button mat-button color="primary" (click)="invite(element.email)">
+                    再招待する<mat-icon>mail</mat-icon>
+                  </button>
+                  }
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
