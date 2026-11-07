@@ -96,13 +96,13 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "structuralengine-platform:build:production"
+              "buildTarget": "structuralengine-platform:build:production"
             },
             "stg": {
-              "browserTarget": "structuralengine-platform:build:stg"
+              "buildTarget": "structuralengine-platform:build:stg"
             },
             "development": {
-              "browserTarget": "structuralengine-platform:build:development"
+              "buildTarget": "structuralengine-platform:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -110,7 +110,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "structuralengine-platform:build"
+            "buildTarget": "structuralengine-platform:build"
           }
         },
         "test": {
