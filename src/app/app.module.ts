@@ -26,7 +26,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { InvitationComponent } from './invitation/invitation.component';
 import { Dxlogin2023Component } from './dxlogin2023/dxlogin2023.component';
@@ -112,10 +112,7 @@ export function initializeMsal(msalService: MsalService): () => Promise<void> {
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule,
     BrowserAnimationsModule,
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideFirestore(() => getFirestore()),
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -133,6 +130,8 @@ export function initializeMsal(msalService: MsalService): () => Promise<void> {
     MatSnackBarModule
   ],
   providers: [
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore()),
     {
       provide: APP_INITIALIZER,
       useFactory: initializeMsal,
@@ -160,7 +159,8 @@ export function initializeMsal(msalService: MsalService): () => Promise<void> {
     MsalGuard,
     MsalBroadcastService,
     { provide: LocationStrategy, useClass: PathLocationStrategy },
-    httpInterceptorProviders
+    httpInterceptorProviders,
+    provideHttpClient(withInterceptorsFromDi())
   ],
   bootstrap: [AppComponent, MsalRedirectComponent]
 })
