@@ -56,5 +56,9 @@
     "prettier": "^2.8.8",
     "prettier-eslint": "^15.0.1",
     "typescript": "~5.9.3"
+  },
+  "overrides": {
+    "@grpc/grpc-js": "^1.14.7",
+    "picomatch": "^4.0.7"
   }
 }
