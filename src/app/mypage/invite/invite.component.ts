@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { UserInfoService } from 'src/app/providers/user-info.service';
 import { environment } from 'src/environments/environment';
@@ -22,6 +22,7 @@ export interface InviteFormDatas {
   selector: 'app-invite',
   templateUrl: './invite.component.html',
   styleUrls: ['./invite.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class InviteComponent implements OnInit {
@@ -36,7 +37,10 @@ export class InviteComponent implements OnInit {
     email: new FormControl('', [Validators.required, Validators.email])
   });
 
-  constructor(public userInfo: UserInfoService, private http: HttpClient) {}
+  constructor(
+    public userInfo: UserInfoService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit() {
     this.syncTeamMembers();
@@ -82,15 +86,15 @@ export class InviteComponent implements OnInit {
             role: user.roles.includes('SuperAdmin')
               ? '最高管理者'
               : user.roles.includes('Admin')
-              ? '管理者'
-              : 'メンバー',
+                ? '管理者'
+                : 'メンバー',
             status: '',
             action:
               !user.roles.includes('SuperAdmin') && user.roles.includes('Admin')
                 ? '管理権限を削除する'
                 : !user.roles.includes('Admin')
-                ? '管理権限を委託する'
-                : ''
+                  ? '管理権限を委託する'
+                  : ''
           });
         });
         data.pendingInvites.forEach((invitedUser: User) => {

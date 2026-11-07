@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,9 +12,10 @@ import { environment } from 'src/environments/environment';
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent implements OnInit, OnDestroy {
   hasGroup = false;
   accountForm = new FormGroup({
     email: new FormControl({ value: '', disabled: true }, Validators.required),
@@ -35,7 +36,10 @@ export class ProfileComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   isLoading = false;
 
-  constructor(public userInfo: UserInfoService, private http: HttpClient) {}
+  constructor(
+    public userInfo: UserInfoService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit() {
     this.userInfoSubscription = this.userInfo.userInfo$.subscribe((res) => {
@@ -46,8 +50,8 @@ export class ProfileComponent implements OnInit {
             userRole: this.userInfo.systemProfile?.roles.includes('SuperAdmin')
               ? 'SuperAdmin'
               : this.userInfo.systemProfile?.roles.includes('Admin')
-              ? 'Admin'
-              : '',
+                ? 'Admin'
+                : '',
             firstName: this.userInfo.systemProfile.firstName ?? '',
             lastName: this.userInfo.systemProfile.lastName ?? ''
           });

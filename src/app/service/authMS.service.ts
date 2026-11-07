@@ -35,86 +35,95 @@ export class AuthMSService {
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
     private authService: MsalService,
     private msalBroadcastService: MsalBroadcastService,
-    private user : UserInfoService
-  ) {
-    
-  }
+    private user: UserInfoService
+  ) {}
 
   initMSAL() {
     this.authService.instance.enableAccountStorageEvents();
-      this.msalBroadcastService.msalSubject$
-        .pipe(
-          filter(
-            (msg: EventMessage) =>
-              msg.eventType === EventType.ACCOUNT_ADDED ||
-              msg.eventType === EventType.ACCOUNT_REMOVED
-          )
+    this.msalBroadcastService.msalSubject$
+      .pipe(
+        filter(
+          (msg: EventMessage) =>
+            msg.eventType === EventType.ACCOUNT_ADDED || msg.eventType === EventType.ACCOUNT_REMOVED
         )
-        .subscribe((result: EventMessage) => {
-          if (this.authService.instance.getAllAccounts().length === 0) {
-            window.location.pathname = "/";
-          } else {
-          }
-        });
+      )
+      .subscribe((result: EventMessage) => {
+        if (this.authService.instance.getAllAccounts().length === 0) {
+          window.location.pathname = '/';
+        } else {
+        }
+      });
 
-      this.msalBroadcastService.inProgress$
-        .pipe(
-          filter((status: InteractionStatus) => status === InteractionStatus.None),
-          takeUntil(this._destroying$)
-        )
-        .subscribe(() => {
-          this.checkAndSetActiveAccount();
-          if (this.authService.instance.getAllAccounts().length > 0) {
-            this.user.getAcessToken();
-            this.user.syncSystemProfile();
-            // this.user.setUserProfile();
-          }
-        })
+    this.msalBroadcastService.inProgress$
+      .pipe(
+        filter((status: InteractionStatus) => status === InteractionStatus.None),
+        takeUntil(this._destroying$)
+      )
+      .subscribe(() => {
+        this.checkAndSetActiveAccount();
+        if (this.authService.instance.getAllAccounts().length > 0) {
+          this.user.getAcessToken();
+          this.user.syncSystemProfile();
+          // this.user.setUserProfile();
+        }
+      });
 
-      this.msalBroadcastService.msalSubject$
-        .pipe(
-          filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_SUCCESS
-            || msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS
-            || msg.eventType === EventType.SSO_SILENT_SUCCESS),
-          takeUntil(this._destroying$)
-        )
-        .subscribe((result: EventMessage) => {
+    this.msalBroadcastService.msalSubject$
+      .pipe(
+        filter(
+          (msg: EventMessage) =>
+            msg.eventType === EventType.LOGIN_SUCCESS ||
+            msg.eventType === EventType.ACQUIRE_TOKEN_SUCCESS ||
+            msg.eventType === EventType.SSO_SILENT_SUCCESS
+        ),
+        takeUntil(this._destroying$)
+      )
+      .subscribe((result: EventMessage) => {
+        const payload = result.payload as AuthenticationResult;
+        const idtoken = payload.idTokenClaims as IdTokenClaimsWithPolicyId;
 
-          let payload = result.payload as AuthenticationResult;
-          let idtoken = payload.idTokenClaims as IdTokenClaimsWithPolicyId;
+        if (
+          idtoken.acr === environment.b2cPolicies.names.signUpSignIn ||
+          idtoken.tfp === environment.b2cPolicies.names.signUpSignIn
+        ) {
+          this.authService.instance.setActiveAccount(payload.account);
+        }
 
-          if (idtoken.acr === environment.b2cPolicies.names.signUpSignIn || idtoken.tfp === environment.b2cPolicies.names.signUpSignIn) {
-            this.authService.instance.setActiveAccount(payload.account);
-          }
-
-          if (idtoken.acr === environment.b2cPolicies.names.resetPassword || idtoken.tfp === environment.b2cPolicies.names.resetPassword) {
-            let signUpSignInFlowRequest: RedirectRequest | PopupRequest = {
-              authority: environment.b2cPolicies.authorities.signUpSignIn.authority,
-              scopes: [...environment.apiConfig.scopes],
-              prompt: PromptValue.LOGIN 
-            };
-
-            this.login(signUpSignInFlowRequest);
-          }
-
-          return result;
-        });
-
-      this.msalBroadcastService.msalSubject$
-        .pipe(
-          filter((msg: EventMessage) => msg.eventType === EventType.LOGIN_FAILURE || msg.eventType === EventType.ACQUIRE_TOKEN_FAILURE),
-          takeUntil(this._destroying$)
-        )
-        .subscribe((result: EventMessage) => {
-          if (result.error && result.error.message.indexOf('AADB2C90118') > -1) {
-            let resetPasswordFlowRequest: RedirectRequest | PopupRequest = {
-              authority: environment.b2cPolicies.authorities.resetPassword.authority,
-              scopes: [],
-            };
-
-            this.login(resetPasswordFlowRequest);
+        if (
+          idtoken.acr === environment.b2cPolicies.names.resetPassword ||
+          idtoken.tfp === environment.b2cPolicies.names.resetPassword
+        ) {
+          const signUpSignInFlowRequest: RedirectRequest | PopupRequest = {
+            authority: environment.b2cPolicies.authorities.signUpSignIn.authority,
+            scopes: [...environment.apiConfig.scopes],
+            prompt: PromptValue.LOGIN
           };
-        });
+
+          this.login(signUpSignInFlowRequest);
+        }
+
+        return result;
+      });
+
+    this.msalBroadcastService.msalSubject$
+      .pipe(
+        filter(
+          (msg: EventMessage) =>
+            msg.eventType === EventType.LOGIN_FAILURE ||
+            msg.eventType === EventType.ACQUIRE_TOKEN_FAILURE
+        ),
+        takeUntil(this._destroying$)
+      )
+      .subscribe((result: EventMessage) => {
+        if (result.error && result.error.message.indexOf('AADB2C90118') > -1) {
+          const resetPasswordFlowRequest: RedirectRequest | PopupRequest = {
+            authority: environment.b2cPolicies.authorities.resetPassword.authority,
+            scopes: []
+          };
+
+          this.login(resetPasswordFlowRequest);
+        }
+      });
   }
 
   getClaims(claims: Record<string, any>) {
@@ -133,10 +142,10 @@ export class AuthMSService {
      * To use active account set here, subscribe to inProgress$ first in your component
      * Note: Basic usage demonstrated. Your app may require more complicated account selection logic
      */
-    let activeAccount = this.authService.instance.getActiveAccount();
+    const activeAccount = this.authService.instance.getActiveAccount();
 
     if (!activeAccount && this.authService.instance.getAllAccounts().length > 0) {
-      let accounts = this.authService.instance.getAllAccounts();
+      const accounts = this.authService.instance.getAllAccounts();
       this.authService.instance.setActiveAccount(accounts[0]);
     }
   }
@@ -152,7 +161,8 @@ export class AuthMSService {
       .subscribe(async () => {
         if (this.msalGuardConfig.authRequest) {
           await this.authService.loginRedirect({
-            ...this.msalGuardConfig.authRequest,...userFlowRequest
+            ...this.msalGuardConfig.authRequest,
+            ...userFlowRequest
           } as RedirectRequest);
         } else {
           await this.authService.loginRedirect();

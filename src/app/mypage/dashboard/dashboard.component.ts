@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { UserInfoService } from 'src/app/providers/user-info.service';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -6,13 +6,17 @@ import { HttpClient } from '@angular/common/http';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class DashboardComponent implements OnInit {
   currentPlanNameList = [];
   isLoading = true;
-  public isAdmin : boolean = false;
-  constructor(public userInfo: UserInfoService, private http: HttpClient) { }
+  public isAdmin: boolean = false;
+  constructor(
+    public userInfo: UserInfoService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit() {
     this.userInfo.loadingSubject.subscribe((res) => (this.isLoading = res));
@@ -28,7 +32,7 @@ export class DashboardComponent implements OnInit {
 
     this.userInfo.userInfo$.subscribe(() => {
       this.isAdmin = this.userInfo.checkAdminRole();
-    })
+    });
   }
 
   goTutorial() {

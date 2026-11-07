@@ -14,18 +14,17 @@ import { AuthMSService } from '../service/authMS.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-
   constructor(
     private userInfoService: UserInfoService,
-    private authService: AuthMSService,
-  ) { }
+    private authService: AuthMSService
+  ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.userInfoService.getToken();
     if (token) {
       request = request.clone({
         setHeaders: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         }
       });
     }
@@ -39,7 +38,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 switchMap((newToken) => {
                   request = request.clone({
                     setHeaders: {
-                      Authorization: `Bearer ${newToken}`,
+                      Authorization: `Bearer ${newToken}`
                     }
                   });
                   return next.handle(request);
@@ -59,5 +58,5 @@ export class AuthInterceptor implements HttpInterceptor {
 }
 
 export const httpInterceptorProviders = [
-  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
 ];

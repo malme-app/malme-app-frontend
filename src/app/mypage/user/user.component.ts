@@ -1,4 +1,11 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import {
+  Component,
+  inject,
+  ViewChild,
+  ChangeDetectionStrategy,
+  OnInit,
+  OnDestroy
+} from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -21,9 +28,10 @@ export interface User {
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],
   providers: [{ provide: MatPaginatorIntl, useValue: CustomPaginator() }],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
-export class UserComponent {
+export class UserComponent implements OnInit, OnDestroy {
   public displayedColumns: string[] = ['username', 'role', 'action'];
   public dataSourceUsers = new MatTableDataSource<User>();
   public users: User[] = [];

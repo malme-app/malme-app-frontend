@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { environment } from 'src/environments/environment';
 
@@ -24,6 +24,7 @@ export interface SaleInfo {
   selector: 'app-invoice',
   templateUrl: './invoice.component.html',
   styleUrls: ['./invoice.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class InvoiceComponent implements OnInit {
@@ -42,7 +43,10 @@ export class InvoiceComponent implements OnInit {
   activePlans: TableRow[] = [];
   hasExpirationDate = true;
 
-  constructor(public dialog: MatDialog, private http: HttpClient) {}
+  constructor(
+    public dialog: MatDialog,
+    private http: HttpClient
+  ) {}
 
   ngOnInit() {
     this.http.get(`${environment.apiBaseUrl}/sale/list-active`).subscribe({

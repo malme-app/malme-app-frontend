@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectionStrategy } from '@angular/core';
 import { UserInfoService } from '../providers/user-info.service';
 import { Router } from '@angular/router';
 import { HeaderService } from '../service/header.service';
@@ -7,6 +7,7 @@ import { AuthMSService } from '../service/authMS.service';
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
@@ -14,7 +15,7 @@ export class HeaderComponent implements OnInit, AfterViewInit {
     private router: Router,
     public userInfo: UserInfoService,
     public header: HeaderService,
-    public authMs: AuthMSService,
+    public authMs: AuthMSService
   ) {}
 
   ngOnInit() {
@@ -27,15 +28,14 @@ export class HeaderComponent implements OnInit, AfterViewInit {
   }
 
   async login() {
-    this.authMs.login()
+    this.authMs.login();
   }
 
   async logout() {
     this.authMs.logout();
   }
 
-  signup() {
-  }
+  signup() {}
 
   goMypage() {
     this.router.navigate(['/']);

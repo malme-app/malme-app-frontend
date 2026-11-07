@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { UserInfoService } from 'src/app/providers/user-info.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -9,6 +9,7 @@ import { ConfirmDialogComponent } from 'src/app/confirm-dialog/confirm-dialog.co
   selector: 'app-plan',
   templateUrl: './plan.component.html',
   styleUrls: ['./plan.component.scss'],
+  changeDetection: ChangeDetectionStrategy.Eager,
   standalone: false
 })
 export class PlanComponent implements OnInit {
@@ -20,7 +21,10 @@ export class PlanComponent implements OnInit {
   isLoading = false;
   readonly dialog = inject(MatDialog);
 
-  constructor(public userInfo: UserInfoService, private http: HttpClient) {}
+  constructor(
+    public userInfo: UserInfoService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit() {
     if (this.userInfo.systemProfile && this.userInfo.systemProfile.group) {

@@ -58,7 +58,10 @@ export class UserInfoService {
   public userRole: string[] = [];
   userInfo$ = this.userInfoSubject.asObservable();
 
-  constructor(private http: HttpClient, private authService: MsalService) {}
+  constructor(
+    private http: HttpClient,
+    private authService: MsalService
+  ) {}
 
   public syncSystemProfile() {
     this.http.post(`${environment.apiBaseUrl}/user/sync-b2c`, {}).subscribe({

@@ -18,7 +18,7 @@ export class PermissionService {
   }
 
   getUsersCompany(page: number, size: number, search?: string): Observable<any> {
-    let params: any = {
+    const params: any = {
       page: page,
       size: size
     };

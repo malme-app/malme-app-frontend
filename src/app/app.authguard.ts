@@ -12,7 +12,7 @@ export class AuthGuard {
     private msalService: MsalService,
     private authService: AuthMSService,
     private router: Router
-  ) { }
+  ) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     if (this.msalService.instance.getActiveAccount()) {
@@ -24,7 +24,7 @@ export class AuthGuard {
           if (listRole.includes(pathRole)) {
             return true;
           } else {
-            this.router.navigate(['/'])
+            this.router.navigate(['/']);
             return false;
           }
         }
