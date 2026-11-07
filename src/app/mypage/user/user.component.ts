@@ -20,7 +20,8 @@ export interface User {
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss'],
-  providers: [{ provide: MatPaginatorIntl, useValue: CustomPaginator() }]
+  providers: [{ provide: MatPaginatorIntl, useValue: CustomPaginator() }],
+  standalone: false
 })
 export class UserComponent {
   public displayedColumns: string[] = ['username', 'role', 'action'];

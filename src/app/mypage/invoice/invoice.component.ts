@@ -56,7 +56,8 @@ export interface RemindTestResult {
 @Component({
   selector: 'app-invoice',
   templateUrl: './invoice.component.html',
-  styleUrls: ['./invoice.component.scss']
+  styleUrls: ['./invoice.component.scss'],
+  standalone: false
 })
 export class InvoiceComponent implements OnInit {
   currentSaleInfo: SaleInfo = {
