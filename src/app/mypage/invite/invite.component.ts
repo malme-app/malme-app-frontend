@@ -21,7 +21,8 @@ export interface InviteFormDatas {
 @Component({
   selector: 'app-invite',
   templateUrl: './invite.component.html',
-  styleUrls: ['./invite.component.scss']
+  styleUrls: ['./invite.component.scss'],
+  standalone: false
 })
 export class InviteComponent implements OnInit {
   displayedColumns: string[] = ['email', 'role', 'status', 'action'];

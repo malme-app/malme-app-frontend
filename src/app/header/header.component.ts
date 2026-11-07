@@ -6,7 +6,8 @@ import { AuthMSService } from '../service/authMS.service';
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
+  styleUrls: ['./header.component.scss'],
+  standalone: false
 })
 export class HeaderComponent implements OnInit, AfterViewInit {
   constructor(

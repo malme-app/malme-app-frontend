@@ -7,7 +7,8 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-dxlogin2023',
   templateUrl: './dxlogin2023.component.html',
-  styleUrls: ['./dxlogin2023.component.scss']
+  styleUrls: ['./dxlogin2023.component.scss'],
+  standalone: false
 })
 export class Dxlogin2023Component implements OnInit, OnDestroy {
   constructor(
