@@ -9,7 +9,7 @@ COPY . .
 ARG ANGULAR_CONFIG=production
 RUN npx ng build --configuration ${ANGULAR_CONFIG}
 
-FROM nginx:alpine AS prod
+FROM nginx:1.30-alpine AS prod
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
