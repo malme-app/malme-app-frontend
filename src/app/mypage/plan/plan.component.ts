@@ -8,7 +8,8 @@ import { ConfirmDialogComponent } from 'src/app/confirm-dialog/confirm-dialog.co
 @Component({
   selector: 'app-plan',
   templateUrl: './plan.component.html',
-  styleUrls: ['./plan.component.scss']
+  styleUrls: ['./plan.component.scss'],
+  standalone: false
 })
 export class PlanComponent implements OnInit {
   plans: any[] = [];

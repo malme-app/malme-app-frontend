@@ -6,7 +6,8 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-invitation',
   templateUrl: './invitation.component.html',
-  styleUrls: ['./invitation.component.scss']
+  styleUrls: ['./invitation.component.scss'],
+  standalone: false
 })
 export class InvitationComponent implements OnInit {
   routeParams: Params = {};

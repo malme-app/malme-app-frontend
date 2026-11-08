@@ -5,7 +5,8 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-top',
   templateUrl: './top.component.html',
-  styleUrls: ['./top.component.scss']
+  styleUrls: ['./top.component.scss'],
+  standalone: false
 })
 export class TopComponent implements OnInit {
   constructor(private http: HttpClient) {}
