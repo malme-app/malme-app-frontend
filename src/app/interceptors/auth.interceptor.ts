@@ -24,8 +24,9 @@ export class AuthInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    // Only our own API gets the access token.
-    if (!request.url.startsWith(environment.apiBaseUrl)) {
+    // Only our own API gets the access token (match a path boundary, not just a prefix).
+    const base = environment.apiBaseUrl;
+    if (request.url !== base && !request.url.startsWith(`${base}/`)) {
       return next.handle(request);
     }
 

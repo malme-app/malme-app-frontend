@@ -45,4 +45,14 @@ describe('UserInfoService', () => {
 
     expect(service.profileLoadFailed).toBeTrue();
   });
+
+  it('retries sync-b2c after a failure and clears the failed flag on success', () => {
+    service.syncSystemProfile();
+    httpMock.expectOne(syncUrl).flush({}, { status: 500, statusText: 'Server Error' });
+
+    service.syncSystemProfile();
+    httpMock.expectOne(syncUrl).flush({});
+
+    expect(service.profileLoadFailed).toBeFalse();
+  });
 });

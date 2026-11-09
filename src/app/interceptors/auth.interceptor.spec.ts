@@ -93,4 +93,17 @@ describe('AuthInterceptor', () => {
     expect(msal.acquireTokenSilent).not.toHaveBeenCalled();
     req.flush({});
   });
+
+  it('does not attach the token to a path that only shares the API prefix', () => {
+    msal.accounts = [account];
+    msal.acquireTokenSilentResult = of({ accessToken: 'fresh-token' });
+    const lookalike = `${environment.apiBaseUrl}-admin/users`;
+
+    http.get(lookalike).subscribe();
+
+    const req = httpMock.expectOne(lookalike);
+    expect(req.request.headers.has('Authorization')).toBeFalse();
+    expect(msal.acquireTokenSilent).not.toHaveBeenCalled();
+    req.flush({});
+  });
 });

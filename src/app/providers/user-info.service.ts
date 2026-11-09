@@ -64,7 +64,7 @@ export class UserInfoService {
 
   constructor(private http: HttpClient, private authService: MsalService) {}
 
-  /** Syncs the B2C user once per page load. */
+  /** Syncs the B2C user once per page load; a failed sync may be retried by a later call. */
   public syncSystemProfile() {
     if (this.syncRequested) {
       return;
@@ -72,11 +72,13 @@ export class UserInfoService {
     this.syncRequested = true;
     this.http.post(`${environment.apiBaseUrl}/user/sync-b2c`, {}).subscribe({
       next: () => {
+        this.profileLoadFailed = false;
         this.loadingSubject.next(false);
         this.setUserProfile();
         this.setPermission();
       },
       error: (err) => {
+        this.syncRequested = false;
         this.profileLoadFailed = true;
         this.loadingSubject.next(false);
         console.log('error', err);
@@ -185,6 +187,7 @@ export class UserInfoService {
           group: group ?? null
         } as SystemProfile;
         localStorage.setItem(rolesKey, JSON.stringify(this.systemProfile.roles));
+        this.profileLoadFailed = false;
         this.userInfoSubject.next(this.systemProfile);
       },
       error: (err) => {
