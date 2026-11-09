@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { InviteComponent } from './invite.component';
+import { TEST_IMPORTS, testProviders } from '../../../testing/test-helpers';
 
 describe('InviteComponent', () => {
   let component: InviteComponent;
@@ -8,7 +9,9 @@ describe('InviteComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: TEST_IMPORTS,
       declarations: [InviteComponent],
+      providers: testProviders(),
     });
     fixture = TestBed.createComponent(InviteComponent);
     component = fixture.componentInstance;

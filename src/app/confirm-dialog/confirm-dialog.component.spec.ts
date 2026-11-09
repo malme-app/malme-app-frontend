@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ConfirmDialogComponent } from './confirm-dialog.component';
+import { TEST_IMPORTS, testProviders } from '../../testing/test-helpers';
 
 describe('ConfirmDialogComponent', () => {
   let component: ConfirmDialogComponent;
@@ -8,7 +9,9 @@ describe('ConfirmDialogComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ConfirmDialogComponent]
+      imports: TEST_IMPORTS,
+      declarations: [ConfirmDialogComponent],
+      providers: testProviders(),
     });
     fixture = TestBed.createComponent(ConfirmDialogComponent);
     component = fixture.componentInstance;
