@@ -16,7 +16,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.userInfo.loadingSubject.subscribe((res) => (this.isLoading = res));
-    this.userInfo.syncSystemProfile();
     this.http.get(`${environment.apiBaseUrl}/sale/active`).subscribe({
       next: (data: any) => {
         this.currentPlanNameList = data.map((item: any) => item.planname);

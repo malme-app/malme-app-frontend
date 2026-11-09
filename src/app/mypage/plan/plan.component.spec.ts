@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PlanComponent } from './plan.component';
+import { TEST_IMPORTS, testProviders } from '../../../testing/test-helpers';
 
 describe('PlanComponent', () => {
   let component: PlanComponent;
@@ -8,7 +9,9 @@ describe('PlanComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: TEST_IMPORTS,
       declarations: [PlanComponent],
+      providers: testProviders(),
     });
     fixture = TestBed.createComponent(PlanComponent);
     component = fixture.componentInstance;

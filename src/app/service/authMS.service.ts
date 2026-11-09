@@ -65,7 +65,7 @@ export class AuthMSService {
         .subscribe(() => {
           this.checkAndSetActiveAccount();
           if (this.authService.instance.getAllAccounts().length > 0) {
-            this.user.getAcessToken();
+            // The single place that syncs the B2C user; the interceptor attaches the token.
             this.user.syncSystemProfile();
             // this.user.setUserProfile();
           }
