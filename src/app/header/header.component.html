@@ -6,7 +6,11 @@
     alt="Malme"
     (click)="navigateMalmePage()"
   />
-  @if (!userInfo.systemProfile) {
+  @if (!userInfo.systemProfile && authPending) {
+  <div class="btn-wrapper">
+    <mat-spinner diameter="24" aria-label="Loading"></mat-spinner>
+  </div>
+  } @if (!userInfo.systemProfile && !authPending) {
   <div class="btn-wrapper">
     <button class="login-btn" (click)="login()">Login</button>
     <button class="login-btn" (click)="signup()">Signup</button>

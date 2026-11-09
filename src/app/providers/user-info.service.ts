@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { MsalService } from '@azure/msal-angular';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 interface KeycloakProfile {
   uid: string;
@@ -53,14 +53,23 @@ export const rolesKey = 'malmeapp_roles';
 export class UserInfoService {
   public keycloakProfile: KeycloakProfile | null = null;
   public systemProfile: SystemProfile | null = null;
-  public loadingSubject = new Subject<boolean>();
+  // Replays the latest value so pages created after the sync still see it.
+  public loadingSubject = new BehaviorSubject<boolean>(true);
+  // True when the sync or the profile request failed; the header then offers Login again.
+  public profileLoadFailed = false;
+  private syncRequested = false;
   private userInfoSubject = new BehaviorSubject<any>(null);
   public userRole: string[] = [];
   userInfo$ = this.userInfoSubject.asObservable();
 
   constructor(private http: HttpClient, private authService: MsalService) {}
 
+  /** Syncs the B2C user once per page load. */
   public syncSystemProfile() {
+    if (this.syncRequested) {
+      return;
+    }
+    this.syncRequested = true;
     this.http.post(`${environment.apiBaseUrl}/user/sync-b2c`, {}).subscribe({
       next: () => {
         this.loadingSubject.next(false);
@@ -68,6 +77,7 @@ export class UserInfoService {
         this.setPermission();
       },
       error: (err) => {
+        this.profileLoadFailed = true;
         this.loadingSubject.next(false);
         console.log('error', err);
       }
@@ -178,6 +188,7 @@ export class UserInfoService {
         this.userInfoSubject.next(this.systemProfile);
       },
       error: (err) => {
+        this.profileLoadFailed = true;
         console.log('error', err);
       }
     });

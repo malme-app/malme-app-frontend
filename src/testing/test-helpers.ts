@@ -36,7 +36,7 @@ export const TEST_IMPORTS = [
   MatProgressSpinnerModule,
   MatSelectModule,
   MatSnackBarModule,
-  MatTableModule,
+  MatTableModule
 ];
 
 /** Controllable stand-in for MsalService. */
@@ -54,7 +54,7 @@ export class MsalServiceStub {
       this.activeAccount = account;
     },
     enableAccountStorageEvents: () => undefined,
-    handleRedirectPromise: () => Promise.resolve(null),
+    handleRedirectPromise: () => Promise.resolve(null)
   };
 
   acquireTokenSilent = jasmine
@@ -79,9 +79,9 @@ export function testProviders(): (Provider | EnvironmentProviders)[] {
     { provide: MsalBroadcastService, useClass: MsalBroadcastServiceStub },
     {
       provide: MSAL_GUARD_CONFIG,
-      useValue: { interactionType: InteractionType.Redirect, authRequest: { scopes: [] } },
+      useValue: { interactionType: InteractionType.Redirect, authRequest: { scopes: [] } }
     },
     { provide: MatDialogRef, useValue: { close: jasmine.createSpy('close') } },
-    { provide: MAT_DIALOG_DATA, useValue: { title: '', message: '', acceptBtn: '', cancelBtn: '' } },
+    { provide: MAT_DIALOG_DATA, useValue: { title: '', message: '', acceptBtn: '', cancelBtn: '' } }
   ];
 }
