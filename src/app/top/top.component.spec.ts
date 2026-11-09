@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TopComponent } from './top.component';
+import { TEST_IMPORTS, testProviders } from '../../testing/test-helpers';
 
 describe('TopComponent', () => {
   let component: TopComponent;
@@ -8,7 +9,9 @@ describe('TopComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [TopComponent]
+      imports: TEST_IMPORTS,
+      declarations: [TopComponent],
+      providers: testProviders(),
     });
     fixture = TestBed.createComponent(TopComponent);
     component = fixture.componentInstance;
